@@ -1,0 +1,14 @@
+<%+header%>
+<div class="cbi-map">
+<br>
+<iframe id="tinyfilemanager" style="width: 100%; min-height: 550px; border: none; border-radius: 2px;"></iframe>
+</div>
+<script type="text/javascript">
+try {
+  document.getElementById("tinyfilemanager").src = "https://" + window.location.hostname + "/tinyfilemanager.php";
+}
+catch(err) {
+  document.getElementById("tinyfilemanager").src = "http://" + window.location.hostname + "/tinyfilemanager.php";
+}
+</script>
+<%+footer%>
