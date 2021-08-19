@@ -1,0 +1,1397 @@
+#!/bin/bash
+#--------------------------------------------------------
+#   Don't remove this section for credits
+#   Don't rename this file
+#--------------------------------------------------------
+#   This script is used for setting up
+#   Xderm-Mini GUI for OpenWrt by ryanfauzi1
+#   Installation script by helmiau a.k.a Helmi Amirudin
+#   my profile page https://me.helmiau.my.id
+#   my github https://github.com/helmiau
+#--------------------------------------------------------
+
+#-- Warna Teks Installer
+RED='\033[1;31m' # Merah Muda
+GRE='\033[1;32m' # Hijau Muda
+CYA='\033[0;36m' # Biru Muda
+YEL='\033[1;33m' # Kuning
+NOR='\033[1;37m' # Putih
+
+#-- Xderm Old Version Code
+v10="9385a88730f47ce476e91a94b5f598e1a8b5b112"
+v11="5fd6ba4b365e4e4689f963abb92710d8d7ea6ea0"
+v12="edf57728fb9aaf95565a79b219e6f1ac0ad107c6"
+v13="031e146ef48ed53aa9d4a2646d4a86ac52be0ac0"
+v14="543e78f91ef7549c8324783f949345aed14c36b8"
+v15="e306e3b26b6a81cf0b7315a9caf2b815e1880033"
+v16="61bf52e2c77f31910a870b9346870f234df0793a"
+v17="5f8a7c2e3fd329e5519e0e2a3356cad44bb525cf"
+v18="ddaa9bd2bec4a71dd62cb9d03cfc31b80e3723cc"
+v19="3343be6f696ae6eb56c9ad337f6439739705a966"
+v20="b4880ccd8aae1bf11369696009c49c3f3a3ebdad"
+v21="e21fd6847abc99a7e1b8a67745ebbfa3bd74f96d"
+v22="b397d0993f4eef1b39785d75a10309b00bca61b9"
+v23="4ff1d4bbdf5196deea5c11480484fc6cb2195938"
+v24="eb882e93acdbe4fc622e56761e22f6d524a61951"
+v25="2284a420bb991709e8015893c7eff796bbbd2ab7"
+v26="57baee0f87c97db38fc4796c9822cb957023fa96"
+v27="99808960f82bcd5f469b1a35887485faeb182ada"
+v28="2b7a2c8a82941f3d894102105c007dd7414599ab"
+v29="f5a2294f22fcb9855f1f008820383edf6effd93e"
+v30="d7e233bb8769540238c1e06ec0c3d3f7047ec003"
+#-- Uneditable Info for script checking purpose
+
+#-- Uneditable Info for script checking purpose
+INSTALLERNAME="$(basename "$0")"
+CHECKNET="http://github.com/ryanfauzi1/xderm-mini_GUI"
+XDERMPATH="/www/xderm"
+XDERMPATHBAK="/www/xdermbak"
+XDERMCONFIGBAK="/www/xderm-config"
+XDERMINFO="/www/xderm/xderm-mini"
+XDERMPATHAUTH="/root/auth.txt"
+XDERMCONFIGFILE="/www/xderm/config.txt"
+XDERMPATHINFO=$(if [ -d ${XDERMPATH} ]; then echo -e "${GRE}Available"; else echo -e "${RED}Unavailable"; fi)
+XDERMPATHBAKINFO=$(if [ -d ${XDERMCONFIGBAK} ]; then echo -e "${GRE}Available"; else echo -e "${RED}Unavailable"; fi)
+if [ -f $XDERMPATH/screenlog.0 ]; then
+	INJECTSTAT=$(if grep -q 200 $XDERMPATH/screenlog.0; then echo -e "${GRE}Connected"; else echo -e "${RED}Disconnected"; fi)
+else
+	INJECTSTAT="${RED}Log file unavailable"
+fi
+if [ -f $XDERMINFO ]; then
+	GREPXDERMVER=$(grep "Copyr" "${XDERMINFO}" | awk "NR==4" | awk '{print $6}')
+	INSTALLSTAT=$(if [ -f "${XDERMINFO}" ]; then echo -e "${GRE}Installed"; else echo -e "${RED}Not Installed"; fi)
+	XDERMVER=$(if [[ $GREPXDERMVER =~ [0-9] ]]; then echo -e " ~ v$GREPXDERMVER"; else echo -e ""; fi)
+else
+	INSTALLSTAT="${RED}Not Installed"
+	XDERMVER=""
+fi
+if [ -f $XDERMPATHAUTH ]; then
+	USERNOW=$(grep user $XDERMPATHAUTH | sed 's/.*user=//')
+	PASSNOW=$(grep passwd $XDERMPATHAUTH | sed 's/.*passwd=//')
+else
+	USERNOW="${RED}auth file not exist"
+	PASSNOW="${RED}auth file not exist"
+fi
+LOGINOW=$(if [ -e /www/xderm/login.php ]; then echo -e "${GRE}Available"; else echo -e "${RED}Unavailable"; fi)
+LOGINOWBAK=$(if [ -e /www/xderm/login.php.xdrtool ]; then echo -e "${GRE}Available"; else echo -e "${RED}Unavailable"; fi)
+URL="raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main"
+OLDURL="raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/"
+if [[ -f /root/xdrtoolup ]]; then
+	rm /root/xdrtoolup
+fi
+if [[ -f /bin/xdrtoolup ]]; then
+	rm /bin/xdrtoolup
+fi
+SCRIPTVER="4.9"
+
+#-- Installer Scripts
+echo -e "${NOR}==========================================="
+echo -e "     ${RED}Xderm ${CYA}Mini ${YEL}Tools ${NOR}v$SCRIPTVER ${GRE}by helmiau${NOR}"
+echo "==========================================="
+echo -e "  ${GRE}Xderm Binary    : $INSTALLSTAT$XDERMVER"
+echo -e "  ${GRE}Xderm Path      : $XDERMPATHINFO"
+echo -e "  ${GRE}Xderm Backup    : $XDERMPATHBAKINFO${NOR}"
+echo -e "  ${GRE}Inject Status   : $INJECTSTAT${NOR}"
+echo "==========================================="
+echo -e "  ${YEL}Panel Username  : $USERNOW"
+echo -e "  ${YEL}Panel Password  : $PASSNOW"
+echo -e "  ${YEL}Login Page      : $LOGINOW"
+echo -e "  ${YEL}Login Pg Backup : $LOGINOWBAK${NOR}"
+echo "==========================================="
+echo -e "               ${YEL}Command Lists${NOR}"
+echo -e "==========================================="
+echo -e "     ${GRE}Install Xderm Mini       :  1"
+echo -e "     ${YEL}Install Theme by Agus S  :  2"
+echo -e "     ${GRE}Update Xderm Mini        :  3"
+echo -e "     ${YEL}Fix index.php            :  4"
+echo -e "     ${GRE}Change User & Pass Login :  5"
+echo -e "     ${YEL}Change Username Only     :  6"
+echo -e "     ${GRE}Change Password Only     :  7"
+echo -e "     ${RED}Configure Xderm Config   :  8"
+echo -e "     ${GRE}Install Login Page       :  9"
+echo -e "     ${YEL}Remove Login Page        : 10"
+echo -e "     ${RED}Install Older Version    : 11"
+echo -e "     ${YEL}Read Xderm Log Process   : 12"
+echo -e "     ${GRE}Check My IP Info         : 13"
+echo -e "     ${YEL}Check Other Host/IP Info : 14"
+echo -e "     ${GRE}Convert Host to IP       : 15"
+echo -e "     ${YEL}Fix On-Boot Config Unset : 16"
+echo -e "     ${RED}Remove Xderm Mini Files  : 31"
+echo -e "     ${YEL}Update XDRTOOL Script    : 33"
+echo -e "${NOR}==========================================="
+echo -e "  ${CYA}Available Older Version  : v1.0 ~ v3.0"
+echo -e "    ${CYA}type 10 for v1.0, 20 for v2.0, etc"
+echo -e "${NOR}==========================================="
+echo -e "    ${YEL}Exit = type number 99 or 88 or 55 !${NOR}"
+echo "==========================================="
+echo ""
+echo -n "   Enter Your Option : "
+read -r jawab
+echo "==========================================="
+
+# wget -S --spider github.com/squarepants96/xdrtheme-adminlte 2>&1 #Network Checker
+
+function xderm_checknet() {
+	echo "  Checking connections..."
+	if wget -S --spider "$CHECKNET" 2>&1 | grep -q 'HTTP/1.1 200 OK'; then
+		echo "  Internet connected..."
+	else
+		echo "  No internet connection or repository url unavailable..."
+		echo "  Leaving."
+		sleep 3
+		clear
+		./"$INSTALLERNAME"
+	fi
+}
+
+function xderm_read_log() {
+	clear
+	echo -e "==========================================="
+	echo -e "          Xderm Mini GUI Logging"
+	echo -e "==========================================="
+	if [ -f $XDERMPATH/screenlog.0 ]; then
+		tail -f $XDERMPATH/screenlog.0
+	else
+		echo -e "    ${RED}Log file unavailable, returning.."
+		## ./"$INSTALLERNAME"
+	fi
+	echo -e "==========================================="
+	echo -e "                End of Log"
+	echo -e "==========================================="
+	echo -e " "
+	echo -e " Returning in 10 secs"
+	sleep 10
+	echo -e " Return to main menu"
+}
+
+function xderm_install() {
+	clear
+	echo "######################################"
+	echo " Installer Xderm Mini GUI Latest Version"
+	echo "######################################"
+	echo "Installing latest version of Xderm Mini GUI, please wait....."
+	echo "Creating required directories....."
+	mkdir -p "$XDERMPATH" "$XDERMPATH"/js "$XDERMPATH"/img "$XDERMPATH"/log
+	echo "Downloading files....................1%"
+	wget -O "$XDERMPATH"/index.php $URL/index.php -q
+	echo "Downloading files....................5%"
+	wget -O "$XDERMPATH"/index.html $URL/index.html -q
+	echo "Downloading files...................10%"
+	wget -O "$XDERMPATH"/xderm-mini $URL/xderm-mini -q
+	echo "Downloading files...................20%"
+	wget -O "$XDERMPATH"/login.php $URL/login.php -q
+	echo "Downloading files...................30%"
+	wget -O "$XDERMPATH"/header.php $URL/header.php -q
+	echo "Downloading files...................40%"
+	wget -O "$XDERMPATH"/config.txt $URL/config.txt -q
+	echo "Downloading files...................50%"
+	wget -O "$XDERMPATH"/js/jquery-2.1.3.min.js $URL/jquery-2.1.3.min.js -q
+	echo "Downloading files...................60%"
+	wget -O "$XDERMPATH"/img/image.png $URL/image.png -q
+	echo "Downloading files...................70%"
+	wget -O "$XDERMPATH"/img/fav.ico $URL/fav.ico -q
+	echo "Downloading files...................80%"
+	wget -O "$XDERMPATH"/img/ico.png $URL/ico.png -q
+	echo "Downloading files...................85%"
+	wget -O "$XDERMPATH"/img/background.jpg $URL/background.jpg -q
+	echo "Downloading files...................90%"
+	wget -O "$XDERMPATH"/xdrtheme-blue-agus $URL/adds/xdrtheme-blue-agus -q
+	echo "Downloading files...................95%"
+	echo "Files downloaded...................100%"
+	if [ -f $(cat "$XDERMPATH"/log/st 2>/dev/null) ]; then
+		echo "Starting Xderm Binary....."
+		echo Start > "$XDERMPATH"/log/st
+	fi
+	echo "######################################"
+	echo " Installation Success."
+	echo "######################################"
+	echo " "
+	echo -e "user=admin\npasswd=xderm" > $XDERMPATHAUTH
+	echo -e "xderm-mini GUI terinstall.\n\nSilahkan Akses 'http://192.168.1.1/xderm'"
+	echo -e "Default Authentication\nUsername: admin\nPassword: xderm\n"
+	echo -e "Untuk mengganti User dan Password, silahkan edit /root/auth.txt"
+	echo -e "Atau jalankan command terminal xdrtool untuk mengubahnya"
+	echo "Jangan lupa setting config, lalu simpan di WebUI nya."
+	echo " "
+	echo "Terima kasih - salam Ryan Fauzi."
+	echo " "
+	echo "######################################"
+	sleep 2
+}
+
+function xderm_update() {
+	echo "==========================================="
+	echo -e " Installing manual update..."
+	wget -O $XDERMPATH/xderm-mini $URL/xderm-mini -q
+	wget -O $XDERMPATH/index.php $URL/index.php -q
+	echo "==========================================="
+	echo -e " Manual update installation done..."
+	echo "==========================================="
+}
+
+function xderm_old_install() {
+	clear
+	echo -e " "
+	echo -e " "
+	echo -e "  Enter older version for install (type 10~30) : "
+	echo -n " "
+	read -r VER
+	if [[ $VER -gt 30 ]]; then
+		echo -e " "
+		echo -e "  Version v$VER greater then v3.0 "
+		echo -e "  Returning to input version menu..."
+		sleep 2
+		xderm_old_install
+	elif [[ $VER -lt 10 ]]; then
+		echo -e " "
+		echo -e "  Version v$VER less then v1.0 "
+		echo -e "  Returning to input version menu..."
+		sleep 2
+		xderm_old_install
+	fi
+	if [[ -f /bin/$INSTALLERNAME ]]; then
+		VERSI=$(grep v"$VER" "/bin/$INSTALLERNAME" | awk -F'"' '$0=$2')
+	elif [[ -f /root/$INSTALLERNAME ]] && [[ ! -f /bin/$INSTALLERNAME ]]; then
+		VERSI=$(grep v"$VER" "/root/$INSTALLERNAME" | awk -F'"' '$0=$2')
+	elif [[ -f /root/$INSTALLERNAME ]] && [[ -f /bin/$INSTALLERNAME ]]; then
+		VERSI=$(grep v"$VER" "/bin/$INSTALLERNAME" | awk -F'"' '$0=$2')
+	fi
+	echo "######################################"
+	echo -e "   Older Xderm Mini GUI Installer $VER"
+	echo "######################################"
+	URLOLD="$OLDURL$VERSI"
+	echo -e "Installing Xderm Mini GUI v$VER, please wait....."
+	# echo "$URLOLD"
+	echo "Creating required directories....."
+	mkdir -p "$XDERMPATH" "$XDERMPATH"/js "$XDERMPATH"/img "$XDERMPATH"/log
+	echo "Downloading files....................1%"
+	wget -O "$XDERMPATH"/index.php "$URLOLD"/index.php -q
+	echo "Downloading files....................5%"
+	wget -O "$XDERMPATH"/index.html "$URLOLD"/index.html -q
+	echo "Downloading files...................10%"
+	wget -O "$XDERMPATH"/xderm-mini "$URLOLD"/xderm-mini -q
+	echo "Downloading files...................20%"
+	wget -O "$XDERMPATH"/login.php "$URLOLD"/login.php -q
+	echo "Downloading files...................30%"
+	wget -O "$XDERMPATH"/header.php "$URLOLD"/header.php -q
+	echo "Downloading files...................40%"
+	wget -O "$XDERMPATH"/config.txt "$URLOLD"/config.txt -q
+	echo "Downloading files...................50%"
+	wget -O "$XDERMPATH"/js/jquery-2.1.3.min.js "$URLOLD"/jquery-2.1.3.min.js -q
+	echo "Downloading files...................60%"
+	wget -O "$XDERMPATH"/img/image.png "$URLOLD"/image.png -q
+	echo "Downloading files...................70%"
+	wget -O "$XDERMPATH"/img/fav.ico "$URLOLD"/fav.ico -q
+	echo "Downloading files...................80%"
+	wget -O "$XDERMPATH"/img/ico.png "$URLOLD"/ico.png -q
+	echo "Downloading files...................90%"
+	wget -O "$XDERMPATH"/img/background.jpg "$URLOLD"/background.jpg -q
+	echo "Downloading files...................95%"
+	wget -O "$XDERMPATH"/xdrtheme-blue-agus $URL/adds/xdrtheme-blue-agus -q
+	echo "Downloading files..................100%"
+	if [ -f $(cat "$XDERMPATH"/log/st 2>/dev/null) ]; then
+		echo "Starting Xderm Binary....."
+		echo Start > "$XDERMPATH"/log/st
+	fi
+	echo "######################################"
+	echo " Installation Success."
+	echo "######################################"
+	echo " "
+	echo -e "user=admin\npasswd=xderm" > $XDERMPATHAUTH
+	echo -e "xderm-mini GUI terinstall.\n\nSilahkan Akses 'http://192.168.1.1/xderm'"
+	echo -e "Default Authentication\nUsername: admin\nPassword: xderm\n"
+	echo -e "Untuk mengganti User dan Password, silahkan edit /root/auth.txt"
+	echo -e "Atau jalankan command terminal xdrtool untuk mengubahnya"
+	echo "Jangan lupa setting config, lalu simpan di WebUI nya."
+	echo " "
+	echo "Terima kasih - salam Ryan Fauzi."
+	echo " "
+	echo "######################################"
+	sleep 2
+}
+
+function xderm_uninstall() {
+	echo "  Removing Xderm Mini..."
+	sleep 1
+	if [[ -d $XDERMPATH ]]; then
+		rm -rf $XDERMPATH
+		echo "  Xderm Mini uninstalled..."
+	else
+		echo "  $XDERMPATH is not available..."
+		echo "  Leaving ..."
+	fi
+}
+
+function xderm_dir_backup() {
+	echo "  Backing up current Xderm Mini version..."
+	if [[ ! -d $XDERMCONFIGBAK ]]; then
+		echo "  Backup directory is not available, creating..."
+		mkdir $XDERMCONFIGBAK
+		echo "  Backup directory created..."
+	else
+		echo "  Backup directory available, skipping..."
+	fi
+	if [[ -d $XDERMPATH ]]; then
+		mv $XDERMPATH $XDERMCONFIGBAK
+		echo "  current Xderm Mini backed up..."
+	else
+		echo "  current Xderm Mini available, skipping..."
+	fi
+}
+
+function xderm_config_backup() {
+	echo "  Backing up Xderm Mini configurations..."
+	if [[ ! -d $XDERMCONFIGBAK ]]; then
+		echo "  Backup directory is not available, creating..."
+		mkdir $XDERMCONFIGBAK
+		echo "  Backup directory created..."
+	else
+		echo "  Backup directory available, skipping..."
+	fi
+	if [[ -d $XDERMPATH/config ]]; then
+		cp $XDERMPATH/config $XDERMCONFIGBAK/configbak
+		echo "  Config folder backed up..."
+	else
+		echo "  Config folder is not available, skipping..."
+	fi
+	if [[ -f $XDERMPATH/config.txt ]]; then
+		cp $XDERMPATH/config.txt $XDERMCONFIGBAK/config.txt.bak
+		echo "  Config file backed up..."
+	else
+		echo "  Config file is not available, skipping..."
+	fi
+	if [[ -f $XDERMPATHAUTH ]]; then
+		cp $XDERMPATHAUTH $XDERMCONFIGBAK/auth.txt
+		echo "  Login panel auth backed up..."
+	else
+		echo "  Login panel auth is not available, skipping..."
+	fi
+}
+
+function xderm_config_restore() {
+	echo "  Restoring Xderm Mini configurations..."
+	if [[ -d $XDERMCONFIGBAK/configbak ]]; then
+		cp $XDERMCONFIGBAK/configbak $XDERMPATH/config
+		echo "  Configs folder restored..."
+	else
+		echo "  Config folder is not available, skipping..."
+	fi
+	if [[ -f $XDERMCONFIGBAK/config.txt.bak ]]; then
+		cp $XDERMCONFIGBAK/config.txt.bak $XDERMPATH/config.txt
+		echo "  Config file restored..."
+	else
+		echo "  Config file is not available, skipping..."
+	fi
+	if [[ -f $XDERMCONFIGBAK/auth.txt ]]; then
+		cp $XDERMCONFIGBAK/auth.txt $XDERMPATHAUTH
+		echo "  Login panel auth restored..."
+	else
+		echo "  Login panel auth is not available, skipping..."
+	fi
+	if [[ -d $XDERMCONFIGBAK ]]; then
+		echo "  Backup directory is available, deleting..."
+		rm -rf $XDERMCONFIGBAK
+		echo "  Backup directory deleted..."
+	else
+		echo "  Backup directory not available, skipping..."
+	fi
+}
+
+function xderm_start() {
+	echo "  Starting Xderm Mini..."
+	echo Start > $XDERMPATH/log/st
+	echo "  Xderm Mini Started..."
+	echo "  Done ! Refresh Xderm Mini Page"
+}
+
+function xderm_stop() {
+	echo "  Stopping Xderm Mini..."
+	echo Stop > $XDERMPATH/log/st
+	echo "  Xderm Mini Stopped..."
+	echo "  Done ! Refresh Xderm Mini Page"
+}
+
+function xderm_install_theme() {
+	echo "==========================================="
+	echo -e " Installing Default Theme by Agus Sriawan"
+	echo "==========================================="
+	echo "Creating required directories....."
+	mkdir -p "$XDERMPATH" "$XDERMPATH"/js "$XDERMPATH"/img "$XDERMPATH"/log
+	echo "Downloading requred files....."
+	wget -O "$XDERMPATH"/index.php $URL/index.php -q
+	echo "Main xderm mini panel downloaded....."
+	wget -O "$XDERMPATH"/login.php $URL/login.php -q
+	echo "Login panel downloaded....."
+	wget -O "$XDERMPATH"/header.php $URL/header.php -q
+	echo "Header panel downloaded....."
+	wget -O "$XDERMPATH"/img/image.png $URL/image.png -q
+	echo "Xdern Mini logo downloaded....."
+	wget -O "$XDERMPATH"/img/fav.ico $URL/fav.ico -q
+	echo "Panel icon downloaded....."
+	wget -O "$XDERMPATH"/img/ico.png $URL/ico.png -q
+	echo "Icon downloaded....."
+	wget -O "$XDERMPATH"/img/background.jpg $URL/background.jpg -q
+	echo "Background wallpaper downloaded....."
+	echo "Installing theme, please wait....."
+	sleep 2
+	echo "==========================================="
+	echo -e " Installation finished !"
+	echo "==========================================="
+}
+
+function xderm_change_auth() {
+	echo -n "  Enter New Username : "
+	read -r USERNEW
+	echo "==========================================="
+	echo -n "  Enter New Password : "
+	read -r PASSNEW
+	echo -e "user=$USERNEW\npasswd=$PASSNEW" > $XDERMPATHAUTH
+}
+
+function xderm_change_user() {
+	echo -n "  Enter New Username : "
+	read -r USERNEW
+	echo -e "user=$USERNEW\npasswd=$PASSNOW" > $XDERMPATHAUTH
+}
+
+function xderm_change_pass() {
+	echo -n "  Enter New Password : "
+	read -r PASSNEW
+	echo -e "user=$USERNOW\npasswd=$PASSNEW" > $XDERMPATHAUTH
+}
+
+function xderm_remove_login() {
+	echo "==========================================="
+	echo -e "     Xderm Mini Login Page Remover by helmiau "
+	echo "==========================================="
+	echo -e " "
+	echo -e "Notes : "
+	echo -e "- This script will remove xderm-mini login page"
+	echo -e "- Please clear all web history and cache after removal!"
+	echo -e "- If bug occured, Open incognito tab"
+	echo -e "- If bug still occured, Use other browser"
+	echo -e ""
+	echo -e " Process starting after 2 secs....."
+	sleep 2
+	echo -e " Removal process started..."
+	sleep 1
+	echo -e ""
+
+	echo -e " Finding login.php file..."
+	nyari=$(find "$XDERMPATH")
+	if [[ $nyari == *"login.php"* ]]; then
+		mv "$XDERMPATH"/login.php "$XDERMPATH"/login.php.xdrtool
+		echo -e " login.php file deleted !"
+		sleep 1
+	else
+		echo -e " Removal failed ! because login.php file is unavailable"
+		sleep 1
+	fi
+
+	echo -e " Finding header.php file..."
+	nyari=$(find "$XDERMPATH")
+	if [[ $nyari == *"header.php"* ]]; then
+		mv "$XDERMPATH"/header.php "$XDERMPATH"/header.php.xdrtool
+		echo -e " header.php file deleted !"
+		sleep 1
+	else
+		echo -e " Removal failed ! because login.php file is unavailable"
+		sleep 1
+	fi
+
+	if [[ -f $XDERMPATH/index.php ]] && [[ $(grep -c '="login.php"\|="index.php"' $XDERMPATH/index.php) = "1" ]];then
+		sed -i 's+href="index.php" onClick+href="login.php" onClick+' $XDERMPATH/index.php
+	fi
+
+	echo "==========================================="
+	echo -e " Removal login page process finished..."
+}
+
+function xderm_install_login() {
+	echo "==========================================="
+	echo -e "     Xderm Mini Login Page Installer by helmiau "
+	echo "==========================================="
+	echo -e " "
+	echo -e "Notes : "
+	echo -e "- This script will install xderm-mini login page"
+	echo -e "- Please clear all web history and cache after removal!"
+	echo -e "- If bug occured, Open incognito tab"
+	echo -e "- If bug still occured, Use other browser"
+	echo -e ""
+	echo -e " Process starting after 2 secs....."
+	sleep 2
+	echo -e " Install process started..."
+	sleep 1
+	echo -e ""
+
+	echo -e " Finding login.php file..."
+	nyari=$(find "$XDERMPATH")
+	if [[ $nyari == *"login.php.xdrtool"* ]]; then
+		mv "$XDERMPATH"/login.php.xdrtool "$XDERMPATH"/login.php
+		echo -e " login.php file installed !"
+		sleep 1
+	else
+		echo -e " Install failed ! because login.php backup file is unavailable"
+		echo -e " Try online installation"
+		wget -O "$XDERMPATH"/login.php "$URLTHEME"/login.php -q
+		sleep 1
+	fi
+
+	echo -e " Finding header.php file..."
+	nyari=$(find "$XDERMPATH")
+	if [[ $nyari == *"header.php.xdrtool"* ]]; then
+		mv "$XDERMPATH"/header.php.xdrtool "$XDERMPATH"/header.php
+		echo -e " header.php file installed !"
+		sleep 1
+	else
+		echo -e " Install failed ! because header.php backup file is unavailable"
+		echo -e " Try online installation"
+		wget -O "$XDERMPATH"/header.php "$URLTHEME"/header.php -q
+		sleep 1
+	fi
+
+	if [[ -f $XDERMPATH/index.php ]] && [[ $(grep -c '="login.php"\|="index.php"' $XDERMPATH/index.php) = "1" ]];then
+		sed -i 's+href="index.php" onClick+href="login.php" onClick+' $XDERMPATH/index.php
+	fi
+
+	echo "==========================================="
+	echo -e " Install login page process finished..."
+}
+
+function xderm_fixphp() {
+	echo "==========================================="
+	echo -e "  Download index.php fixer by helmiau "
+	echo "==========================================="
+	echo -e " "
+	echo -e "Notes : "
+	echo -e "- This tool will fix xderm-mini and libernet web ui page"
+	echo -e "- If bug fixed words appeared, it's mean bug fixed"
+	echo -e "- Reboot your device manually after fixing"
+	sleep 1
+	echo -e " "
+	echo -e "If bug still appear after reboot, do these :"
+	echo -e "- Clear all web history and cache"
+	echo -e "- Open incognito tab"
+	echo -e "- Use other browser"
+	echo -e ""
+	echo -e " Fixing process started !..."
+	sleep 1
+	echo -e ""
+	echo -e " Fixing bug..."
+	sleep 1
+	echo -e ""
+
+	helmiooo=$(cat /etc/config/uhttpd)
+	if [[ $helmiooo == *"uhttpd 'mai"* ]]; then
+	echo -e "Step 1 done ! Resuming to step 2..."
+	sed -i "/config uhttpd 'main'/a list interpreter '.php=/usr/bin/php-cgi'" /etc/config/uhttpd
+	fi
+	if [[ $helmiooo == *"uhttpd 'mai"* ]]; then
+	echo -e "Step 2 done ! Resuming to step 3..."
+	sed -i "/config uhttpd 'main'/a option ubus_prefix '/ubus'" /etc/config/uhttpd
+	fi
+	if [[ $helmiooo == *"uhttpd mai"* ]]; then
+	echo -e "Step 3 done ! Resuming to last step..."
+	sed -i "/config uhttpd main/a list interpreter '.php=/usr/bin/php-cgi'" /etc/config/uhttpd
+	fi
+	if [[ $helmiooo == *"uhttpd mai"* ]]; then
+	echo -e "Everything has been done..."
+	sed -i "/config uhttpd main/a option ubus_prefix '/ubus'" /etc/config/uhttpd
+	fi
+	/etc/init.d/uhttpd restart
+	/etc/init.d/rpcd restart
+
+
+	echo "==========================================="
+	echo -e " Removal process finished..!"
+	echo -e " Try to open xderm gui or"
+	echo -e " reboot your device !"
+	echo "==========================================="
+}
+
+function xderm_return_installer() {
+	echo "==========================================="
+	clear
+	if [[ -f /root/$INSTALLERNAME ]]; then
+		./"$INSTALLERNAME"
+	elif [[ -f /root/$INSTALLERNAME ]] && [[ -f /bin/$INSTALLERNAME ]]; then
+		"$INSTALLERNAME"
+	elif [[ ! -f /root/$INSTALLERNAME ]] && [[ -f /bin/$INSTALLERNAME ]]; then
+		"$INSTALLERNAME"
+	else
+		echo "==========================================="
+		echo e- "  $INSTALLERNAME not found ! Reinstalling.."
+		echo "==========================================="
+		wget -O /bin/"$INSTALLERNAME" bit.ly/xdrtool -q
+		chmod +x /bin/"$INSTALLERNAME"
+		if [[ -f /bin/$INSTALLERNAME ]] && [[ ! -f /bin/$INSTALLERNAME ]]; then
+			cp /bin/"$INSTALLERNAME" /root/"$INSTALLERNAME"
+			chmod +x /root/"$INSTALLERNAME"
+		elif [[ -f /bin/$INSTALLERNAME ]] && [[ -f /bin/$INSTALLERNAME ]]; then
+			rm /root/"$INSTALLERNAME"
+			cp /bin/"$INSTALLERNAME" /root/"$INSTALLERNAME"
+			chmod +x /root/"$INSTALLERNAME"
+		fi
+		echo e- "  Script reinstalled.. re run $INSTALLERNAME command for usage"
+		echo "==========================================="
+	fi
+}
+
+function xderm_check_myip() {
+	clear
+	echo "===========================================" > ipinfo.txt
+	echo "           IP Detail Information" >> ipinfo.txt
+	echo "===========================================" >> ipinfo.txt
+	curl -s http://ip-api.com/json/\?fields=country,countryCode,region,regionName,city,timezone,isp,org,as,asname,query >> ipinfo.txt
+	sed -i 's/{"//g' ipinfo.txt
+	sed -i 's/","/\n/g' ipinfo.txt
+	sed -i 's/":"/ : /g' ipinfo.txt
+	sed -i 's/"}//g' ipinfo.txt
+	sed -i 's/":/ : /g' ipinfo.txt
+	sed -i 's/,"/\n/g' ipinfo.txt
+	sed -i 's/status :/Status		:/g' ipinfo.txt
+	sed -i 's/continent :/Continent	:/g' ipinfo.txt
+	sed -i 's/continentCode :/Continent Code	:/g' ipinfo.txt
+	sed -i 's/country :/Country Name	:/g' ipinfo.txt
+	sed -i 's/countryCode :/Country Code	:/g' ipinfo.txt
+	sed -i 's/region :/Region		:/g' ipinfo.txt
+	sed -i 's/regionName :/Region Name	:/g' ipinfo.txt
+	sed -i 's/city :/City		:/g' ipinfo.txt
+	sed -i 's/zip :/ZIP Code	:/g' ipinfo.txt
+	sed -i 's/lat :/Latitude	:/g' ipinfo.txt
+	sed -i 's/lon :/Longitude	:/g' ipinfo.txt
+	sed -i 's/timezone :/Timezone	:/g' ipinfo.txt
+	sed -i 's/isp :/ISP		:/g' ipinfo.txt
+	sed -i 's/org :/Organization	:/g' ipinfo.txt
+	sed -i 's/as :/AS		:/g' ipinfo.txt
+	sed -i 's/asname :/AS Name		:/g' ipinfo.txt
+	sed -i 's/query :/IP Address	:/g' ipinfo.txt
+	sed -i 's/message :/Message		:/g' ipinfo.txt
+	echo " " >> ipinfo.txt
+	echo "===========================================" >> ipinfo.txt
+	echo "             Created by helmiau" >> ipinfo.txt
+	echo "===========================================" >> ipinfo.txt
+	cat ipinfo.txt
+	rm ipinfo.txt
+	echo -e " "
+	echo -e " Returning in 5 secs"
+	sleep 5
+	echo -e " Return to main menu"
+}
+
+function xderm_check_otherip() {
+	clear
+	echo -e "==========================================="
+	echo -e "  Example : www.host.com / 23.53.2.12 etc."
+	echo -e "==========================================="
+	echo -e "  Enter New SSH Hostname or IP : "
+	echo -e "==========================================="
+	echo -n "  "
+	read -r OTHERIP
+	echo -e "===========================================" > ipinfo.txt
+	echo -e "             IP / Host Information" >> ipinfo.txt
+	echo -e "===========================================" >> ipinfo.txt
+	curl -s ip-api.com/json/"$OTHERIP"\?fields=country,countryCode,region,regionName,city,timezone,isp,org,as,asname,query >> ipinfo.txt
+	sed -i 's/{"//g' ipinfo.txt
+	sed -i 's/","/\n/g' ipinfo.txt
+	sed -i 's/":"/ : /g' ipinfo.txt
+	sed -i 's/"}//g' ipinfo.txt
+	sed -i 's/":/ : /g' ipinfo.txt
+	sed -i 's/,"/\n/g' ipinfo.txt
+	sed -i 's/status :/Status		:/g' ipinfo.txt
+	sed -i 's/continent :/Continent	:/g' ipinfo.txt
+	sed -i 's/continentCode :/Continent Code	:/g' ipinfo.txt
+	sed -i 's/country :/Country Name	:/g' ipinfo.txt
+	sed -i 's/countryCode :/Country Code	:/g' ipinfo.txt
+	sed -i 's/region :/Region		:/g' ipinfo.txt
+	sed -i 's/regionName :/Region Name	:/g' ipinfo.txt
+	sed -i 's/city :/City		:/g' ipinfo.txt
+	sed -i 's/zip :/ZIP Code	:/g' ipinfo.txt
+	sed -i 's/lat :/Latitude	:/g' ipinfo.txt
+	sed -i 's/lon :/Longitude	:/g' ipinfo.txt
+	sed -i 's/timezone :/Timezone	:/g' ipinfo.txt
+	sed -i 's/isp :/ISP		:/g' ipinfo.txt
+	sed -i 's/org :/Organization	:/g' ipinfo.txt
+	sed -i 's/as :/AS		:/g' ipinfo.txt
+	sed -i 's/asname :/AS Name		:/g' ipinfo.txt
+	sed -i 's/query :/IP Address	:/g' ipinfo.txt
+	sed -i 's/message :/Message		:/g' ipinfo.txt
+	echo " " >> ipinfo.txt
+	echo "===========================================" >> ipinfo.txt
+	echo "             Created by helmiau" >> ipinfo.txt
+	echo "===========================================" >> ipinfo.txt
+	cat ipinfo.txt
+	rm ipinfo.txt
+	echo -e " Returning to main page in 5 secs"
+	echo -e "==========================================="
+	sleep 5
+}
+
+function xderm_hosttoip() {
+	echo -e "==========================================="
+	echo -e "  Example : www.host.com, id.goo.gl etc."
+	echo -e "==========================================="
+	echo -e "  Input a Hostname : "
+	echo -e "==========================================="
+	echo -n "  "
+	read -r HOSTOIP
+	echo -e "==========================================="
+	echo -e "$(host $HOSTOIP | awk '/has address/ { print $4 }')"
+	echo -e "==========================================="
+	echo -e " Returning to main page in 5 secs"
+	echo -e "==========================================="
+	sleep 5
+}
+
+function xderm_config_setup() {
+	clear
+	if [ -f $XDERMPATH/screenlog.0 ]; then
+		INJECTSTAT=$(if grep -q 200 $XDERMPATH/screenlog.0; then echo -e "${GRE}Connected"; else echo -e "${RED}Disconnected"; fi)
+	else
+		INJECTSTAT="${RED}Log file unavailable"
+	fi
+	#-- Xderm config info
+	CFGDEFAULT="$XDERMPATH/config/default"
+	if [ -f $CFGDEFAULT ]; then
+		sed -i 's/^M//g' $CFGDEFAULT
+		CFGUSED=$(cat $CFGDEFAULT)
+	fi
+
+	if [ -f $CFGDEFAULT ]; then
+		sed -i 's/^M//g' $XDERMCONFIGFILE
+		CFGHOST=$(grep host $XDERMCONFIGFILE | sed 's/.*host=//')
+		CFGPORT=$(grep port $XDERMCONFIGFILE | sed 's/.*port=//')
+		CFGPUDP=$(grep pudp $XDERMCONFIGFILE | sed 's/.*pudp=//')
+		CFGUSER=$(grep user $XDERMCONFIGFILE | sed 's/.*user=//')
+		CFGPASS=$(grep pass $XDERMCONFIGFILE | sed 's/.*pass=//')
+		CFGSNI=$(grep sni $XDERMCONFIGFILE | sed 's/.*sni=//')
+		CFGVMESS=$(grep -i vmess:// $XDERMCONFIGFILE)
+		CFGTROJAN=$(grep -i trojan:// $XDERMCONFIGFILE)
+	else
+		CFGHOST="${RED}Config file not exist !"
+		CFGPORT="$CFGHOST"
+		CFGPUDP="$CFGHOST"
+		CFGUSER="$CFGHOST"
+		CFGPASS="$CFGHOST"
+		CFGSNI="$CFGHOST"
+		CFGVMESS="$CFGHOST"
+		CFGTROJAN="$CFGHOST"
+	fi
+
+	if [[ -f $XDERMPATH/config/mode.default ]]; then
+		if [[ $(grep "mode=0" $XDERMCONFIGFILE) || $(grep SSH $XDERMPATH/config/mode.default) ]]; then
+			CFGMODEINFO="SSH."
+		elif [[ $(grep "mode=1" $XDERMCONFIGFILE) || $(grep Vmess $XDERMPATH/config/mode.default) ]]; then
+			CFGMODEINFO="Vmess."
+		elif [[ $(grep "mode=2" $XDERMCONFIGFILE) || $(grep Trojan $XDERMPATH/config/mode.default) ]]; then
+			CFGMODEINFO="Trojan."
+		elif [[ $(grep "mode=3" $XDERMCONFIGFILE) || $(grep Multi $XDERMPATH/config/mode.default) ]]; then
+			CFGMODEINFO="Multi."
+		else
+			CFGMODEINFO="${RED}Unset"
+		fi
+
+		if [[ $CFGMODEINFO == "SSH." ]]; then
+			CFGMODE="0"
+		elif [[ $CFGMODEINFO == "Vmess." ]]; then
+			CFGMODE="1"
+		elif [[ $CFGMODEINFO == "Trojan." ]]; then
+			CFGMODE="2"
+		elif [[ $CFGMODEINFO == "Multi." ]]; then
+			CFGMODE="3"
+		else
+			CFGMODE="${RED}Unset"
+		fi
+	else
+		if [[ $(grep "mode=0" $XDERMCONFIGFILE) ]]; then
+			CFGMODE="0"
+			CFGMODEINFO="SSH."
+		elif [[ $(grep "mode=1" $XDERMCONFIGFILE) ]]; then
+			CFGMODE="1"
+			CFGMODEINFO="Vmess."
+		elif [[ $(grep "mode=2" $XDERMCONFIGFILE) ]]; then
+			CFGMODE="2"
+			CFGMODEINFO="Trojan."
+		elif [[ $(grep "mode=3" $XDERMCONFIGFILE) ]]; then
+			CFGMODE="3"
+			CFGMODEINFO="Multi."
+		else
+			CFGMODE="0"
+			CFGMODEINFO="${RED}Unset"
+		fi
+	fi
+
+
+	if [[ $(echo -e "$CFGHOST" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGHOSTVIEW=$(echo -e "$CFGHOST" | head -c 20)"..."
+	else
+		CFGHOSTVIEW="$CFGHOST"
+	fi
+	if [[ $(echo -e "$CFGPORT" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGPORTVIEW=$(echo -e "$CFGPORT" | head -c 20)"..."
+	else
+		CFGPORTVIEW="$CFGPORT"
+	fi
+	if [[ $(echo -e "$CFGPUDP" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGPUDPVIEW=$(echo -e "$CFGPUDP" | head -c 20)"..."
+	else
+		CFGPUDPVIEW="$CFGPUDP"
+	fi
+	if [[ $(echo -e "$CFGUSER" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGUSERVIEW=$(echo -e "$CFGUSER" | head -c 20)"..."
+	else
+		CFGUSERVIEW="$CFGUSER"
+	fi
+	if [[ $(echo -e "$CFGPASS" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGPASSVIEW=$(echo -e "$CFGPASS" | head -c 20)"..."
+	else
+		CFGPASSVIEW="$CFGPASS"
+	fi
+	if [[ $(echo -e "$CFGSNI" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGSNIVIEW=$(echo -e "$CFGSNI" | head -c 20)"..."
+	else
+		CFGSNIVIEW="$CFGSNI"
+	fi
+	if [[ $(echo -e "$CFGVMESS" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGVMESSVIEW=$(echo -e "$CFGVMESS" | head -c 20)"..."
+	else
+		CFGVMESSVIEW="$CFGVMESS"
+	fi
+	if [[ $(echo -e "$CFGTROJAN" | sed -r 's+[.:/=]+0+g' | awk '{print length}') -gt 20 ]]; then
+		CFGTROJANVIEW=$(echo -e "$CFGTROJAN" | head -c 20)"..."
+	else
+		CFGTROJANVIEW="$CFGTROJAN"
+	fi
+
+	#-- Uneditable Info for script checking purpose
+
+	echo "==========================================="
+	echo -e "          ${YEL}Used Config : ${GRE}$CFGUSED${NOR}"
+	echo "==========================================="
+	echo -e "  ${GRE}SSH Host        : $CFGHOSTVIEW"
+	echo -e "  ${YEL}SSH SSL Port    : $CFGPORTVIEW"
+	echo -e "  ${GRE}UDP Port        : $CFGPUDPVIEW"
+	echo -e "  ${YEL}SSH Username    : $CFGUSERVIEW"
+	echo -e "  ${GRE}SSH Password    : $CFGPASSVIEW"
+	echo -e "  ${YEL}SNI Bug         : $CFGSNIVIEW"
+	echo -e "  ${GRE}Vmess Config    : $CFGVMESSVIEW"
+	echo -e "  ${YEL}Trojan Config   : $CFGTROJANVIEW"
+	echo -e "  ${GRE}Inject Metode   : $CFGMODEINFO"
+	echo -e "  ${YEL}Inject Status   : $INJECTSTAT${NOR}"
+	echo "==========================================="
+	echo -e "               ${YEL}Command Lists${NOR}"
+	echo -e "===========================================${CYA}"
+	echo "       Change SSH Host          :  1"
+	echo "       Change SSH SSL Port      :  2"
+	echo "       Change UDP Port          :  3"
+	echo "       Change SSH Username      :  4"
+	echo "       Change SSH Password      :  5"
+	echo "       Change SNI Bug           :  6"
+	echo "       Input Vmess Config       :  7"
+	echo "       Input Trojan Config      :  8"
+	echo "       Change Inject Methode    :  9"
+	echo "       Change Active Profile    : 10"
+	echo -e "       ${GRE}Read Xderm Log           : 11"
+	echo -e "       ${RED}Check My IP Info         : 12"
+	echo -e "       ${YEL}Check Other Host/IP Info : 13"
+	echo -e "       ${GRE}Convert Host to IP       : 14"
+	echo -e "${NOR}==========================================="
+	echo -e "       ${YEL}Back to first menu type number"
+	echo -e "            ${YEL}99 or 88 or 55 !${NOR}"
+	echo "==========================================="
+	echo ""
+	echo -n "   Enter Your Option : "
+	read -r configset
+
+	#-- Change host
+	if [[ $configset == "1" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGHOST${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : www.host.com / 23.53.2.12 etc."
+		echo -e "==========================================="
+		echo -e "  Enter New SSH Hostname or IP : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWHOST
+		echo -e "host=$NEWHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- Change ssl port
+	elif [[ $configset == "2" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGPORT${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : 443 / 442 etc."
+		echo -e "==========================================="
+		echo -e "  Enter New SSH SSL Port Number : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWPORT
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$NEWPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- change udp port
+	elif [[ $configset == "3" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGPUDP${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : 7100/7200/7300 etc."
+		echo -e "==========================================="
+		echo -e "  Enter UDP Port Number : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWPUDP
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$NEWPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- change ssh username
+	elif [[ $configset == "4" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGUSER${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : namauser"
+		echo -e "==========================================="
+		echo -e "  Enter New SSH Username : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWUSERSSH
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$NEWUSERSSH" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- change ssh password
+	elif [[ $configset == "5" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGPASS${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : puaswot3223"
+		echo -e "==========================================="
+		echo -e "  Enter New SSH Password : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWPASSSSH
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$NEWPASSSSH" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- Change sni bug
+	elif [[ $configset == "6" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFSNI${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : m.line.id"
+		echo -e "==========================================="
+		echo -e "  Enter New SNI Bug (Server Name Indication) : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWSNI
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$NEWSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- Change vmess
+	elif [[ $configset == "7" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGVMESS${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : vmess://2938nyc38cy..."
+		echo -e "==========================================="
+		echo -e "  Enter New Vmess URL : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWVMESS
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$NEWVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- Change trojan
+	elif [[ $configset == "8" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGTROJAN${NOR}"
+		echo -e "==========================================="
+		echo -e "  Example : trojan://namauser@host.trojan.me:2281"
+		echo -e "==========================================="
+		echo -e "  Enter New Trojan VPN URL : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWTROJAN
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$NEWTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$CFGMODE" >> $XDERMCONFIGFILE
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEINFO" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- Change mode
+	elif [[ $configset == "9" ]]; then
+		echo -e "==========================================="
+		echo -e "  Current : ${GRE}$CFGMODEINFO${NOR}"
+		echo -e "==========================================="
+		echo -e "    0 for SSH SSL"
+		echo -e "    1 for Vmess"
+		echo -e "    2 for Trojan"
+		echo -e "    3 for Multi Inject (SSH, Vmess & Trojan)"
+		echo -e "==========================================="
+		echo -e "  Enter Inject Mode Number (0~3) : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r NEWMODE
+		echo -e "host=$CFGHOST" > $XDERMCONFIGFILE
+		echo -e "port=$CFGPORT" >> $XDERMCONFIGFILE
+		echo -e "pudp=$CFGPUDP" >> $XDERMCONFIGFILE
+		echo -e "user=$CFGUSER" >> $XDERMCONFIGFILE
+		echo -e "pass=$CFGPASS" >> $XDERMCONFIGFILE
+		echo -e "sni=$CFGSNI" >> $XDERMCONFIGFILE
+		echo -e "$CFGVMESS" >> $XDERMCONFIGFILE
+		echo -e "$CFGTROJAN" >> $XDERMCONFIGFILE
+		echo -e "mode=$NEWMODE" >> $XDERMCONFIGFILE
+
+		if [[ $NEWMODE == "0" ]]; then
+			CFGMODEDEFAULT="SSH."
+		elif [[ $NEWMODE == "1" ]]; then
+			CFGMODEDEFAULT="Vmess."
+		elif [[ $NEWMODE == "2" ]]; then
+			CFGMODEDEFAULT="Trojan."
+		elif [[ $NEWMODE == "3" ]]; then
+			CFGMODEDEFAULT="Multi."
+		fi
+
+		cat $XDERMCONFIGFILE > $XDERMPATH/config/$CFGUSED
+		echo -e "$CFGMODEDEFAULT" > $XDERMPATH/config/mode.default
+		xderm_config_setup
+
+	#-- Change config profile
+	elif [[ $configset == "10" ]]; then
+		echo -e "==========================================="
+		echo -e "    config1 = 1"
+		echo -e "    config2 = 2"
+		echo -e "    config3 = 3"
+		echo -e "    config4 = 4"
+		echo -e "    config5 = 5"
+		echo -e "==========================================="
+		echo -e "  Select profile to use it (1~5) : "
+		echo -e "==========================================="
+		echo -n "  "
+		read -r CFGACTIVE
+		echo -e "config$CFGACTIVE" > $XDERMPATH/config/default
+		cat "$XDERMPATH/config/config$CFGACTIVE" > $XDERMCONFIGFILE
+		xderm_config_setup
+
+	#-- Read log
+	elif [[ $configset == "11" ]]; then
+		xderm_read_log \ &&
+		xderm_config_setup
+
+	#-- Cek My Public IP
+	elif [[ $configset == "12" ]]; then
+		xderm_check_myip \ &&
+		xderm_config_setup
+
+	#-- Cek Other IP
+	elif [[ $configset == "13" ]]; then
+		xderm_check_otherip \ &&
+		xderm_config_setup
+
+	#-- Convert host to ip
+	elif [[ $configset == "14" ]]; then
+		xderm_hosttoip \ &&
+		xderm_config_setup
+
+	#-- Back to first menu
+	elif [[ $configset == "99" || $configset == "88" || $configset == "55" ]]; then
+		xderm_return_installer
+
+	#-- Exit program
+	else
+		xderm_config_setup
+	fi
+}
+
+function xderm_xdrtool_update() {
+	clear
+	echo -e "==========================================="
+	echo -e "           ${CYA}XDRTOOL Update Menu${NOR}"
+	echo -e "==========================================="
+	xderm_checknet
+	echo -e "==========================================="
+	wget -O /bin/xdrtoolup raw.githubusercontent.com/helmiau/xderm-mini_GUI/main/adds/xdrtoolup -q
+	echo -e " Downloading needed files."
+	sleep 1
+	echo -e " Downloading needed files...."
+	sleep 1
+	echo -e " Downloading needed files......"
+	sleep 1
+	echo -e " Downloading needed files........"
+	sleep 1
+	echo -e " Downloading needed files........."
+	sleep 1
+	echo -e " Downloading needed files..........."
+	sleep 1
+	echo -e " Downloading needed files.............."
+	sleep 1
+	echo -e " Downloading needed files................."
+	sleep 1
+	cat /bin/xdrtoolup > /root/xdrtoolup
+	echo -e " Downloading needed files.................."
+	chmod +x /bin/xdrtoolup
+	chmod +x /root/xdrtoolup
+	echo -e " Files and patches downloaded.............."
+	echo -e "==========================================="
+	echo -e " Now screen will show update screen installation"
+	echo -e " If update screen menu not showing after 3 secs,"
+	echo -e " please run command ./xdrtoolup or xdrtoolup"
+	echo -e " manually for resuming update"
+	echo -e "==========================================="
+	echo -e " Exiting in 3 secs."
+	echo -e "==========================================="
+	sleep 3
+	trap /root/xdrtoolup EXIT
+	exit
+}
+
+function xderm_fix_onboot() {
+	if [[ -f $XDERMINFO ]] && [[ $(grep -c "www/xderm/var/" $XDERMINFO) = "0" ]] && [[ -f $XDERMPATH/index.php ]] && [[ $(grep -c "www/xderm/var/" $XDERMPATH/index.php) = "0" ]]; then
+		echo -e "==========================================="
+		echo -e "     Fix Config unloaded after On-Boot."
+		echo -e "==========================================="
+		if [[ ! -d /www/xderm/var ]]; then
+			echo -e " /www/xderm/var directory is unavailable, creating."
+			mkdir "/www/xderm/var"
+			echo -e " Directory created."
+		else
+			echo -e " /www/xderm/var directory is available, skipping."
+		fi
+		if [[ -f $XDERMINFO ]] && [[ $(grep -c "www/xderm/var/" $XDERMINFO) = "0" ]]; then
+			echo -e " Binary file unpatched, patching."
+			sed -i 's#/var/#/www/xderm/var/#g' $XDERMINFO
+			echo -e " Patching done."
+		else
+			echo -e " Binary file already patched, skipping."
+		fi
+		if [[ -f $XDERMPATH/index.php ]] && [[ $(grep -c "www/xderm/var/" $XDERMPATH/index.php) = "0" ]]; then
+			echo -e " WebUI file unpatched, patching."
+			sed -i 's#/var/#/www/xderm/var/#g' $XDERMPATH/index.php
+			echo -e " Patching done."
+		else
+			echo -e " WebUI file already patched, skipping."
+		fi
+		echo -e "==========================================="
+		echo -e "   Already fixed, try to check On-Boot"
+		echo -e "   try to reboot your device"
+		echo -e "==========================================="
+		echo -e "   Returning to main menu in 3 secs"
+		echo -e "==========================================="
+		sleep 3
+	else
+		echo -e " Fix On-Boot skipped."
+	fi
+}
+
+function xderm_auto_remove_login() {
+	if [[ $LOGINOW = "Unavailable" ]]; then
+		xderm_remove_login
+	fi
+}
+
+#-- Install Xderm Mini
+if [[ $jawab == "1" ]]; then
+	xderm_checknet \ &&
+	xderm_config_backup \ &&
+	xderm_install \ &&
+	xderm_config_restore \ &&
+	xderm_fix_onboot \ &&
+	xderm_auto_remove_login \ &&
+	xderm_return_installer
+
+#-- Install Agus theme
+elif [[ $jawab == "2" ]]; then
+	xderm_checknet \ &&
+	xderm_config_backup \ &&
+	xderm_install_theme \ &&
+	xderm_config_restore \ &&
+	xderm_fix_onboot \ &&
+	xderm_auto_remove_login \ &&
+	xderm_return_installer
+
+#-- Update Xderm
+elif [[ $jawab == "3" ]]; then
+	xderm_checknet \ &&
+	xderm_config_backup \ &&
+	xderm_update \ &&
+	xderm_config_restore \ &&
+	xderm_fix_onboot \ &&
+	xderm_auto_remove_login \ &&
+	xderm_return_installer
+
+#-- Fix Index
+elif [[ $jawab == "4" ]]; then
+	xderm_fixphp \ &&
+	xderm_return_installer
+
+#-- Change auth
+elif [[ $jawab == "5" ]]; then
+	xderm_change_auth \ &&
+	xderm_return_installer
+
+#-- Change user
+elif [[ $jawab == "6" ]]; then
+	xderm_change_user \ &&
+	xderm_return_installer
+
+#-- Change pass
+elif [[ $jawab == "7" ]]; then
+	xderm_change_pass \ &&
+	xderm_return_installer
+
+#-- Setup config xderm
+elif [[ $jawab == "8" ]]; then
+	xderm_config_setup \ &&
+	xderm_return_installer
+
+#-- Install login page
+elif [[ $jawab == "9" ]]; then
+	xderm_install_login \ &&
+	xderm_return_installer
+
+#-- Remove login page
+elif [[ $jawab == "10" ]]; then
+	xderm_remove_login \ &&
+	xderm_return_installer
+
+#-- Old version installer
+elif [[ $jawab == "11" ]]; then
+	xderm_checknet \ &&
+	xderm_config_backup \ &&
+	xderm_uninstall \ &&
+	xderm_old_install \ &&
+	xderm_config_restore \ &&
+	xderm_fix_onboot \ &&
+	xderm_auto_remove_login \ &&
+	xderm_return_installer
+
+#-- Read log
+elif [[ $jawab == "12" ]]; then
+	xderm_read_log \ &&
+	xderm_return_installer
+
+#-- Cek My Public IP
+elif [[ $jawab == "13" ]]; then
+	xderm_check_myip \ &&
+	xderm_return_installer
+
+#-- Cek Other IP
+elif [[ $jawab == "14" ]]; then
+	xderm_check_otherip \ &&
+	xderm_return_installer
+
+#-- Convert host to ip
+elif [[ $jawab == "15" ]]; then
+	xderm_hosttoip \ &&
+	xderm_return_installer
+
+#-- Convert host to ip
+elif [[ $jawab == "16" ]]; then
+	xderm_fix_onboot \ &&
+	xderm_return_installer
+
+#-- Clean/remove xderm mini
+elif [[ $jawab == "31" ]]; then
+	xderm_stop \ &&
+	xderm_config_backup \ &&
+	xderm_uninstall \ &&
+	xderm_return_installer
+
+#-- Update xdrtool
+elif [[ $jawab == "33" ]]; then
+	xderm_xdrtool_update
+
+#-- Exit program
+elif [[ $jawab == "99" || $jawab == "88" || $jawab == "55" ]]; then
+	echo "    Exiting program !"
+	echo "==========================================="
+	exit
+
+else
+	#-- Back to first menu
+	xderm_return_installer
+fi
+
+#
+#   This script is used to install Xderm Mini GUI custom theme
+#   Installation script by helmiau a.k.a Helmi Amirudin
+#   my profile page https://me.helmiau.my.id
+#   my github https://github.com/helmiau
+#

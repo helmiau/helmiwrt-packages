@@ -1,0 +1,13 @@
+<%+header%>
+<div class="cbi-map">
+<iframe id="xderm-gui" style="width: 100%; min-height: 550px; border: none; border-radius: 2px;"></iframe>
+</div>
+<script type="text/javascript">
+try {
+  document.getElementById("xderm-gui").src = "https://" + window.location.hostname + "/xderm";
+}
+catch(err) {
+  document.getElementById("xderm-gui").src = "http://" + window.location.hostname + "/xderm";
+}
+</script>
+<%+footer%>
