@@ -1,0 +1,13 @@
+[05:26:48] Starting Libernet service
+[05:26:48] Config: filter, Mode: Trojan
+[05:26:48] Starting Trojan service
+[05:26:51] Stopping Libernet service
+[05:26:51] Stopping Trojan service
+[05:26:51] <span style="color: gray">Libernet service stopped</span>
+[05:26:53] Checking connection, attempt: 1
+[05:26:58] Checking connection, attempt: 2
+[05:27:03] Checking connection, attempt: 3
+[05:27:03] <span style="color: red">Socks connection unavailable</span>
+[05:27:03] Stopping Libernet service
+[05:27:03] Stopping Trojan service
+[05:27:03] <span style="color: gray">Libernet service stopped</span>
