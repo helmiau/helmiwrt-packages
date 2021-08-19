@@ -1,0 +1,13 @@
+<%+header%>
+<div class="cbi-map">
+<iframe id="libernet-plus" style="width: 100%; min-height: 550px; border: none; border-radius: 2px;"></iframe>
+</div>
+<script type="text/javascript">
+try {
+  document.getElementById("libernet-plus").src = "https://" + window.location.hostname + "/libernet";
+}
+catch(err) {
+  document.getElementById("libernet-plus").src = "http://" + window.location.hostname + "/libernet";
+}
+</script>
+<%+footer%>

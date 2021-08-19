@@ -1,0 +1,10 @@
+[15:29:16] Starting Libernet service
+[15:29:16] Config: redssh, Mode: Trojan
+[15:29:16] Starting Trojan service
+[15:29:21] Checking connection, attempt: 1
+[15:29:22] <span style="color: green">Socks connection available</span>
+[15:29:23] Tun2socks: initializing tun device
+[15:29:23] Tun2socks: routing server, proxy and DNS IPs
+[15:29:23] Starting tun2socks service
+[15:29:23] Starting Auto Reconnect service
+[15:29:23] <span style="color: blue">Libernet ready to used</span>
