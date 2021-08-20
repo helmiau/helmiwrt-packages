@@ -26,10 +26,10 @@ define Package/luci-app-libernet-bin/postinst
 #!/bin/sh
 	rm -f /tmp/luci-indexcache
 	rm -f /tmp/luci-modulecache/*
-	chmod +x /usr/lib/lua/luci/controller/*
-	chmod +x /usr/lib/lua/luci/view/*
-	chmod +x /www/libernet/*
-	chmod +x /root/libernet/bin/*
+	chmod -R +x /usr/lib/lua/luci/controller/*
+	chmod -R +x /usr/lib/lua/luci/view/*
+	chmod -R +x /www/libernet/*
+	chmod -R +x /root/libernet/*
 exit 0
 endef
 

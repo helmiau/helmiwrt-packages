@@ -26,10 +26,9 @@ define Package/luci-app-tinyfilemanager/postinst
 #!/bin/sh
 	rm -f /tmp/luci-indexcache
 	rm -f /tmp/luci-modulecache/*
-	chmod +x /usr/lib/lua/luci/controller/*
-	chmod +x /usr/lib/lua/luci/view/*
-	chmod +x /www/*
-	chmod +x /www/cdn/*
+	chmod -R +x /usr/lib/lua/luci/controller/*
+	chmod -R +x /usr/lib/lua/luci/view/*
+	chmod -R +x /www/*
 exit 0
 endef
 

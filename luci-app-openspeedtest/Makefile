@@ -24,8 +24,8 @@ define Package/luci-app-openspeedtest/postinst
 #!/bin/sh
 	rm -f /tmp/luci-indexcache
 	rm -f /tmp/luci-modulecache/*
-	chmod +x /usr/lib/lua/luci/controller/*
-	chmod +x /usr/lib/lua/luci/view/*
+	chmod -R +x /usr/lib/lua/luci/controller/*
+	chmod -R +x /usr/lib/lua/luci/view/*
 exit 0
 endef
 
