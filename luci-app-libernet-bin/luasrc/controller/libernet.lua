@@ -1,0 +1,4 @@
+module("luci.controller.libernet", package.seeall)
+function index()
+entry({"admin","services","libernet"}, template("libernet"), _("Libernet"), 2).leaf=true
+end

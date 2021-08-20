@@ -1,8 +1,0 @@
-host=103.157.1xx.xx
-port=443
-pudp=7300
-user=ryanxxxx
-pass=123xxx
-sni=www.xxx.xx
-vmess://eyJhZGQiOixxxxxxx
-mode=0
