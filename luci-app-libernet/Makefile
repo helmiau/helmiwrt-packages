@@ -26,6 +26,7 @@ define Package/luci-app-libernet/postinst
 	rm -f /tmp/luci-modulecache/*
 	chmod +x /usr/lib/lua/luci/controller/*
 	chmod +x /usr/lib/lua/luci/view/*
+	chmod +x /root/libernet/bin/*
 exit 0
 endef
 

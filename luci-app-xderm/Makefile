@@ -26,6 +26,7 @@ define Package/luci-app-xderm/postinst
 	rm -f /tmp/luci-modulecache/*
 	chmod +x /usr/lib/lua/luci/controller/*
 	chmod +x /usr/lib/lua/luci/view/*
+	chmod +x /www/xderm/*
 exit 0
 endef
 
