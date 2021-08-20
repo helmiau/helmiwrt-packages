@@ -1,0 +1,45 @@
+#!/bin/bash
+iface=eth0;n=1;mkdir -p limitdir;rm -rf limitdir/log.txt
+size=$(cat limitdir/sz|sed 's/ //g')
+ if [ -f $size ]; then
+echo "{$(date +%M:%S)} Speed Limit Value belom ditentukan!" > limitdir/log.txt;exit
+ fi
+size=$(echo "$size.mbit"|sed 's/\.//g')
+i=$(ifconfig br-lan|grep "inet addr"|awk -F: '{print $3}'|awk '{print $1}'|sed 's/.255//g')
+#setup
+tc qdisc del dev $iface root handle 1: > /dev/null 2>&1
+tc qdisc add dev $iface root handle 1: htb default 5
+tc class add dev $iface parent 1: classid 1:1 htb rate 500mbit ceil 500mbit
+echo "{$(date +%M:%S)} Auto Limit Client for $(echo $size|sed 's/mbit/mb/g') Running..." >> limitdir/log.txt
+sleep 1;k=1;j=1
+ while true; do
+ip=$(cat /tmp/dhcp.leases 2>/dev/null|awk '{print $3}'|awk -F. '{print $4}'|awk "NR==$n")
+   if [ -f $ip ]; then
+    j=0;n=1;sleep 2;continue
+   fi
+  if [ $(ping -w1 -c1 $i.$ip|grep pack|awk '{print $4}') -eq 0 ]; then
+   ((n++));sleep 1;continue
+  fi
+useip=$(cat limitdir/useip|awk -F= '{print $2}')
+     if [ ! -f $useip ]; then
+    if [ $useip == "yes" ]; then
+   if [ ! -f $(grep -r "$i.$ip" limitdir/ip.list) ]; then
+    ((n++));sleep 2;continue
+   fi
+    fi
+     fi
+class=$(tc -s -d class show dev $iface|grep "1:$ip"|awk '{print $1}')
+ if [ -f $(echo $class|awk '{print $1}') ]; then
+echo "{$(date +%M:%S)} IP: $i.$ip Telah di tentukan ke ($(echo $size|sed 's/mbit/mb/g'))" >> limitdir/log.txt
+tc class add dev $iface parent 1:1 classid 1:$ip htb rate $size ceil $size
+tc filter add dev $iface protocol ip parent 1:0 prio 1 u32 match ip dst $i.$ip flowid 1:$ip
+k=0
+ fi
+  if [ $k -eq 0 ]; then
+   if [ $j -eq 0 ]; then
+   j=1;k=1;echo "{$(date +%M:%S)} Standby Menunggu IP baru.... " >> limitdir/log.txt
+   fi
+  fi
+sleep 1;((n++))
+ done
+ 
