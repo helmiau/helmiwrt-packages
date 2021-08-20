@@ -14,6 +14,24 @@ PKG_NAME:=luci-app-libernet-plus
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 
-include ../../luci.mk
+define Package/luci-app-libernet-plus/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
+	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
+	$(INSTALL_DIR) $(1)/
+	cp -pR ./root/* $(1)/
+endef
+
+
+define Package/luci-app-libernet-plus/postinst
+#!/bin/sh
+	rm -f /tmp/luci-indexcache
+	rm -f /tmp/luci-modulecache/*
+	chmod +x /usr/lib/lua/luci/controller/*
+	chmod +x /usr/lib/lua/luci/view/*
+	chmod +x /www/libernet/*
+exit 0
+endef
+
+include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature

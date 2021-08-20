@@ -14,6 +14,21 @@ PKG_NAME:=luci-app-openspeedtest
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 
-include ../../luci.mk
+define Package/luci-app-openspeedtest/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
+	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
+endef
+
+
+define Package/luci-app-openspeedtest/postinst
+#!/bin/sh
+	rm -f /tmp/luci-indexcache
+	rm -f /tmp/luci-modulecache/*
+	chmod +x /usr/lib/lua/luci/controller/*
+	chmod +x /usr/lib/lua/luci/view/*
+exit 0
+endef
+
+include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
