@@ -3,11 +3,6 @@
 <iframe id="libernet-plus" style="width: 100%; min-height: 550px; border: none; border-radius: 2px;"></iframe>
 </div>
 <script type="text/javascript">
-try {
-  document.getElementById("libernet-plus").src = "https://" + window.location.hostname + "/libernet";
-}
-catch(err) {
-  document.getElementById("libernet-plus").src = "http://" + window.location.hostname + "/libernet";
-}
+document.getElementById("libernet-plus").src = window.location.protocol + "//" + window.location.hostname + "/libernet";
 </script>
 <%+footer%>

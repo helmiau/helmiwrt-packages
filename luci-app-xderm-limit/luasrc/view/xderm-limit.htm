@@ -3,11 +3,6 @@
 <iframe id="xderm-limit" style="width: 100%; min-height: 550px; border: none; border-radius: 2px;"></iframe>
 </div>
 <script type="text/javascript">
-try {
-  document.getElementById("xderm-limit").src = "https://" + window.location.hostname + "/xderm/limit.php";
-}
-catch(err) {
-  document.getElementById("xderm-limit").src = "http://" + window.location.hostname + "/xderm/limit.php";
-}
+document.getElementById("xderm-limit").src = window.location.protocol + "//" + window.location.hostname + "/xderm/limit.php";
 </script>
 <%+footer%>
