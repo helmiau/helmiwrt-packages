@@ -15,7 +15,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="text-center">
-                            <h4><i class="fa fa-home"></i> Libernet</h4>
+                            <h4><i class="fa fa-home"></i> Libernet Plus</h4>
                         </div>                        
                     </div>					
                     <div class="card-body">						
@@ -62,7 +62,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" v-model="config.system.tunnel.autostart" :disabled="status === true" id="autostart">
                                         <label class="form-check-label" for="autostart">
-                                            Auto start Libernet on boot
+                                            Auto start on boot
                                         </label>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                                     <span class="text-primary">TX|RX: </span><span class="text-primary">{{ total_data.tx }}|{{ total_data.rx }}</span>
                                 </div>
                                 <div class="col pt-2">
-                                    <pre ref="log" v-html="log" class="form-control text-left" style="height: auto; width: auto; font-size:80%; background-image-position: center; background-color: #192734 "></pre>
+                                    <pre ref="log" v-html="log" class="form-control text-left" style="height: auto; width: auto; font-size:80%; background-image-position: center; background-color: #efefef "></pre>
                                 </div>
                             </div>
                         </div>

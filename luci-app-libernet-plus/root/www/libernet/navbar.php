@@ -2,8 +2,8 @@
     $url_array =  explode('/', $_SERVER['REQUEST_URI']) ;
     $url = end($url_array);
 ?>
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #11195b;">
-    <a class="navbar-brand" href="#">Libernet</a>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fff;">
+    <a class="navbar-brand" href="#">Libernet Plus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>

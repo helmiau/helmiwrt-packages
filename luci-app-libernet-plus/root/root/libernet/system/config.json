@@ -1,0 +1,41 @@
+{
+    "tunnel": {
+        "autostart": false,
+        "dns_resolver": false,
+        "ping_loop": false,
+        "auto_recon": false,
+        "mode": 0,
+        "profile": {
+            "ssh": "",
+            "v2ray": "",
+            "ssh_ssl": "",
+            "trojan": "",
+            "shadowsocks": "",
+            "openvpn": ""
+        }
+    },
+    "server": "",
+    "dns_servers": [],
+    "proxy_servers": [],
+    "tun2socks": {
+        "legacy": false,
+        "dev": "tun1",
+        "mtu": 1420,
+        "address": "10.0.0.2",
+        "gateway": "10.0.0.1",
+        "netmask": "255.255.255.0",
+        "socks": {
+            "ip": "127.0.0.1",
+            "port": 1080
+        },
+        "udpgw": {
+            "ip": "127.0.0.1",
+            "port": 7300
+        }
+    },
+    "system": {
+        "username": "root",
+        "password": "root",
+        "memory_cleaner": false
+    }
+}
