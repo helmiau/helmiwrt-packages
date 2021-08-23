@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Tiny File Manager App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-tinyfilemanager
-PKG_VERSION:=1.0
+PKG_VERSION:=1.1
 PKG_RELEASE:=1
 
 define Package/luci-app-tinyfilemanager/install
