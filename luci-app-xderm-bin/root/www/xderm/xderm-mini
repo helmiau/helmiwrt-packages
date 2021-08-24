@@ -130,8 +130,8 @@ stunnel /tmp/stunnel.conf
  routing () {
 mode=$(cat /www/xderm/config/mode.default|sed 's/\.//g')
 host=$(grep host= config.txt|awk -F "=" '{print $2}')
-hostt=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
-hostv=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+hostt=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
+hostv=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
   if [ $mode == "SSH" ]; then
     if [ -f $host ]; then
      echo "Akun SSH belom disetting!" >> screenlog.0
@@ -193,43 +193,43 @@ kill $(ps w|grep badvpn|grep tun|awk "NR==1"|awk '{print $1}') 2>/dev/null
   if [ $mode == "SSH" ]; then
   host=$(grep host= config.txt|awk -F "=" '{print $2}')
   elif [ $mode == "Vmess" ]; then
-   port=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"port' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+   port=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"port' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
     if [ -f $port ]; then
    echo "Akun vmess belom disetting!" >> screenlog.0;exit
     fi
-   hostv=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+   hostv=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
   elif [ $mode == "Trojan" ]; then
-  hostt=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
+  hostt=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
   elif [ $mode == "Multi" ]; then
   host=$(grep host= config.txt|awk -F "=" '{print $2}')
-  hostv=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-  hostt=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
+  hostv=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+  hostt=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
   fi
 route del $host 2>/dev/null;route del $hostt 2>/dev/null;route del $hostv 2>/dev/null;route del 8.8.8.8 2>/dev/null
 screen -d -m ip link delete tun0 2>/dev/null;screen -d -m ip link delete tun1 2>/dev/null
 /etc/init.d/https-dns-proxy stop 2>/dev/null
-host=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g');route del $host 2>/dev/null
+host=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g');route del $host 2>/dev/null
 }
  cupdate () {
  url="https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main"
  v=$(curl -m12 $url/xderm-mini -s|grep "Copyr"|awk "NR==4"|awk '{print $6}')
 if [ ! -f $v ]; then
   if [ "$v" != "3.1" ]; then
- echo $v >/var/update.xderm
+ echo $v >/www/xderm/var/update.xderm
  echo "<h2 style='color:lime'>New versi GUI Detected, Please Update!</h2>" >> screenlog.0
   fi
 else
  v=$(curl -m12 $url/xderm-mini -s|grep "Copyr"|awk "NR==4"|awk '{print $6}')
  if [ ! -f $v ]; then
   if [ "$v" != "3.1" ]; then
- echo $v >/var/update.xderm
+ echo $v >/www/xderm/var/update.xderm
  echo "<h2 style='color:lime'>New versi GUI Detected, Please Update!</h2>" >> screenlog.0
   fi
  else
   v=$(curl -m12 $url/xderm-mini -s|grep "Current versi"|awk "NR==5"|awk '{print $6}')
    if [ ! -f $v ]; then
   if [ "$v" != "3.1" ]; then
-  echo $v >/var/update.xderm
+  echo $v >/www/xderm/var/update.xderm
   echo "<h2 style='color:lime'>New versi GUI Detected, Please Update!</h2>" >> screenlog.0
   fi
    fi
@@ -255,7 +255,7 @@ fi
  curl $url/index.php -s > index.php
  ceky=$(cat index.php|awk "NR==4"|sed -e 's/<//g' -e 's/>//g'|awk '{print $1}')  
    done
- rm -rf /var/update.xderm
+ rm -rf /www/xderm/var/update.xderm
  echo -e "{$(date +%M:%S)} Script & GUI diUpdate, Silahkan Start Ulang!" >> loglain.txt
  else
  echo " (Terbaru!)" >> loglain.txt;sleep 1
@@ -268,7 +268,7 @@ fi
   }
  start () {
 #########################
-touch /var/trojan2.txt;killall -q stunnel;echo -e "{$(date +%M:%S)} v.binari saat ini 3.1" >> screenlog.0
+touch /www/xderm/var/trojan2.txt;killall -q stunnel;echo -e "{$(date +%M:%S)} v.binari saat ini 3.1" >> screenlog.0
 pudp=$(grep pudp= config.txt 2>/dev/null|awk -F "=" '{print $2}'|awk '{print $1}')
  if [ -f $pudp ]; then
 pudp=7300
@@ -402,20 +402,20 @@ interf=$(ip r|grep default|sed 's/default via 10.0.0//g'|grep default|awk '{prin
 #########################
 host=$(ping $host -w1 -c1|awk "NR==1"|awk -F '(' '{print $2}'|awk -F ')' '{print $1}')
 mkdir -p /usr/local/etc/v2ray/;juuid=1;n=2
-portv=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"port' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+portv=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"port' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
   if [ ! -f $portv ]; then
  while [ $juuid -lt 17 ]; do
-uuid=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F 'id' '{print $"'$n'"}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+uuid=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F 'id' '{print $"'$n'"}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
 juuid=$(echo $uuid|wc -c);((n++))
  done
-hostv=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-aid=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"aid' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-net=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"net' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-path=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"path' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+hostv=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+aid=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"aid' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+net=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"net' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+path=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"path' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
 path=$(echo $path|sed 's/\\u003d/=/g'|sed 's/\\u0026/\&/g')
-tls=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n/ /g'|awk -F 'tls":' '{print $2}'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g' -e 's/}//g')
+tls=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n/ /g'|awk -F 'tls":' '{print $2}'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g' -e 's/}//g')
 if [ -f $tls ]; then
-tls=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|grep tls|sed -e 's/:/=/g' -e 's/ //g' -e 's/"//g' -e 's/}//g'|awk -F "=" '{print $1}')
+tls=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|grep tls|sed -e 's/:/=/g' -e 's/ //g' -e 's/"//g' -e 's/}//g'|awk -F "=" '{print $1}')
  if [ ! -f $tls ]; then
   if [ $tls != "tls" ]; then
   tls=""
@@ -543,9 +543,9 @@ echo "{
     ]
   }
 }" > /usr/local/etc/v2ray/config.json
-hostt=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
-portt=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $2}'|awk -F "/" '{print $1}'|awk "NR==1")
-passt=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $1}'|awk "NR==1")
+hostt=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
+portt=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $2}'|awk -F "/" '{print $1}'|awk "NR==1")
+passt=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $1}'|awk "NR==1")
 echo "{
     \"run_type\": \"client\",
     \"local_addr\": \"127.0.0.1\",
@@ -798,7 +798,7 @@ interf=\$(ip r|grep default|sed 's/default via 10.0.0//g'|grep default|awk '{pri
 done" > /tmp/automode;chmod +x /tmp/automode;screen -d -m /tmp/automode
 elif [ $mode == "Vmess" ]; then
  flushx;ssa=8;echo -e "{$(date +%M:%S)} Mode yang dipilih: [$mode]" >> screenlog.0
- port=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"port' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+ port=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"port' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
     if [ -f $port ]; then
  echo "Akun vmess belom disetting!" >> screenlog.0
  echo "Jika merasa sudah setup, cek ulang confignya" >> screenlog.0
@@ -825,17 +825,17 @@ interf=$(ip r|grep default|sed 's/default via 10.0.0//g'|grep default|awk '{prin
 #####################
 mkdir -p /usr/local/etc/v2ray/;juuid=1;n=2
  while [ $juuid -lt 17 ]; do
-uuid=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F 'id' '{print $"'$n'"}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+uuid=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F 'id' '{print $"'$n'"}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
 juuid=$(echo $uuid|wc -c);((n++))
  done
-host=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-aid=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"aid' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-net=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"net' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
-path=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"path' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+host=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"add' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+aid=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"aid' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+net=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"net' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
+path=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n  //g'|awk -F '"path' '{print $2}'|grep :|sed ':a;N;$!ba;s/\n/ /g'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g')
 path=$(echo $path|sed 's/\\u003d/=/g'|sed 's/\\u0026/\&/g')
-tls=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n/ /g'|awk -F 'tls":' '{print $2}'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g' -e 's/}//g')
+tls=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|sed ':a;N;$!ba;s/\n/ /g'|awk -F 'tls":' '{print $2}'|awk -F ',' '{print $1}'|sed -e 's/://g' -e 's/ //g' -e 's/"//g' -e 's/}//g')
 if [ -f $tls ]; then
-tls=$(grep vmess: /var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|grep tls|sed -e 's/:/=/g' -e 's/ //g' -e 's/"//g' -e 's/}//g'|awk -F "=" '{print $1}')
+tls=$(grep vmess: /www/xderm/var/vmess2.txt 2>/dev/null|awk -F "//" '{print $2}'|base64 -d 2>/dev/null|grep tls|sed -e 's/:/=/g' -e 's/ //g' -e 's/"//g' -e 's/}//g'|awk -F "=" '{print $1}')
  if [ ! -f $tls ]; then
   if [ $tls != "tls" ]; then
   tls=""
@@ -1027,11 +1027,11 @@ interf=$(ip r|grep default|sed 's/default via 10.0.0//g'|grep default|awk '{prin
  done
   fi
 ###################
-host=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
+host=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $1}'|awk "NR==1")
 host=$(ping $host -w1 -c1|awk "NR==1"|awk -F '(' '{print $2}'|awk -F ')' '{print $1}')
-port=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $2}'|awk -F "/" '{print $1}'|awk "NR==1")
+port=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $2}'|awk -F ":" '{print $2}'|awk -F "/" '{print $1}'|awk "NR==1")
 sni=$(grep sni= config.txt|awk -F "=" '{print $2}')
-pass=$(grep trojan:// /var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $1}'|awk "NR==1")
+pass=$(grep trojan:// /www/xderm/var/trojan2.txt|awk -F "://" '{print $2}'|awk -F "@" '{print $1}'|awk "NR==1")
 echo "{
     \"run_type\": \"client\",
     \"local_addr\": \"127.0.0.1\",

@@ -1,5 +1,6 @@
 <?php
  exec('chmod -R 755 /www/* && chmod -R 755 /root/*');
+ if (!is_dir('/www/xderm/var')) {mkdir('/www/xderm/var', 0755, true);}
  exec("ls login.php|awk 'NR==1'|awk -F '.' '{print $1}'",$clo);
   if ($clo[0]) {
 include 'header.php';
@@ -254,7 +255,7 @@ if (file_exists($filename)) {
 		</center>
 <table align="center"><tr><td class="script_txt"><div class="inline-block"><pre>
 <?php
-  exec('cat /var/update.xderm',$z);
+  exec('cat /www/xderm/var/update.xderm',$z);
     if ($z[0]) {
  if ( $z[0] != '3.1' ){
 echo '<pre><h3 style="color:lime">New versi GUI Detected, Please Update!!</h3></pre>';
@@ -308,10 +309,10 @@ echo '<script>
  $config = str_replace( "\r", "", $config);
  exec('echo "'.$mode.'" > config/mode.default');
  exec('echo "'.$config.'" > config/'.$conf);
- exec('sed \'/host=\|port=\|pudp=\|user=\|pass=\|sni=\|mode=\|trojan\|\n/d\' config/\''.$conf.'\' > /var/vmess1.txt');
- exec('awk \'{ printf "%s", $0 }\' /var/vmess1.txt > /var/vmess2.txt');
- exec('sed \'/host=\|port=\|pudp=\|user=\|pass=\|sni=\|mode=\|vmess\|\n/d\' config/\''.$conf.'\' > /var/trojan1.txt');
- exec('awk \'{ printf "%s", $0 }\' /var/trojan1.txt > /var/trojan2.txt');
+ exec('sed \'/host=\|port=\|pudp=\|user=\|pass=\|sni=\|mode=\|trojan\|\n/d\' config/\''.$conf.'\' > /www/xderm/var/vmess1.txt');
+ exec('awk \'{ printf "%s", $0 }\' /www/xderm/var/vmess1.txt > /www/xderm/var/vmess2.txt');
+ exec('sed \'/host=\|port=\|pudp=\|user=\|pass=\|sni=\|mode=\|vmess\|\n/d\' config/\''.$conf.'\' > /www/xderm/var/trojan1.txt');
+ exec('awk \'{ printf "%s", $0 }\' /www/xderm/var/trojan1.txt > /www/xderm/var/trojan2.txt');
  exec('echo "'.$config.'" > config.txt');
  exec('sed -i \'s/\r$//g\' config.txt');
  exec('sed -i \'s/\r$//g\' config/'.$conf);
