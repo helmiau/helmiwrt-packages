@@ -11,25 +11,36 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Libernet App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-libernet
-PKG_VERSION:=1.0
+PKG_VERSION:=1.2
 PKG_RELEASE:=1
 
-define Package/luci-app-libernet/install
-	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
-	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
+define Package/$(PKG_NAME)
+  $(call Package/luci/webtemplate)
+  TITLE:=$(LUCI_TITLE)
 endef
 
+define Package/$(PKG_NAME)/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
+	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
+	chmod -R 755 /root/www/*
+	chmod -R 755 /root/root/*
+	chmod -R 755 /root/root/libernet/*
+	chmod -R 755 /root/root/libernet/bin/*
+endef
 
-define Package/luci-app-libernet/postinst
+define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 	rm -f /tmp/luci-indexcache
 	rm -f /tmp/luci-modulecache/*
-	chmod -R +x /usr/lib/lua/luci/controller/*
-	chmod -R +x /usr/lib/lua/luci/view/*
-	chmod -R +x /root/libernet/bin/*
+	chmod -R 755 /usr/lib/lua/luci/controller/*
+	chmod -R 755 /usr/lib/lua/luci/view/*
+	chmod -R 755 /www/*
+	chmod -R 755 /www/libernet/*
+	chmod -R 755 /root/libernet/*
+	chmod -R 755 /root/libernet/bin/*
 exit 0
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
-# call BuildPackage - OpenWrt buildroot signature
+$(eval $(call BuildPackage,$(PKG_NAME)))

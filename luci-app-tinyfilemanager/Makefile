@@ -11,27 +11,34 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Tiny File Manager App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-tinyfilemanager
-PKG_VERSION:=1.1
+PKG_VERSION:=1.2
 PKG_RELEASE:=1
 
-define Package/luci-app-tinyfilemanager/install
+define Package/$(PKG_NAME)
+  $(call Package/luci/webtemplate)
+  TITLE:=$(LUCI_TITLE)
+endef
+
+define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
 	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
+	chmod -R 755 /root/www/*
+	chmod -R 755 /root/www/cdn/*
 endef
 
-
-define Package/luci-app-tinyfilemanager/postinst
+define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 	rm -f /tmp/luci-indexcache
 	rm -f /tmp/luci-modulecache/*
-	chmod -R +x /usr/lib/lua/luci/controller/*
-	chmod -R +x /usr/lib/lua/luci/view/*
-	chmod -R +x /www/*
+	chmod -R 755 /usr/lib/lua/luci/controller/*
+	chmod -R 755 /usr/lib/lua/luci/view/*
+	chmod -R 755 /www/*
+	chmod -R 755 /www/cdn/*
 exit 0
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
-# call BuildPackage - OpenWrt buildroot signature
+$(eval $(call BuildPackage,$(PKG_NAME)))

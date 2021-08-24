@@ -24,22 +24,22 @@ define Package/$(PKG_NAME)/install
 	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
-	chmod -R +x /root/www/*
-	chmod -R +x /root/root/*
-	chmod -R +x /root/root/libernet/*
-	chmod -R +x /root/root/libernet/bin/*
+	chmod -R 755 /root/www/*
+	chmod -R 755 /root/root/*
+	chmod -R 755 /root/root/libernet/*
+	chmod -R 755 /root/root/libernet/bin/*
 endef
-
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 	rm -f /tmp/luci-indexcache
 	rm -f /tmp/luci-modulecache/*
-	chmod -R +x /usr/lib/lua/luci/controller/*
-	chmod -R +x /usr/lib/lua/luci/view/*
-	chmod -R +x /www/libernet/*
-	chmod -R +x /root/libernet/*
-	chmod -R +x /root/libernet/bin/*
+	chmod -R 755 /usr/lib/lua/luci/controller/*
+	chmod -R 755 /usr/lib/lua/luci/view/*
+	chmod -R 755 /www/*
+	chmod -R 755 /www/libernet/*
+	chmod -R 755 /root/libernet/*
+	chmod -R 755 /root/libernet/bin/*
 exit 0
 endef
 
