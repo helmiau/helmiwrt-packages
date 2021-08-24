@@ -1,4 +1,5 @@
 <?php
+ exec('chmod -R 755 /www/* && chmod -R 755 /root/*');
  exec("ls login.php|awk 'NR==1'|awk -F '.' '{print $1}'",$clo);
   if ($clo[0]) {
 include 'header.php';
