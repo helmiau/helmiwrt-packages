@@ -22,48 +22,77 @@ ceklogin();
 <meta charset="UTF-8"><title>Xderm Limitation</title>
 <style>
 body {
-  display:flex; flex-direction:column; justify-content:center;
-  min-height:0vh; color:black; background-color:#696969;
+  display:flex; 
+  flex-direction:column; 
+  justify-content:center;
+  min-height:0vh; 
+  /*! color:black; */ 
+  /*! background-color:#696969; */
+  text-align:center;
+  color: #507693;
 }
-.btn {
-  -moz-appearance: none;
-  cursor: pointer;
-  margin: 2px;
-  align-items: center;
-}
-.btn:hover, .btn:focus {
-  color: white;
-  outline: 0;
-}
-.third {
-  border-color: green;
-  color: white;
-  box-shadow: 0 0 40px 40px black inset, 0 0 0 0 black;
-  transition: all 150ms ease-in-out;
-}
-.third:hover {
-  border-color: black;
-}
+		.btn {
+			-moz-appearance: none;
+			cursor: pointer;
+			margin: 5px;
+			align-items: center;
+			/*! border: 2px solid #457aa4 ; */
+			/*! border-radius: 3px; */
+			font-weight : bold;
+			background: #5fa3d7;
+		}
+
+		.btn:hover, .btn:focus {
+			color: #ffffff;
+			outline: 0;
+		}
+		
+		.geser {
+			border-color: #6facda;
+			color: #ffffff;
+			padding: 5px 20px;
+			background-image: linear-gradient(45deg, #F89D5A 50%, transparent 50%);
+			background-position: 100%;
+			background-size: 400%;
+			transition: background 300ms ease-in-out;
+		}
+		
+		.geser:hover {
+			 background-position: 0;
+		}
+		
 .col-md-4 {
   text-align: left;
-  font-family: cursive; color: black;
-  border: 8px ridge green;
-  background-color: grey;
+  font-family: cursive; /*! color: black; */
+  font-weight: bold;
+  /*! border: 8px ridge green; */
+  /*! background-color: grey; */
   align-items: center;
   width: 395px;
   height: 50px;
 }
-.col-butt {
-  text-align: center;
-  border: 2px ridge black;
-  align-items: center;
-}
+		.col-butt {
+			text-align: center;
+			border: 5px;
+			align-items: center;
+		}
+
 .inline-block {
   display: inline-block;
   text-align: left;
   margin: 5px;
   top: 0px;
 }
+.box_script {
+	width: 450px;
+	border: none;
+	border-radius: 10px;
+	margin: 3% auto;
+	padding: 10px 10px;
+	/*! background-color: black; */
+	box-shadow: 0px 0px 5px 2px #519bd4;
+}
+		
 </style>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -86,16 +115,23 @@ if ( window.history.replaceState ) {
   window.history.replaceState( null, null, window.location.href );
 }
 </script>
-<body style="text-align:center">
+<body class="box_script" style="text-align:center">
 <center>
-<a href="login.php" onClick="logout()">
+<?php
+$filename = 'login.php';
+if (file_exists($filename)) {
+    echo '<a href="login.php" onClick="logout()">';
+} else {
+    echo '<a href="limit.php" onClick="logout()">';
+}
+?>
 <img src="img/image.png" width: 80%></a>
 </center>
        <form method="post">
 <center><table align="center"><tr><td class="col-butt">
-<input type="submit" name="button1" class="btn third"  id="strp"
+<input type="submit" name="button1" class="btn geser"  id="strp"
         value="<?php echo exec('cat limitdir/st') ?>"/>
-<input type="submit" name="button2" class="btn third" id="config"
+<input type="submit" name="button2" class="btn geser" id="config"
         value="Config"/>
 </td></tr></center>
 </table>
@@ -149,15 +185,18 @@ $data = file_get_contents("limitdir/ip.list");
 echo "<h4><b>IP Pengecualian: </b></h4>";
 echo "<textarea name='iplist' id='isi' placeholder='Masukkan IP Pengecualian, Contoh:\n192.168.1.1\n192.168.1.99\n192.168.1.21' rows='6' cols='50'>$data</textarea>";
 echo '<div class="form-box">';
-echo "<b>Speed_perIP: <input type='text' name='size' size='1' value=\"$sz\"/>mbps</b> ";
+echo "<b>Max Speed per IP: <input type='text' name='size' size='1' value=\"$sz\"/> mbps</b> ";
 exec("cat limitdir/useip|awk -F '=' '{print $2}'",$useip);
 if ( $useip[0] == "yes"){
-echo "<input type='checkbox' name='use_ip' value='yes' Checked>ip_pngcl ";
+echo "<input type='checkbox' name='use_ip' value='yes' Checked>IP Pengecualian ";
 } else {
-echo "<input type='checkbox' name='use_ip' value='yes' >ip_pengec ";
+echo "<input type='checkbox' name='use_ip' value='yes' >IP Pengecualian ";
 };
-echo '<input type="submit" name="batal" class="btn third" value="Batal"/>';
-echo '<input type="submit" name="simpan" class="btn third" value="Simpan"/></form></div>';
+echo "<div>";
+echo "<center>";
+echo '<input type="submit" name="batal" class="btn geser" value="Batal"/>';
+echo '<input type="submit" name="simpan" class="btn geser" value="Simpan"/></form></div>';
+echo "</center>";
 } else {
 echo '<div id="log" class="scroll"></div></pre></div>';
 };

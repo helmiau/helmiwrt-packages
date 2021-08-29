@@ -20,11 +20,11 @@ ceklogin();
 			flex-direction: column; 
 			justify-content: center;
 			min-height: 0vh; 
-			color: black; 
-			background-image:url(img/background.jpg);
-			background-size: cover;
-			-webkit-background-size: cover;
-			background-repeat: no-repeat;
+			/*! color: black; */
+			/*! background-image:url(img/background.jpg); */
+			/*! background-size: cover; */
+			/*! -webkit-background-size: cover; */
+			/*! background-repeat: no-repeat; */
 		}
 		
 		.btn {
@@ -32,20 +32,22 @@ ceklogin();
 			cursor: pointer;
 			margin: 5px;
 			align-items: center;
-			border: 2px solid #132130 ;
-			border-radius: 3px;
-			background: #132130;
+			/*! border: 2px solid #457aa4 ; */
+			/*! border-radius: 3px; */
+			font-weight : bold;
+			background: #5fa3d7;
 		}
 
 		.btn:hover, .btn:focus {
-			color: #000000;
+			color: #ffffff;
 			outline: 0;
 		}
+		
 		.geser {
-			border-color: #132130;
+			border-color: #6facda;
 			color: #ffffff;
-			padding: 3px 20px;
-			background-image: linear-gradient(45deg, #00ACD0 50%, transparent 50%);
+			padding: 5px 20px;
+			background-image: linear-gradient(45deg, #F89D5A 50%, transparent 50%);
 			background-position: 100%;
 			background-size: 400%;
 			transition: background 300ms ease-in-out;
@@ -81,14 +83,15 @@ ceklogin();
 			top: 0px;
 		}
 		
+		
 		.box_script {
 			width: 450px;
 			border: none;
 			border-radius: 10px;
 			margin: 3% auto;
 			padding: 10px 10px;
-			background-color: black;
-			box-shadow: 0px 0px 5px 2px #132130;
+			/*! background-color: black; */
+			box-shadow: 0px 0px 5px 2px #519bd4;
 		}
 		
 		.footer {
