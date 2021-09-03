@@ -117,7 +117,7 @@
                                     <span class="text-primary">TX|RX: </span><span class="text-primary">{{ total_data.tx }}|{{ total_data.rx }}</span>
                                 </div>
                                 <div class="col pt-2">
-                                    <pre ref="log" v-html="log" class="form-control text-left" style="height: auto; width: auto; font-size:80%; background-image-position: center; background-color: #efefef "></pre>
+                                    <pre ref="log" v-html="log" class="form-control text-left" style="height: auto; width: auto; font-size:80%; background-image-position: center; background-color: rgb(57, 48, 48) "></pre>
                                 </div>
                             </div>
                         </div>

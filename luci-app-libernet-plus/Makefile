@@ -11,8 +11,8 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Libernet Plus App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-libernet-plus
-PKG_VERSION:=1.2
-PKG_RELEASE:=1
+PKG_VERSION:=1.3
+PKG_RELEASE:=2
 
 define Package/$(PKG_NAME)
   $(call Package/luci/webtemplate)
