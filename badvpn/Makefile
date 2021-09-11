@@ -1,22 +1,26 @@
 # Copyright (C) 2009 Ambroz Bizjak
 #
 # This is free software, licensed under the GNU General Public License v2.
+# Updated & patched for OpenWrt by Helmi Amirudin <www.helmiau.com>
 #
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=badvpn
-PKG_VERSION:=1.999.128
-PKG_MAINTAINER:=Bandung, ONIVERSAL <friyadhibiermann>, indonesian
+PKG_VERSION:=1.999.130
+PKG_RELEASE:=1
+PKG_MAINTAINER:=helmiau
 
-PKG_BUILD_DIR:= $(BUILD_DIR)/$(PKG_NAME)
+PKG_SOURCE:=$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/ambrop72/badvpn/archive/
+PKG_MD5SUM:=e65d8d298fc82eb9a6c12a9425a97e6d
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
-	DEPENDS:=+librt +libpthread +libudev-zero +libnss +libopenssl +coreutils +coreutils-stdbuf +openssl-util
+	DEPENDS:=+librt +libpthread +libudev +libudev-zero +libnss +libopenssl +coreutils +coreutils-stdbuf +openssl-util
 	TITLE:=BadVPN
 	SUBMENU:=VPN
 endef
