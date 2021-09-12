@@ -25,11 +25,6 @@ define Package/$(PKG_NAME)
 	SUBMENU:=VPN
 endef
 
-define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./src/* $(PKG_BUILD_DIR)/
-endef
-
 define Build/Configure
 	echo -e \
 	"SET(CMAKE_SYSTEM_NAME Linux)\n" \
@@ -59,4 +54,4 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udpgw/badvpn-udpgw $(1)/usr/bin/badvpn-udpgw
 endef
 
-$(eval $(call BuildPackage,badvpn))
+$(eval $(call BuildPackage,$(PKG_NAME)))
