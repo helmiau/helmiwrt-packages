@@ -1,6 +1,6 @@
 #
-# Xderm Mini GUI Software by Ryan Fauzi <https://github.com/ryanfauzi1/xderm-mini_GUI>
-# LuCI Xderm Mini GUI App by Helmi Amirudin <https://www.helmiau.com>
+# v2rayA <https://github.com/v2rayA/v2rayA/>
+# LuCI v2rayA App by Helmi Amirudin <https://www.helmiau.com>
 #
 # Copyright (C) 2021 Helmi Amirudin <helmilaw@gmail.com>
 # This is free software, licensed under the Apache License, Version 2.0
@@ -11,12 +11,12 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI v2rayA App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-v2raya
-PKG_VERSION:=1.0
+PKG_VERSION:=1.1
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
-  $(call Package/luci/webtemplate)
-  TITLE:=$(LUCI_TITLE)
+	$(call Package/luci/webtemplate)
+	TITLE:=$(LUCI_TITLE)
 endef
 
 define Package/$(PKG_NAME)/install
@@ -24,6 +24,8 @@ define Package/$(PKG_NAME)/install
 	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
+	mkdir -p $(1)/etc/v2raya
+	git clone http://github.com/v2rayA/v2raya-web $(1)/etc/v2raya/web
 	chmod -R 755 /root/etc/init.d/v2raya"
 	chmod -R 755 /root/etc/v2raya/web"
 	chmod -R 755 /root/usr/bin/v2raya"
@@ -43,6 +45,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /etc/v2raya/web"
 	chmod -R 755 /usr/bin/v2raya"
 	chmod -R 755 /bin/v2raya"
+	ln -s /etc/v2raya/web /www/v2raya
 exit 0
 endef
 
