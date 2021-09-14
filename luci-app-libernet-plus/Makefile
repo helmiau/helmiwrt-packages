@@ -15,8 +15,8 @@ PKG_VERSION:=1.3
 PKG_RELEASE:=2
 
 define Package/$(PKG_NAME)
-  $(call Package/luci/webtemplate)
-  TITLE:=$(LUCI_TITLE)
+	$(call Package/luci/webtemplate)
+	TITLE:=$(LUCI_TITLE)
 endef
 
 define Package/$(PKG_NAME)/install
