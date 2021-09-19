@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Libernet App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-libernet-bin
-PKG_VERSION:=1.2
+PKG_VERSION:=1.3
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
@@ -39,6 +39,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/libernet/*
 	chmod -R 755 /root/libernet/*
 	chmod -R 755 /root/libernet/bin/*
+	/usr/sbin/openvpn --mktun --dev tun1
 exit 0
 endef
 

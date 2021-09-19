@@ -40,6 +40,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/libernet/*
 	chmod -R 755 /root/libernet/*
 	chmod -R 755 /root/libernet/bin/*
+	/usr/sbin/openvpn --mktun --dev tun0
 exit 0
 endef
 

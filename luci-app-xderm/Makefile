@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Xderm Mini App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-xderm
-PKG_VERSION:=1.0
+PKG_VERSION:=1.1
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
@@ -36,6 +36,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/*
 	chmod -R 755 /www/xderm/*
 	chmod -R 755 /root/*
+	/usr/sbin/openvpn --mktun --dev tun0
 exit 0
 endef
 
