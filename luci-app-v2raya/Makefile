@@ -1,5 +1,6 @@
 #
 # v2rayA <https://github.com/v2rayA/v2rayA/>
+# v2rayA Official WebGUI Repository <http://github.com/v2rayA/v2raya-web>
 # LuCI v2rayA App by Helmi Amirudin <https://www.helmiau.com>
 #
 # Copyright (C) 2021 Helmi Amirudin <helmilaw@gmail.com>
@@ -24,8 +25,6 @@ define Package/$(PKG_NAME)/install
 	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
-	mkdir -p $(1)/etc/v2raya
-	git clone http://github.com/v2rayA/v2raya-web $(1)/etc/v2raya/web
 	chmod -R 755 /root/etc/init.d/v2raya"
 	chmod -R 755 /root/etc/v2raya/web"
 	chmod -R 755 /root/usr/bin/v2raya"
