@@ -39,6 +39,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/libernet/*
 	chmod -R 755 /root/libernet/*
 	chmod -R 755 /root/libernet/bin/*
+	sed -i '3 i /usr/sbin/openvpn --mktun --dev tun1' /etc/rc.local
 	# Autofix download index.php
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		#patch xderm, libernet
@@ -69,7 +70,6 @@ define Package/$(PKG_NAME)/postinst
 		sed -i "s#list index_page.*#list index_page 'cgi-bin/luci'\n	list index_page 'index.html'\n	list index_page 'index.php'#g" /etc/config/uhttpd
 		/etc/init.d/uhttpd restart
 	fi
-	/usr/sbin/openvpn --mktun --dev tun1
 exit 0
 endef
 
