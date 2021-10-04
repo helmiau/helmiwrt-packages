@@ -71,7 +71,6 @@ define Package/$(PKG_NAME)/postinst
 		sed -i "s#list index_page.*#list index_page 'cgi-bin/luci'\n	list index_page 'index.html'\n	list index_page 'index.php'#g" /etc/config/uhttpd
 		/etc/init.d/uhttpd restart
 	fi
-	/usr/sbin/openvpn --mktun --dev tun1
 exit 0
 endef
 
