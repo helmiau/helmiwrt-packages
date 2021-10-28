@@ -1,0 +1,8 @@
+<%+header%>
+<div class="cbi-map">
+<iframe id="freevpnsite" style="width: 100%; min-height: 100vh; border: none; border-radius: 2px;"></iframe>
+</div>
+<script type="text/javascript">
+document.getElementById("freevpnsite").src = window.location.protocol + "//" + window.location.hostname + "/freevpnsite";
+</script>
+<%+footer%>
