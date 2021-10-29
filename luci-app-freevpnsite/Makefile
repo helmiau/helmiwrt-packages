@@ -16,6 +16,7 @@ PKG_RELEASE:=1
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
+	DEPENDS:=+php7 +php7-cgi +php7-mod-json +php7-mod-session
 endef
 
 define Package/$(PKG_NAME)/install
