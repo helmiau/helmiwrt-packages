@@ -1,0 +1,9 @@
+<%+header%>
+<div class="cbi-map">
+<br>
+<iframe id="tinyfm" style="width: 100%; min-height: 100vh; border: none; border-radius: 2px;"></iframe>
+</div>
+<script type="text/javascript">
+document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.hostname + "/tinyfm";
+</script>
+<%+footer%>
