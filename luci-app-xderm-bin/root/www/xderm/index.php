@@ -551,7 +551,7 @@ if($_POST['button7']){
 echo 'Force Reinstall Xderm Mini LuCI Version...!<br>';
 echo 'Creating update directories...<br>';
 exec('[ -d /www/xderm-up ] && rm -rf /www/xderm-up');
-exec('[ ! -d /www/xderm-up ] && mkdir -p /www/{xderm-up,xderm-up/js,xderm-up/img}');
+exec('[ ! -d /www/xderm-up ] && mkdir -p /www/xderm-up /www/xderm-up/js /www/xderm-up/img');
 echo 'Downloading files....<br>';
 exec('wget --show-progress -qP /www/xderm-up/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus,index.php}');
 exec('wget --show-progress -qP /www/xderm-up/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js');
