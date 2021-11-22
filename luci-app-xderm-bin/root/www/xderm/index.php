@@ -543,31 +543,25 @@ if (file_exists("login.php") | file_exists("header.php")) {
  echo 'Login page Terinstall !';
 } else {
  echo 'Login page is available, now installing online mode !';
- exec('wget -O /www/xderm/login.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/login.php -q');
- exec('wget -O /www/xderm/header.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/header.php -q');
+ exec('wget -O /www/xderm/login.php https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/login.php.xdrtool -q');
+ exec('wget -O /www/xderm/header.php https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/header.php.xdrtool -q');
  echo 'Login page installed ! Refresh this page'; }
 }
 if($_POST['button7']){
-echo 'Force Reinstall Xderm Mini !<br/>';
-echo 'Removing old files<br/>';
-if (file_exists("login.php") | file_exists("header.php")) {
-	exec('rm /www/xderm/login.php');
-	exec('rm /www/xderm/header.php');
-} elseif (file_exists("login.php.xdrtool") | file_exists("header.php.xdrtool")) {
-	exec('rm /www/xderm/login.php.xdrtool');
-	exec('rm /www/xderm/header.php.xdrtool');
-} else {
-	exec('rm /www/xderm/login.php');
-	exec('rm /www/xderm/header.php');
-}
-exec('wget --show-progress -qP /www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus}');
-exec('wget --show-progress -qP /www/xderm/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js');
-exec('wget --show-progress -qP /www/xderm/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}');
-exec('wget -O /bin/xdrtool https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/bin/xdrtool -q');
+echo 'Force Reinstall Xderm Mini LuCI Version...!<br>';
+echo 'Creating update directories...<br>';
+exec('[ -d /www/xderm-up ] && rm -rf /www/xderm-up');
+exec('[ ! -d /www/xderm-up ] && mkdir -p /www/{xderm-up,xderm-up/js,xderm-up/img}');
+echo 'Downloading files....<br>';
+exec('wget --show-progress -qP /www/xderm-up/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus,index.php}');
+exec('wget --show-progress -qP /www/xderm-up/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js');
+exec('wget --show-progress -qP /www/xderm-up/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}');
+exec('wget --show-progress -qO /bin/xdrtool https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/bin/xdrtool');
 exec('chmod +x /bin/xdrtool');
-exec('wget --show-progress -qP /www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/index.php');
-echo 'Installing new files<br/>';
-echo 'Installation done ! Refresh this page<br/>';
+exec('chmod +x -R /www/{xderm-up,xderm-up/js,xderm-up/img}/*');
+echo 'Replacing older files...<br>';
+exec('cp -R /www/{xderm-up,xderm-up/js,xderm-up/img}/*');
+echo 'Installation done ! Refresh this page<br>';
 }
 ?>
 </head>
