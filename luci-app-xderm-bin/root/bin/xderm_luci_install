@@ -1,0 +1,16 @@
+#!/bin/bash
+echo 'Creating update directories...'
+[ -d /www/xderm-up ] && rm -rf /www/xderm-up
+[ ! -d /www/xderm-up ] && mkdir -p /www/xderm-up /www/xderm-up/js /www/xderm-up/img
+echo 'Downloading files....'
+wget --show-progress -qP /www/xderm-up/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus,index.php}
+wget --show-progress -qP /www/xderm-up/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js
+wget --show-progress -qP /www/xderm-up/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}
+wget --show-progress -qO /bin/xdrtool https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/bin/xdrtool
+chmod +x /bin/xdrtool
+chmod +x -R /www/xderm-up
+chmod +x -R /www/xderm-up/js
+chmod +x -R /www/xderm-up/img
+echo 'Replacing older files..'
+cp -R /www/xderm-up/* /www/xderm
+rm -rf /www/xderm-up
