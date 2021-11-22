@@ -558,7 +558,7 @@ exec('wget --show-progress -qP /www/xderm-up/js/ https://github.com/helmiau/helm
 exec('wget --show-progress -qP /www/xderm-up/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}');
 exec('wget --show-progress -qO /bin/xdrtool https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/bin/xdrtool');
 exec('chmod +x /bin/xdrtool');
-exec('chmod +x -R /www/{xderm-up,xderm-up/js,xderm-up/img}/*');
+exec('chmod +x -R /www/{xderm-up,xderm-up/js,xderm-up/img}');
 echo 'Replacing older files...<br>';
 exec('cp -R /www/xderm-up/* /www/xderm');
 exec('rm -rf /www/xderm-up');
