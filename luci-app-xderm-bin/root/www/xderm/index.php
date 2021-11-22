@@ -395,12 +395,11 @@ echo '<p style="text-align:center; font-size:85%;">Read more info at <a href="ht
 echo '<center>
                                 <input type="submit" name="button6" class="btn geser" id="rmlogin"
                                         value="Remove / Install Login Page"/>
-
+										<br>
                                 <input type="submit" name="button7" class="btn geser"  id="reinstall"
                                         value="Force Reinstall Xderm Mini"/>
-										
-                                <input type="submit" name="button4" class="btn geser"  id="update"
-                                        value="Current Version 3.1 • Check Update"/>
+										<br>
+                                <input type="button" class="btn geser" value="Current Version 3.1"/>
 </center>';
 
 echo '<div class="footer slide" style="display: flex; height: 110%; flex-shrink: 0; font-weight: bold; font-size: 80%; font-align: center; ! important; padding-bottom: 10px"><p style="text-align:center">
@@ -538,10 +537,10 @@ if (file_exists("login.php") | file_exists("header.php")) {
  rename("header.php", "header.php.xdrtool");
  echo 'Loginpage Terhapus !';
 } elseif (file_exists("login.php.xdrtool") | file_exists("header.php.xdrtool")) {
- echo 'Loginpage tidak Tersedia, Menginstall...<br/>';
+ echo 'Login page tidak Tersedia, Menginstall...<br/>';
  rename("login.php.xdrtool", "login.php");
  rename("header.php.xdrtool", "header.php");
- echo 'Loginpage Terinstall !';
+ echo 'Login page Terinstall !';
 } else {
  echo 'Login page is available, now installing online mode !';
  exec('wget -O /www/xderm/login.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/login.php -q');
@@ -552,27 +551,21 @@ if($_POST['button7']){
 echo 'Force Reinstall Xderm Mini !<br/>';
 echo 'Removing old files<br/>';
 if (file_exists("login.php") | file_exists("header.php")) {
-	exec('wget -O /www/xderm/login.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/login.php -q');
-	exec('wget -O /www/xderm/header.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/header.php -q');
+	exec('rm /www/xderm/login.php');
+	exec('rm /www/xderm/header.php');
 } elseif (file_exists("login.php.xdrtool") | file_exists("header.php.xdrtool")) {
-	exec('wget -O /www/xderm/login.php.xdrtool https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/login.php -q');
-	exec('wget -O /www/xderm/header.php.xdrtool https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/header.php -q');
+	exec('rm /www/xderm/login.php.xdrtool');
+	exec('rm /www/xderm/header.php.xdrtool');
 } else {
-	exec('wget -O /www/xderm/login.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/login.php -q');
-	exec('wget -O /www/xderm/header.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/header.php -q');
+	exec('rm /www/xderm/login.php');
+	exec('rm /www/xderm/header.php');
 }
-exec('wget -O /www/xderm/index.html https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/index.html -q');
-exec('wget -O /www/xderm/xderm-mini https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/xderm-mini -q');
-exec('wget -O /www/xderm/js/jquery-2.1.3.min.js https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/jquery-2.1.3.min.js -q');
-exec('wget -O /www/xderm/img/image.png https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/image.png -q');
-exec('wget -O /www/xderm/img/fav.ico https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/fav.ico -q');
-exec('wget -O /www/xderm/img/ico.png https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/ico.png -q');
-exec('wget -O /www/xderm/img/background.jpg https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/background.jpg -q');
-exec('wget -O /bin/xdrauth https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/adds/xdrauth -q');
-exec('chmod +x /bin/xdrauth');
-exec('wget -O /bin/xdrtool https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/adds/xdrtool -q');
-exec('wget -O /www/xderm/index.php https://raw.githubusercontent.com/ryanfauzi1/xderm-mini_GUI/main/index.php -q');
+exec('wget --show-progress -qP /root/www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus}');
+exec('wget --show-progress -qP /root/www/xderm/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js');
+exec('wget --show-progress -qP /root/www/xderm/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}');
+exec('wget -O /bin/xdrtool https://raw.githubusercontent.com/helmiau/xderm-mini_GUI/main/adds/xdrtool -q');
 exec('chmod +x /bin/xdrtool');
+exec('wget --show-progress -qP /root/www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/index.php');
 echo 'Installing new files<br/>';
 echo 'Installation done ! Refresh this page<br/>';
 }
