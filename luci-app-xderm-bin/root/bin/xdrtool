@@ -172,32 +172,12 @@ function xderm_install() {
 	echo "Installing latest version of Xderm Mini GUI, please wait....."
 	echo "Creating required directories....."
 	mkdir -p "$XDERMPATH" "$XDERMPATH"/js "$XDERMPATH"/img "$XDERMPATH"/log
-	echo "Downloading files....................1%"
-	wget -O "$XDERMPATH"/index.php $URL/index.php -q
-	echo "Downloading files....................5%"
-	wget -O "$XDERMPATH"/index.html $URL/index.html -q
-	echo "Downloading files...................10%"
-	wget -O "$XDERMPATH"/xderm-mini $URL/xderm-mini -q
-	echo "Downloading files...................20%"
-	wget -O "$XDERMPATH"/login.php $URL/login.php -q
-	echo "Downloading files...................30%"
-	wget -O "$XDERMPATH"/header.php $URL/header.php -q
-	echo "Downloading files...................40%"
-	wget -O "$XDERMPATH"/config.txt $URL/config.txt -q
-	echo "Downloading files...................50%"
-	wget -O "$XDERMPATH"/js/jquery-2.1.3.min.js $URL/jquery-2.1.3.min.js -q
-	echo "Downloading files...................60%"
-	wget -O "$XDERMPATH"/img/image.png $URL/image.png -q
-	echo "Downloading files...................70%"
-	wget -O "$XDERMPATH"/img/fav.ico $URL/fav.ico -q
-	echo "Downloading files...................80%"
-	wget -O "$XDERMPATH"/img/ico.png $URL/ico.png -q
-	echo "Downloading files...................85%"
-	wget -O "$XDERMPATH"/img/background.jpg $URL/background.jpg -q
-	echo "Downloading files...................90%"
-	wget -O "$XDERMPATH"/xdrtheme-blue-agus $URL/adds/xdrtheme-blue-agus -q
-	echo "Downloading files...................95%"
-	echo "Files downloaded...................100%"
+	echo "Downloading files................."
+	wget --show-progress -qP /www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus,index.php}
+	wget --show-progress -qP /www/xderm/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js
+	wget --show-progress -qP /www/xderm/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}
+	echo "Downloading files....................100%"
+	echo "Files downloaded...................!"
 	if [ -f $(cat "$XDERMPATH"/log/st 2>/dev/null) ]; then
 		echo "Starting Xderm Binary....."
 		echo Start > "$XDERMPATH"/log/st
@@ -222,8 +202,7 @@ function xderm_install() {
 function xderm_update() {
 	echo "==========================================="
 	echo -e " Installing manual update..."
-	wget -O $XDERMPATH/xderm-mini $URL/xderm-mini -q
-	wget -O $XDERMPATH/index.php $URL/index.php -q
+	wget --show-progress -qP /www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{xderm-mini,index.php}
 	echo "==========================================="
 	echo -e " Manual update installation done..."
 	echo "==========================================="
@@ -583,20 +562,20 @@ function xderm_fixphp() {
 
 	helmiooo=$(cat /etc/config/uhttpd)
 	if [[ $helmiooo == *"uhttpd 'mai"* ]]; then
-	echo -e "Step 1 done ! Resuming to step 2..."
-	sed -i "/config uhttpd 'main'/a list interpreter '.php=/usr/bin/php-cgi'" /etc/config/uhttpd
+		echo -e "Step 1 done ! Resuming to step 2..."
+		sed -i "/config uhttpd 'main'/a list interpreter '.php=/usr/bin/php-cgi'" /etc/config/uhttpd
 	fi
 	if [[ $helmiooo == *"uhttpd 'mai"* ]]; then
-	echo -e "Step 2 done ! Resuming to step 3..."
-	sed -i "/config uhttpd 'main'/a option ubus_prefix '/ubus'" /etc/config/uhttpd
+		echo -e "Step 2 done ! Resuming to step 3..."
+		sed -i "/config uhttpd 'main'/a option ubus_prefix '/ubus'" /etc/config/uhttpd
 	fi
 	if [[ $helmiooo == *"uhttpd mai"* ]]; then
-	echo -e "Step 3 done ! Resuming to last step..."
-	sed -i "/config uhttpd main/a list interpreter '.php=/usr/bin/php-cgi'" /etc/config/uhttpd
+		echo -e "Step 3 done ! Resuming to last step..."
+		sed -i "/config uhttpd main/a list interpreter '.php=/usr/bin/php-cgi'" /etc/config/uhttpd
 	fi
 	if [[ $helmiooo == *"uhttpd mai"* ]]; then
-	echo -e "Everything has been done..."
-	sed -i "/config uhttpd main/a option ubus_prefix '/ubus'" /etc/config/uhttpd
+		echo -e "Everything has been done..."
+		sed -i "/config uhttpd main/a option ubus_prefix '/ubus'" /etc/config/uhttpd
 	fi
 	/etc/init.d/uhttpd restart
 	/etc/init.d/rpcd restart

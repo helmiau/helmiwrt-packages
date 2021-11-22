@@ -399,7 +399,7 @@ echo '<center>
                                 <input type="submit" name="button7" class="btn geser"  id="reinstall"
                                         value="Force Reinstall Xderm Mini"/>
 										<br>
-                                <input type="button" class="btn geser" value="Current Version 3.1"/>
+                                <input type="button" class="btn geser" value="Current Version 3.1 LuCI"/>
 </center>';
 
 echo '<div class="footer slide" style="display: flex; height: 110%; flex-shrink: 0; font-weight: bold; font-size: 80%; font-align: center; ! important; padding-bottom: 10px"><p style="text-align:center">
@@ -560,12 +560,12 @@ if (file_exists("login.php") | file_exists("header.php")) {
 	exec('rm /www/xderm/login.php');
 	exec('rm /www/xderm/header.php');
 }
-exec('wget --show-progress -qP /root/www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus}');
-exec('wget --show-progress -qP /root/www/xderm/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js');
-exec('wget --show-progress -qP /root/www/xderm/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}');
-exec('wget -O /bin/xdrtool https://raw.githubusercontent.com/helmiau/xderm-mini_GUI/main/adds/xdrtool -q');
+exec('wget --show-progress -qP /www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/{config.txt,header.php.xdrtool,index.html,login.php.xdrtool,xderm-mini,xdrtheme-blue-agus}');
+exec('wget --show-progress -qP /www/xderm/js/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/js/jquery-2.1.3.min.js');
+exec('wget --show-progress -qP /www/xderm/img/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/img/{fav.ico,ico.png,image.png}');
+exec('wget -O /bin/xdrtool https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/bin/xdrtool -q');
 exec('chmod +x /bin/xdrtool');
-exec('wget --show-progress -qP /root/www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/index.php');
+exec('wget --show-progress -qP /www/xderm/ https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/index.php');
 echo 'Installing new files<br/>';
 echo 'Installation done ! Refresh this page<br/>';
 }
