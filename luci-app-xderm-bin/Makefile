@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Xderm Mini App
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-xderm-bin
-PKG_VERSION:=1.4
+PKG_VERSION:=1.5
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
