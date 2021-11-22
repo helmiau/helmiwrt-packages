@@ -560,7 +560,8 @@ exec('wget --show-progress -qO /bin/xdrtool https://github.com/helmiau/helmiwrt-
 exec('chmod +x /bin/xdrtool');
 exec('chmod +x -R /www/{xderm-up,xderm-up/js,xderm-up/img}/*');
 echo 'Replacing older files...<br>';
-exec('cp -R /www/{xderm-up,xderm-up/js,xderm-up/img}/*');
+exec('cp -R /www/xderm-up/* /www/xderm');
+exec('rm -rf /www/xderm-up');
 echo 'Installation done ! Refresh this page<br>';
 }
 ?>
