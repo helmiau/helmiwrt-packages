@@ -541,7 +541,7 @@ if (file_exists("login.php") | file_exists("header.php")) {
  rename("login.php.xdrtool", "login.php");
  rename("header.php.xdrtool", "header.php");
  echo 'Login page Terinstall !';
-} else {
+} elseif (file_exists("login.php.xdrtool") | file_exists("login.php")) {
  echo 'Login page is available, now installing online mode !';
  exec('wget -O /www/xderm/login.php https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/login.php.xdrtool -q');
  exec('wget -O /www/xderm/header.php https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/header.php.xdrtool -q');
