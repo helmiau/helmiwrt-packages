@@ -10,6 +10,8 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Libernet Plus App
 LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+coreutils +coreutils-stdbuf +jq +ip-full +kmod-tun +openssh-client +https-dns-proxy +php7 +php7-cgi +php7-mod-json +php7-mod-session +python3 +httping +stunnel +stubby +getdns
+
 PKG_NAME:=luci-app-libernet-plus
 PKG_VERSION:=1.4
 PKG_RELEASE:=2
@@ -17,7 +19,7 @@ PKG_RELEASE:=2
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
-	DEPENDS:=+coreutils +coreutils-stdbuf +jq +ip-full +kmod-tun +openssh-client +https-dns-proxy +php7 +php7-cgi +php7-mod-json +php7-mod-session +python3 +httping +stunnel +stubby +getdns
+	DEPENDS:=$(LUCI_DEPENDS)
 endef
 
 define Package/$(PKG_NAME)/install

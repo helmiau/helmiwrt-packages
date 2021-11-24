@@ -10,6 +10,8 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Tiny File Manager App
 LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-session +php7-mod-ctype +php7-mod-fileinfo +php7-mod-zip +php7-mod-iconv +php7-mod-mbstring
+
 PKG_NAME:=luci-app-tinyfm
 PKG_VERSION:=1.3
 PKG_RELEASE:=1
@@ -17,7 +19,7 @@ PKG_RELEASE:=1
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
-	DEPENDS:=+php7 +php7-cgi +php7-mod-session +php7-mod-ctype +php7-mod-fileinfo +php7-mod-zip +php7-mod-iconv +php7-mod-mbstring
+	DEPENDS:=$(LUCI_DEPENDS)
 endef
 
 define Package/$(PKG_NAME)/install

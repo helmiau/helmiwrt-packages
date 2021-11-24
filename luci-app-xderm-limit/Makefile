@@ -10,6 +10,8 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Xderm Mini App
 LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+coreutils-base64 +coreutils-timeout +httping +v2ray-core +corkscrew +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client +openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy
+
 PKG_NAME:=luci-app-xderm-limit
 PKG_VERSION:=1.4
 PKG_RELEASE:=1
@@ -17,7 +19,7 @@ PKG_RELEASE:=1
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
-	DEPENDS:=+coreutils-base64 +coreutils-timeout +httping +v2ray-core +corkscrew +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client +openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy
+	DEPENDS:=$(LUCI_DEPENDS)
 endef
 
 define Package/$(PKG_NAME)/install
