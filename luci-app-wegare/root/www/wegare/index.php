@@ -9,7 +9,7 @@ if (preg_match('/TERHUBUNG/', $log)) $terhubung = true;
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-	<title>Wegare STL Tunnel</title>
+	<title>Wegare STL Tunnel - Home</title>
 	<meta name="description" content="Portal Free VPN Sites Provider oleh Helmi Amirudin.">
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/img/og-16.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="assets/img/og-32.png">

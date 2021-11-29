@@ -40,7 +40,7 @@ function start() {
 			exec("route add 8.8.4.4 gw ".implode($route)." metric 0");
 			exec("route add ".implode($host)." gw ".implode($route)." metric 0");
 			exec("route add default gw 10.0.0.2 metric 0");
-		} else if ($pillstl == "2") {
+		} else if (implode($pillstl) == "2") {
 			tunnel();
 		}
 		exec("rm -r logs.txt 2>/dev/null");
@@ -85,28 +85,39 @@ function autoReconnect() {
 }
 
 function saveConfig() {
+    $met = explode("|", $_POST["met"]);
 	$pillstl = $_POST["pillstl"];
 	$host = $_POST["host"];
 	$port = $_POST["port"];
 	$udp = $_POST["udp"];
 	$user = $_POST["user"];
 	$pass = $_POST["pass"];
+    $proxy = $_POST["proxy"];
+    $pp = $_POST["pp"];
 	$bug = $_POST["bug"];
 	$payload = $_POST["payload"];
 	if ($pillstl == "1") {
-		$badvpn = "badvpn-tun2socks --tundev tun1 --netif-ipaddr 10.0.0.2 --netif-netmask 255.255.255.0 --socks-server-addr 127.0.0.1:1080 --udpgw-remote-server-addr 127.0.0.1:$udp --udpgw-connection-buffer-size 65535 --udpgw-transparent-dns &";
+		$badvpn = "badvpn-tun2socks --tundev tun1 --netif-ipaddr 10.0.0.2 --netif-netmask 255.255.255.0 --socks-server-addr 127.0.0.1:1080 --udpgw-remote-server-addr 127.0.0.1:".$udp." --udpgw-connection-buffer-size 65535 --udpgw-transparent-dns &";
 	} else if ($pillstl == "2") {
-		file_put_contents("/etc/redsocks.conf", base64_decode("YmFzZSB7Cglsb2dfZGVidWcgPSBvZmY7Cglsb2dfaW5mbyA9IG9mZjsKCXJlZGlyZWN0b3IgPSBpcHRhYmxlczsKfQpyZWRzb2NrcyB7Cglsb2NhbF9pcCA9IDAuMC4wLjA7Cglsb2NhbF9wb3J0ID0gODEyMzsKCWlwID0gMTI3LjAuMC4xOwoJcG9ydCA9IDEwODA7Cgl0eXBlID0gc29ja3M1Owp9CnJlZHNvY2tzIHsKCWxvY2FsX2lwID0gMTI3LjAuMC4xOwoJbG9jYWxfcG9ydCA9IDgxMjQ7CglpcCA9IDEwLjAuMC4xOwoJcG9ydCA9IDEwODA7Cgl0eXBlID0gc29ja3M1Owp9CnJlZHVkcCB7CiAgICBsb2NhbF9pcCA9IDEyNy4wLjAuMTsgCiAgICBsb2NhbF9wb3J0ID0gJHVkcDsKICAgIGlwID0gMTAuMC4wLjE7CiAgICBwb3J0ID0gMTA4MDsKICAgIGRlc3RfaXAgPSA4LjguOC44OyAKICAgIGRlc3RfcG9ydCA9IDUzOyAKICAgIHVkcF90aW1lb3V0ID0gMzA7CiAgICB1ZHBfdGltZW91dF9zdHJlYW0gPSAxODA7Cn0KZG5zdGMgewoJbG9jYWxfaXAgPSAxMjcuMC4wLjE7Cglsb2NhbF9wb3J0ID0gNTMwMDsKfQ=="));
+		file_put_contents("/etc/redsocks.conf", base64_decode("YmFzZSB7Cglsb2dfZGVidWcgPSBvZmY7Cglsb2dfaW5mbyA9IG9mZjsKCXJlZGlyZWN0b3IgPSBpcHRhYmxlczsKfQpyZWRzb2NrcyB7Cglsb2NhbF9pcCA9IDAuMC4wLjA7Cglsb2NhbF9wb3J0ID0gODEyMzsKCWlwID0gMTI3LjAuMC4xOwoJcG9ydCA9IDEwODA7Cgl0eXBlID0gc29ja3M1Owp9CnJlZHNvY2tzIHsKCWxvY2FsX2lwID0gMTI3LjAuMC4xOwoJbG9jYWxfcG9ydCA9IDgxMjQ7CglpcCA9IDEwLjAuMC4xOwoJcG9ydCA9IDEwODA7Cgl0eXBlID0gc29ja3M1Owp9CnJlZHVkcCB7CiAgICBsb2NhbF9pcCA9IDEyNy4wLjAuMTsgCiAgICBsb2NhbF9wb3J0ID0gVURQR1c7CiAgICBpcCA9IDEwLjAuMC4xOwogICAgcG9ydCA9IDEwODA7CiAgICBkZXN0X2lwID0gOC44LjguODsgCiAgICBkZXN0X3BvcnQgPSA1MzsgCiAgICB1ZHBfdGltZW91dCA9IDMwOwogICAgdWRwX3RpbWVvdXRfc3RyZWFtID0gMTgwOwp9CmRuc3RjIHsKCWxvY2FsX2lwID0gMTI3LjAuMC4xOwoJbG9jYWxfcG9ydCA9IDUzMDA7Cn0="));
+		file_put_contents("/etc/redsocks.conf", str_replace("UDPGW", $udp, file_get_contents("/etc/redsocks.conf")));
 		$badvpn = "#!/bin/bash\n#stl (Wegare)\niptables -t nat -N PROXY 2>/dev/null\niptables -t nat -A PREROUTING -i br-lan -p tcp -j PROXY\niptables -t nat -A PROXY -d 127.0.0.0/8 -j RETURN\niptables -t nat -A PROXY -d 192.168.0.0/16 -j RETURN\niptables -t nat -A PROXY -d 0.0.0.0/8 -j RETURN\niptables -t nat -A PROXY -d 10.0.0.0/8 -j RETURN\niptables -t nat -A PROXY -p tcp -j REDIRECT --to-ports 8123\niptables -t nat -A PROXY -p tcp -j REDIRECT --to-ports 8124\niptables -t nat -A PROXY -p udp --dport 53 -j REDIRECT --to-ports ".$udp."\nredsocks -c /etc/redsocks.conf -p /var/run/redsocks.pid &";
 	}
 	file_put_contents("/usr/bin/gproxy", $badvpn."\n");
 	exec("chmod +x /usr/bin/gproxy");
-	file_put_contents("/root/akun/settings.ini", "[mode]\n\nconnection_mode = 3\n\n[config]\npayload = ".$payload."\nproxyip = \nproxyport = \n\nauto_replace = 1\n\n[ssh]\nhost = ".$host."\nport = ".$port."\nusername = ".$user."\npassword = ".$pass."\n\n[sni]\nserver_name = ".$bug."\n");
+	if ($met[0] !== "http") {
+		$sProxy = "proxyip = \nproxyport = ";
+		$proxy = "-";
+    	$pp = "-";
+	} else {
+		$sProxy = "proxyip = ".$proxy."\nproxyport = ".$pp;
+	}
+	file_put_contents("/root/akun/settings.ini", "[mode]\n\nconnection_mode = ".$met[1]."\n\n[config]\npayload = ".$payload."\n".$sProxy."\n\nauto_replace = 1\n\n[ssh]\nhost = ".$host."\nport = ".$port."\nusername = ".$user."\npassword = ".$pass."\n\n[sni]\nserver_name = ".$bug."\n");
 	if (empty($udp)) $udp = "-";
 	if (empty($payload)) $payload = "-";
 	if (empty($proxy)) $proxy = "-";
 	if (empty($pp)) $pp = "-";
-	file_put_contents("/root/akun/stl.txt", "sp\n".$host."\n".$port."\n".$user."\n".$pass."\n".$udp."\n".$payload."\n".$proxy."\n".$pp."\n".$bug."\n");
+	file_put_contents("/root/akun/stl.txt", $met[0]."\n".$host."\n".$port."\n".$user."\n".$pass."\n".$udp."\n".$payload."\n".$proxy."\n".$pp."\n".$bug."\n");
 	file_put_contents("/root/akun/pillstl.txt", $pillstl."\n");
 	echo "Sett Profile Sukses";
 }

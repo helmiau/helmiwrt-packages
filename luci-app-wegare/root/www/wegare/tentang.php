@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-	<title>Wegare STL Tunnel</title>
+	<title>Wegare STL Tunnel - About</title>
 	<meta name="description" content="Portal Free VPN Sites Provider oleh Helmi Amirudin.">
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/img/og-16.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="assets/img/og-32.png">
@@ -63,7 +63,7 @@
 							Donasi dengan klik iklan di web, jangan pakai adblock maupun direct link !
 						</p>
 						<p align="center" class="text-info">
-							Versi GUI 1.1
+							Versi GUI 1.2
 						</p>
 						</strong>
                         </div>
