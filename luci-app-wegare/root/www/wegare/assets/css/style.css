@@ -1,0 +1,21 @@
+body {
+    background: url(../img/background.jpg);
+    background-size: cover;
+}
+.form-control {
+    text-align: center;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.315);
+    box-shadow: 0 0 10px 0 #0320FC;
+    color: red;
+}
+
+.form-control:focus {
+    border-color: #2CC300;
+    color: #fff;
+    box-shadow: 0 0 5px 0 #2CC300 inset, 0 0 5px 2px #2CC300;
+    background-color: rgba(8, 8, 8, 0.64);
+}
+.box-shadow{
+    box-shadow: 0 0 10px 0 #2CC300;
+}
