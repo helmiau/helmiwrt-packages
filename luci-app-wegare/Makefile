@@ -14,7 +14,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-session +zoneinfo-core +zoneinfo-asia +sshpass +openvpn-openssl +ip-full +openssh-client +httping +screen +python3 +coreutils-nohup +libevent2 +redsocks
 
 PKG_NAME:=luci-app-wegare
-PKG_VERSION:=1.0
+PKG_VERSION:=1.2
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
