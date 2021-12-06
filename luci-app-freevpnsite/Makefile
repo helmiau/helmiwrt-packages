@@ -12,7 +12,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-json +php7-mod-session
 
 PKG_NAME:=luci-app-freevpnsite
-PKG_VERSION:=1.1
+PKG_VERSION:=1.2
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
@@ -54,6 +54,16 @@ define Package/$(PKG_NAME)/postinst
 		logger "  helmilog : restarting some apps..."
 		/etc/init.d/uhttpd restart
 	fi
+exit 0
+endef
+
+define Package/$(PKG_NAME)/postrm
+#!/bin/sh
+	export NAMAPAKET="freevpnsite"
+	if [ -d /www/$NAMAPAKET ] ; then
+		rm -rf /www/$NAMAPAKET
+	fi
+	unset NAMAPAKET
 exit 0
 endef
 

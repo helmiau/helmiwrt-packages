@@ -13,7 +13,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+coreutils-base64 +coreutils-timeout +httping +v2ray-core +corkscrew +procps-ng +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client +openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy
 
 PKG_NAME:=luci-app-xderm-bin
-PKG_VERSION:=1.6
+PKG_VERSION:=1.7
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
@@ -30,6 +30,8 @@ define Package/$(PKG_NAME)/install
 	chmod -R 755 /root/www/*
 	chmod -R 755 /root/www/xderm/*
 	chmod -R 755 /root/root/*
+	chmod -R 755 /bin/xdrtool
+	chmod -R 755 /bin/xderm_luci_install
 endef
 
 define Package/$(PKG_NAME)/postinst
@@ -41,6 +43,8 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/*
 	chmod -R 755 /www/xderm/*
 	chmod -R 755 /root/*
+	chmod -R 755 /bin/xdrtool
+	chmod -R 755 /bin/xderm_luci_install
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		echo -e "  helmilog : system not using php-cgi, patching php config ..."
@@ -58,6 +62,32 @@ define Package/$(PKG_NAME)/postinst
 		/etc/init.d/uhttpd restart
 	fi
 	/usr/sbin/openvpn --mktun --dev tun0
+exit 0
+endef
+
+define Package/$(PKG_NAME)/postrm
+#!/bin/sh
+	export NAMAPAKET="xderm"
+	if [ -d /www/$NAMAPAKET ] && [ -f /www/$NAMAPAKET/limit.php ]; then
+		rm -rf /www/$NAMAPAKET/img
+		rm -rf /www/$NAMAPAKET/js
+		rm -rf /www/$NAMAPAKET/log
+		rm -rf /www/$NAMAPAKET/var
+		rm -f /www/$NAMAPAKET/config.txt
+		rm -f /www/$NAMAPAKET/header.php.xdrtool
+		rm -f /www/$NAMAPAKET/index.html
+		rm -f /www/$NAMAPAKET/index.php
+		rm -f /www/$NAMAPAKET/login.php.xdrtool
+		rm -f /www/$NAMAPAKET/xderm-mini
+		rm -f /www/$NAMAPAKET/xdrtheme-blue-agus
+		rm -f /bin/xdrtool
+		rm -f /bin/xderm_luci_install
+		rm -f /root/auth.txt
+	fi
+	if [ -d /www/$NAMAPAKET ] && [ ! -f /www/$NAMAPAKET/limit.php ]; then
+		rm -rf /www/$NAMAPAKET
+	fi
+	unset NAMAPAKET
 exit 0
 endef
 

@@ -13,7 +13,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+coreutils +coreutils-stdbuf +jq +ip-full +kmod-tun +openssh-client +https-dns-proxy +php7 +php7-cgi +php7-mod-json +php7-mod-session +python3 +httping +stunnel +stubby +getdns
 
 PKG_NAME:=luci-app-libernet-plus
-PKG_VERSION:=1.5
+PKG_VERSION:=1.6
 PKG_RELEASE:=2
 
 define Package/$(PKG_NAME)
@@ -60,6 +60,16 @@ define Package/$(PKG_NAME)/postinst
 		logger "  helmilog : restarting some apps..."
 		/etc/init.d/uhttpd restart
 	fi
+exit 0
+endef
+
+define Package/$(PKG_NAME)/postrm
+#!/bin/sh
+	export NAMAPAKET="libernet"
+	if [ -d /www/$NAMAPAKET ] ; then
+		rm -rf /www/$NAMAPAKET
+	fi
+	unset NAMAPAKET
 exit 0
 endef
 

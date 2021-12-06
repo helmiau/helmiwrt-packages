@@ -13,7 +13,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-json +php7-mod-session +php7-fpm +php7-mod-curl +php7-mod-dom +php7-mod-gettext +php7-mod-gmp +php7-mod-iconv +php7-mod-mbstring +php7-mod-opcache +php7-mod-pcntl +php7-mod-pdo +php7-mod-zip +zoneinfo-core +zoneinfo-simple
 
 PKG_NAME:=luci-app-mikhmon
-PKG_VERSION:=1.3
+PKG_VERSION:=1.4
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
@@ -55,6 +55,16 @@ define Package/$(PKG_NAME)/postinst
 		logger "  helmilog : restarting some apps..."
 		/etc/init.d/uhttpd restart
 	fi
+exit 0
+endef
+
+define Package/$(PKG_NAME)/postrm
+#!/bin/sh
+	export NAMAPAKET="mikhmon"
+	if [ -d /www/$NAMAPAKET ] ; then
+		rm -rf /www/$NAMAPAKET
+	fi
+	unset NAMAPAKET
 exit 0
 endef
 
