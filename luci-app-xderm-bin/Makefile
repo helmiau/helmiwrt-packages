@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Xderm Mini App
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+coreutils +coreutils-base64 +coreutils-timeout +httping +v2ray-core +corkscrew +procps-ng +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client +openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy
+LUCI_DEPENDS:=+bash +screen +coreutils +coreutils-base64 +coreutils-timeout +httping +v2ray-core +corkscrew +procps-ng +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client +openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy
 
 PKG_NAME:=luci-app-xderm-bin
 PKG_VERSION:=1.7
@@ -62,6 +62,10 @@ define Package/$(PKG_NAME)/postinst
 		/etc/init.d/uhttpd restart
 	fi
 	/usr/sbin/openvpn --mktun --dev tun0
+	# Fix for xderm mini gui if trojan is not installed
+	if [ ! -f /usr/bin/trojan ]; then
+		ln -sf /usr/sbin/trojan /usr/bin/trojan
+	fi
 exit 0
 endef
 
