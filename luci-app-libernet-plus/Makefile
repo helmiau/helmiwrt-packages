@@ -47,6 +47,8 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /root/libernet/*
 	chmod -R 755 /root/libernet/bin/*
 	sed -i '3 i /usr/sbin/openvpn --mktun --dev tun1' /etc/rc.local
+	/etc/init.d/https-dns-proxy disable
+	/etc/init.d/https-dns-proxy stop
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		echo -e "  helmilog : system not using php-cgi, patching php config ..."
