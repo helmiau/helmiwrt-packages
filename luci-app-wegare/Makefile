@@ -29,6 +29,7 @@ define Package/$(PKG_NAME)/install
 	chmod -R 755 /root/www/*
 	chmod -R 755 /root/www/wegare/*
 	chmod -R 755 /root/root/*
+	chmod -R 755 /root/bin/wegare
 endef
 
 define Package/$(PKG_NAME)/postinst
@@ -40,6 +41,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/*
 	chmod -R 755 /www/wegare/*
 	chmod -R 755 /root/*
+	chmod -R 755 /bin/wegare
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		echo -e "  helmilog : system not using php-cgi, patching php config ..."

@@ -1,0 +1,451 @@
+#!/bin/bash
+#--------------------------------------------------------
+#   Don't remove this section for credits
+#   Don't rename this file
+#--------------------------------------------------------
+#   If you use some codes frome here, please give credit to www.helmiau.com
+#--------------------------------------------------------
+#   All in one script installer for wegare tools
+#   by Helmi Amirudin a.k.a helmiau
+#   my profile page https://wwww.helmiau.com
+#   my github https://github.com/helmiau
+#--------------------------------------------------------
+
+#--- Warna Warna
+R='\033[1;31m' # Merah Muda
+G='\033[1;32m' # Hijau Muda
+C='\033[0;36m' # Biru Muda
+Y='\033[1;33m' # Kuning
+N='\033[1;37m' # Putih
+
+
+#--------------------------------------------------------
+#   If you use some codes frome here, please give credit to www.helmiau.com
+#--------------------------------------------------------
+# Wegare Tools
+rawgit="https://raw.githubusercontent.com"
+comgit="https://github.com"
+usergit="wegare123"
+if [[ $1 = "l2i" ]]; then
+	#l2i (Wegare)
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}l2i${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	printf 'ctrl+c' | crontab -e > /dev/null
+	/etc/init.d/ipsec stop 2>/dev/null
+	/etc/init.d/xl2tpd stop 2>/dev/null
+	/etc/init.d/ipsec disable 2>/dev/null
+	/etc/init.d/xl2tpd disable 2>/dev/null
+	ipsec stop 2>/dev/null
+	killall -q charon
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/l2i/main/l2i.sh" -O /usr/bin/l2i
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/l2i/main/autorekonek-l2i.sh" -O /usr/bin/autorekonek-l2i
+	chmod +x /usr/bin/l2i
+	chmod +x /usr/bin/autorekonek-l2i
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/l2i.txt
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "opvc" ]]; then
+	#opvc (Wegare)
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}opvc${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvc/main/opvc.sh" -O /usr/bin/opvc
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/opvc/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvc/main/autorekonek-opvc.sh" -O /usr/bin/autorekonek-opvc
+	opkg update && opkg install lsof && opkg install openvpn-openssl fping
+	chmod +x /usr/bin/opvc
+	chmod +x /usr/bin/ck-client
+	chmod +x /usr/bin/autorekonek-opvc
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/opvc.txt
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "opvs" ]]; then
+	#opvs (Wegare)
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}opvs${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvs/main/opvs.sh" -O /usr/bin/opvs
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvs/main/autorekonek-opvs.sh" -O /usr/bin/autorekonek-opvs
+	opkg update && opkg install lsof openvpn-openssl stunnel fping
+	chmod +x /usr/bin/opvs
+	chmod +x /usr/bin/autorekonek-opvs
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/opvs.txt
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "opvss" ]]; then
+	#opvss (Wegare)
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}opvss${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	opkg update
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvss/main/opvss.sh" -O /usr/bin/opvss
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvss/main/autorekonek-opvss.sh" -O /usr/bin/autorekonek-opvss
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/simple-obfs_0.0.5-5_aarch64_cortex-a53.ipk?raw=true" -O ~/simple-obfs.ipk
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
+	cek2=$(ls /usr/bin/ | grep ss-local)
+	if [ $cek2 = "ss-local" ]; then
+	echo > /dev/null
+	else
+	opkg install shadowsocks-libev-ss-local
+	fi
+	opkg install *.ipk && opkg install lsof openvpn-openssl fping
+	chmod +x /usr/bin/ck-client
+	chmod +x /usr/bin/opvss
+	chmod +x /usr/bin/autorekonek-opvss
+	rm -r ~/install.sh
+	rm -r ~/*.ipk
+	mkdir -p ~/akun/
+	touch ~/akun/opvss.txt
+	touch ~/akun/pass-opvss.txt
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "slowdns" ]]; then
+	#slowdns
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}slowdns${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/slowdns/main/slowdns.sh" -O /usr/bin/slowdns
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/slowdns/main/autorekonek-slowdns.sh" -O /usr/bin/autorekonek-slowdns
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/slowdns/blob/main/dns-client-v19?raw=true" -O /usr/bin/dns-client
+	chmod +x /usr/bin/slowdns
+	chmod +x /usr/bin/dns-client
+	chmod +x /usr/bin/autorekonek-slowdns
+	opkg install openvpn-openssl && opkg install ip-full && opkg install openssh-client && opkg install --force-depends *.ipk && opkg install lsof && opkg install fping screen python python3 coreutils-nohup
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/slowdns.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "ssrt" ]]; then
+	#ssrt
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}ssrt${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/ssrt/main/ssrt.sh" -O /usr/bin/ssrt
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/ssrt/main/autorekonek-ssrt.sh" -O /usr/bin/autorekonek-ssrt
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	chmod +x /usr/bin/tun2socks
+	cek=$(cat /etc/openwrt_r* | grep -i RELEASE | cut -d= -f2 | cut -d"'" -f2 | cut -d. -f1)
+	if [ "$cek" = "19" ]; then
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/ssrt/blob/main/shadowsocksr-libev_1-0-0-wegare_aarch64_cortex-a53.ipk?raw=true" -O ~/ssr-libev.ipk
+	elif [ "$cek" = "18" ]; then
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/ssrt/blob/main/shadowsocksr-libev_2.5.6-5_aarch64_cortex-a53.ipk?raw=true" -O ~/ssr-libev.ipk
+	else
+	echo "frimware versi yang anda gunakan tidak terdeteksi silahkan install sendiri shadowsocksr-libev nya"
+	fi
+	opkg install ip-full && opkg install *.ipk && opkg install lsof && opkg install fping
+	chmod +x /usr/bin/ssrt
+	chmod +x /usr/bin/autorekonek-ssrt
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/ssrt.conf
+	touch ~/akun/ssrt.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "sst" ]]; then
+	#sst
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}sst${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sst/main/sst.sh" -O /usr/bin/sst
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sst/main/autorekonek-sst.sh" -O /usr/bin/autorekonek-sst
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/simple-obfs_0.0.5-5_aarch64_cortex-a53.ipk?raw=true" -O ~/simple-obfs.ipk
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	chmod +x /usr/bin/tun2socks
+	opkg install ip-full && opkg install *.ipk && opkg install lsof && opkg install fping
+	chmod +x /usr/bin/sst
+	chmod +x /usr/bin/autorekonek-sst
+	chmod +x /usr/bin/ck-client
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/sst.conf
+	touch ~/akun/sst.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "sstp" ]]; then
+	#sstp
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}sstp${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	printf 'ctrl+c' | crontab -e > /dev/null
+	opkg update && opkg install sstp-client pptpd fping
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sstp/main/sstp.sh" -O /usr/bin/sstp
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sstp/main/autorekonek-sstp.sh" -O /usr/bin/autorekonek-sstp
+	chmod +x /usr/bin/sstp
+	chmod +x /usr/bin/autorekonek-sstp
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/sstp.txt
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "stl" ]]; then
+	#stl
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}stl${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	mkdir -p ~/akun/
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/stl.sh" -O /usr/bin/stl
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/gproxy.sh" -O /usr/bin/gproxy
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/autorekonek-stl.sh" -O /usr/bin/autorekonek-stl
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/tunnel.py" -O /root/akun/tunnel.py
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/ssh.py" -O /root/akun/ssh.py
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/inject.py" -O /root/akun/inject.py
+	opkg install openvpn-openssl && opkg install ip-full && opkg install openssh-client && opkg install stunnel && opkg install --force-depends *.ipk && opkg install lsof && opkg install 'httping\|fping\|screen\|python\|python3\|coreutils-nohup\|libevent2\|redsocks'
+	chmod +x /usr/bin/gproxy
+	chmod +x /usr/bin/stl
+	chmod +x /root/akun/tunnel.py
+	chmod +x /root/akun/ssh.py
+	chmod +x /root/akun/inject.py
+	chmod +x /usr/bin/autorekonek-stl
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/.ssh/
+	touch ~/akun/ssl.conf
+	touch ~/.ssh/config
+	touch ~/akun/stl.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "tjg" ]]; then
+	#tjg
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}tjg${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjg/main/tjg.sh" -O /usr/bin/tjg
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/tjg/blob/main/trojan-go_0.10.1-generic_aarch64_cortex-a53.ipk?raw=true" -O ~/trojan-go.ipk
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjg/main/autorekonek-tjg.sh" -O /usr/bin/autorekonek-tjg
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	chmod +x /usr/bin/tun2socks
+	opkg install ip-full ipset lsof fping && opkg install *.ipk
+	chmod +x /usr/bin/tjg
+	chmod +x /usr/bin/autorekonek-tjg
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/tjg.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "tjt" ]]; then
+	#tjt
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}tjt${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjt/main/tjt.sh" -O /usr/bin/tjt
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjt/main/trojan" -O /usr/bin/trojan
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjt/main/autorekonek-tjt.sh" -O /usr/bin/autorekonek-tjt
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	chmod +x /usr/bin/tun2socks
+	opkg install ip-full ipset lsof fping && opkg install *.ipk
+	chmod +x /usr/bin/tjt
+	chmod +x /usr/bin/autorekonek-tjt
+	chmod +x /usr/bin/trojan
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/tjt.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "vmt" ]]; then
+	#vmt (Wegare)
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}vmt${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	mkdir -p /usr/share/v2ray/
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/vmt.sh" -O /usr/bin/vmt
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/autorekonek-vmt.sh" -O /usr/bin/autorekonek-vmt
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ray" -O /usr/bin/v2ray
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ctl" -O /usr/bin/v2ctl
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/v2ray/geoip.dat
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/v2ray/geosite.dat
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	chmod +x /usr/bin/tun2socks
+	cek2=$(opkg list-installed | grep dnsmasq-full | awk '{print $1}')
+	if [ $cek2 = "dnsmasq-full" ]; then
+	echo > /dev/null
+	else
+	opkg remove dnsmasq && opkg install dnsmasq-full
+	fi
+	opkg install resolveip ip-full ipset jshn lsof fping && opkg install *.ipk
+	chmod +x /usr/bin/vmt
+	chmod +x /usr/bin/autorekonek-vmt
+	chmod +x /usr/bin/v2ray
+	chmod +x /usr/bin/v2ctl
+	chmod +x /usr/share/v2ray/geoip.dat
+	chmod +x /usr/share/v2ray/geosite.dat
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/vmt.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "vless" ]]; then
+	#vless
+	echo -e "${Y}"
+	echo -e "================================"
+	echo -e "Installing Wegare Tools - ${G}vless${Y}..."
+	echo -e "================================"
+	echo -e "${N}"
+	mkdir -p /usr/share/xray/
+	mkdir -p /usr/share/v2ray/
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vless/main/vless.sh" -O /usr/bin/vless
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vless/main/autorekonek-vless.sh" -O /usr/bin/autorekonek-vless
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/vless/blob/main/xray?raw=true" -O /usr/bin/xray
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ray" -O /usr/bin/v2ray
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ctl" -O /usr/bin/v2ctl
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/xray/geoip.dat
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/xray/geosite.dat
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/v2ray/geoip.dat
+	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/v2ray/geosite.dat
+	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	chmod +x /usr/bin/tun2socks
+	cek2=$(opkg list-installed | grep dnsmasq-full | awk '{print $1}')
+	if [ $cek2 = "dnsmasq-full" ]; then
+	echo > /dev/null
+	else
+	opkg remove dnsmasq && opkg install dnsmasq-full
+	fi
+	opkg install resolveip ip-full ipset jshn lsof fping && opkg install *.ipk
+	chmod +x /usr/bin/vless
+	chmod +x /usr/bin/autorekonek-vless
+	chmod +x /usr/bin/xray
+	chmod +x /usr/bin/v2ray
+	chmod +x /usr/bin/v2ctl
+	chmod +x /usr/share/xray/geoip.dat
+	chmod +x /usr/share/xray/geosite.dat
+	chmod +x /usr/share/v2ray/geoip.dat
+	chmod +x /usr/share/v2ray/geosite.dat
+	rm -r ~/*.ipk
+	rm -r ~/install.sh
+	mkdir -p ~/akun/
+	touch ~/akun/vless.txt
+	touch ~/akun/ipmodem.txt 
+	sleep 2
+	echo -e "${G}"
+	echo -e "================================"
+	echo -e "Installation success..."
+	echo -e "================================"
+	echo -e "${N}"
+elif [[ $1 = "install" ]]; then
+	/bin/wegare l2i
+	/bin/wegare opvc
+	/bin/wegare opvss
+	/bin/wegare slowdns
+	/bin/wegare ssrt
+	/bin/wegare sst
+	/bin/wegare sstp
+	/bin/wegare stl
+	/bin/wegare tjg
+	/bin/wegare tjt
+	/bin/wegare vmt
+	/bin/wegare vless
+else
+	echo -e "=========================================="
+	echo -e "  ${G}Welcome to WegareTools Installer Script...${N}"
+	echo -e "==========================================${Y}"
+	echo -e "  ${G}wegare l2i${Y} to install wegare l2i"
+	echo -e "  ${G}wegare opvc${Y} to install wegare l2i"
+	echo -e "  ${G}wegare opvss${Y} to install wegare l2i"
+	echo -e "  ${G}wegare slowdns${Y} to install wegare l2i"
+	echo -e "  ${G}wegare ssrt${Y} to install wegare l2i"
+	echo -e "  ${G}wegare sst${Y} to install wegare l2i"
+	echo -e "  ${G}wegare sstp${Y} to install wegare l2i"
+	echo -e "  ${G}wegare stl${Y} to install wegare l2i"
+	echo -e "  ${G}wegare tjg${Y} to install wegare l2i"
+	echo -e "  ${G}wegare tjt${Y} to install wegare l2i"
+	echo -e "  ${G}wegare vmt${Y} to install wegare l2i"
+	echo -e "  ${G}wegare vless${Y} to install wegare l2i"
+	echo -e "${N}=========================================="
+	echo -e "  ${G}wegare install${Y} to install all tools above${N}"
+	echo -e "=========================================="
+	echo -e "  ${R}        AIO Script by helmiau${N}"
+	echo -e "=========================================="
+fi
