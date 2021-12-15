@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Network Monitor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<!-- Add dashboard.js here! -->
+	<script type='text/javascript'>
+		var dashboard = '<script type="text/javascript" src="' + window.location.protocol + '//' + window.location.host + ':19999/dashboard.js"><\/script>';
+		document.write(dashboard);
+	</script>
+	<script>
+		var netdataTheme = 'white'; // or 'slate' for the dark one
+		var netdataPrepCallback = function() {
+		// code here
+		// remove all css files - netdata will not load any now
+		NETDATA.requiredCSS = [];
+		};
+	</script>
+
+	<style>
+		.wrap {
+		  max-width: 1280px;
+		  margin: 0 auto;
+		}
+		h3 {
+		  margin-bottom: 30px;
+		  text-align: center;
+		}
+		.charts {
+		  display: flex;
+		  flex-flow: row wrap;
+		  justify-content: space-around;
+		}
+		.charts > div {
+		  margin-bottom: 6rem;
+		  position: relative;
+		  color: white;
+		}
+	</style>
+</head>
+<body>
+	<main class="wrap">
+		<center>
+			<br>
+			<h3>Network Monitor</h3>
+			<br>
+			<!-- eth1 -->
+			<div data-netdata="net.eth1"
+				data-title="ETH1"
+				data-chart-library="gauge"
+				data-after="-150"
+				data-height="250px"
+				data-width="250px">
+			</div>
+			<!-- eth2 -->
+			<div data-netdata="net.eth2"
+				data-title="ETH2"
+				data-chart-library="gauge"
+				data-after="-150"
+				data-height="150px"
+				data-width="250px">
+			</div>
+			<!-- eth2 -->
+			<div data-netdata="net.br_lan"
+				data-title="LAN"
+				data-chart-library="gauge"
+				data-after="-150"
+				data-height="150px"
+				data-width="250px"
+				data-colors="#66AA00">
+			</div>
+			<!-- LAN -->
+			<div data-netdata="net.br_lan" 
+				data-chart-library="dygraph" 
+				data-title="BR_LAN"
+				data-height="150px"	
+				data-width="100%" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#66AA00">
+			</div>
+			<br>
+			<h3>Resource Monitor</h3>
+			<br>
+			<!-- CPU -->
+			<div data-netdata="cpu.cpu0"
+				data-chart-library="gauge" 
+				data-title="CPU" 
+				data-units="%" 
+				data-gauge-max-value="100" 
+				data-width="250px" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#ee9911">
+			</div>
+			<!-- CPU1 -->
+			<div data-netdata="cpu.cpu1"
+				data-chart-library="gauge" 
+				data-title="CPU1" 
+				data-units="%" 
+				data-gauge-max-value="100" 
+				data-width="250px" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#ee9911">
+			</div>
+			<!-- CPU2 -->
+			<div data-netdata="cpu.cpu2"
+				data-chart-library="gauge" 
+				data-title="CPU2" 
+				data-units="%" 
+				data-gauge-max-value="100" 
+				data-width="250px" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#ee9911">
+			</div>
+			<!-- CPU3 -->
+			<div data-netdata="cpu.cpu3"
+				data-chart-library="gauge" 
+				data-title="CPU3" 
+				data-units="%" 
+				data-gauge-max-value="100" 
+				data-width="250px" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#ee9911">
+			</div>
+			<!-- RAM -->
+			<div data-netdata="mem.available"
+				data-chart-library="gauge" 
+				data-title="RAM" 
+				data-units="%" 
+				data-gauge-max-value="100" 
+				data-width="250px" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#ee9911">
+			</div>
+
+			<!-- traffic graph -->
+			<br><br>
+			<div data-netdata="sensors.temp_scpi_sensors_hwmon_hwmon0" 
+				data-chart-library="dygraph" 
+				data-title="TEMP" 
+				data-units="آ°C" 
+				data-dygraph-max-value="100" 
+				data-height="150px"
+				data-width="100%"
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#66AA00">
+			</div>
+		</center>
+	</main>
+</body>
+</html>
