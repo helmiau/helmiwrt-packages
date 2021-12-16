@@ -10,7 +10,10 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Libernet App
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+coreutils +coreutils-stdbuf +jq +ip-full +kmod-tun +openssh-client +https-dns-proxy +php7 +php7-cgi +php7-mod-json +php7-mod-session +python3 +httping +stunnel +stubby +getdns
+LUCI_DEPENDS:=+coreutils +coreutils-stdbuf +jq +ip-full +kmod-tun +openssh-client +https-dns-proxy \
+	+php7 +php7-cgi +php7-mod-json +php7-mod-session +python3 +httping +stunnel +stubby +getdns \
+	+badvpn +corkscrew +simple-obfs +sshpass +trojan-go +v2ray-core \
+	+bash +curl +librt +libpthread +screen +shadowsocks-libev-ss-local +openvpn-openssl
 
 PKG_NAME:=luci-app-libernet-bin
 PKG_VERSION:=1.6
@@ -43,6 +46,8 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /root/libernet/*
 	chmod -R 755 /root/libernet/bin/*
 	sed -i '3 i /usr/sbin/openvpn --mktun --dev tun1' /etc/rc.local
+	/etc/init.d/https-dns-proxy disable
+	/etc/init.d/https-dns-proxy stop
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		echo -e "  helmilog : system not using php-cgi, patching php config ..."

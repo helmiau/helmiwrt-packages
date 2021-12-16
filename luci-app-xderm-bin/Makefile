@@ -10,7 +10,9 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Xderm Mini App
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+bash +screen +coreutils +coreutils-base64 +coreutils-timeout +httping +v2ray-core +corkscrew +procps-ng +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client +openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy
+LUCI_DEPENDS:=+bash +screen +coreutils +coreutils-base64 +coreutils-timeout +httping +v2ray-core \
+	+corkscrew +procps-ng +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client \
+	+openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy +badvpn +trojan
 
 PKG_NAME:=luci-app-xderm-bin
 PKG_VERSION:=1.7
@@ -45,6 +47,8 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /root/*
 	chmod -R 755 /bin/xdrtool
 	chmod -R 755 /bin/xderm_luci_install
+	/etc/init.d/https-dns-proxy disable
+	/etc/init.d/https-dns-proxy stop
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		echo -e "  helmilog : system not using php-cgi, patching php config ..."
