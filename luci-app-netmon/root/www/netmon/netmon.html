@@ -9,6 +9,7 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<!-- Add dashboard.js here! -->
+	<!-- Script Mod by Helmi Amirudin (helmiau.com) -->
 	<script type='text/javascript'>
 		var dashboard = '<script type="text/javascript" src="' + window.location.protocol + '//' + window.location.host + ':19999/dashboard.js"><\/script>';
 		document.write(dashboard);
@@ -24,22 +25,34 @@
 
 	<style>
 		.wrap {
-		  max-width: 1280px;
-		  margin: 0 auto;
+			max-width: 1280px;
+			margin: 0 auto;
 		}
 		h3 {
-		  margin-bottom: 30px;
-		  text-align: center;
+			margin-bottom: 30px;
+			text-align: center;
 		}
 		.charts {
-		  display: flex;
-		  flex-flow: row wrap;
-		  justify-content: space-around;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-around;
 		}
 		.charts > div {
-		  margin-bottom: 6rem;
-		  position: relative;
-		  color: white;
+			margin-bottom: 6rem;
+			position: relative;
+			color: white;
+		}
+		.btn {
+			background-color: #cc9b1f;
+			border: none;
+			color: white;
+			padding: 10px 15px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
 		}
 	</style>
 </head>
@@ -65,7 +78,7 @@
 				data-height="150px"
 				data-width="250px">
 			</div>
-			<!-- eth2 -->
+			<!-- LAN Gauge -->
 			<div data-netdata="net.br_lan"
 				data-title="LAN"
 				data-chart-library="gauge"
@@ -74,7 +87,18 @@
 				data-width="250px"
 				data-colors="#66AA00">
 			</div>
-			<!-- LAN -->
+			<!-- CPU -->
+			<div data-netdata="system.cpu"
+				data-chart-library="gauge" 
+				data-title="CPU" 
+				data-units="%" 
+				data-gauge-max-value="100" 
+				data-width="250px" 
+				data-after="-720" 
+				data-points="720" 
+				data-colors="#ee9911">
+			</div>
+			<!-- LAN DyGraph-->
 			<div data-netdata="net.br_lan" 
 				data-chart-library="dygraph" 
 				data-title="BR_LAN"
@@ -85,77 +109,24 @@
 				data-colors="#66AA00">
 			</div>
 			<br>
-			<h3>Resource Monitor</h3>
+			<h3>Others</h3>
+			<div>
+			<p>Change Theme</p>
+			<select id="locations">
+				<option value="white" selected="selected">Light</option>
+				<option value="slate">Slate/Dark</option>
+			</select>
+			</div>
+			
 			<br>
-			<!-- CPU -->
-			<div data-netdata="cpu.cpu0"
-				data-chart-library="gauge" 
-				data-title="CPU" 
-				data-units="%" 
-				data-gauge-max-value="100" 
-				data-width="250px" 
-				data-after="-720" 
-				data-points="720" 
-				data-colors="#ee9911">
-			</div>
-			<!-- CPU1 -->
-			<div data-netdata="cpu.cpu1"
-				data-chart-library="gauge" 
-				data-title="CPU1" 
-				data-units="%" 
-				data-gauge-max-value="100" 
-				data-width="250px" 
-				data-after="-720" 
-				data-points="720" 
-				data-colors="#ee9911">
-			</div>
-			<!-- CPU2 -->
-			<div data-netdata="cpu.cpu2"
-				data-chart-library="gauge" 
-				data-title="CPU2" 
-				data-units="%" 
-				data-gauge-max-value="100" 
-				data-width="250px" 
-				data-after="-720" 
-				data-points="720" 
-				data-colors="#ee9911">
-			</div>
-			<!-- CPU3 -->
-			<div data-netdata="cpu.cpu3"
-				data-chart-library="gauge" 
-				data-title="CPU3" 
-				data-units="%" 
-				data-gauge-max-value="100" 
-				data-width="250px" 
-				data-after="-720" 
-				data-points="720" 
-				data-colors="#ee9911">
-			</div>
-			<!-- RAM -->
-			<div data-netdata="mem.available"
-				data-chart-library="gauge" 
-				data-title="RAM" 
-				data-units="%" 
-				data-gauge-max-value="100" 
-				data-width="250px" 
-				data-after="-720" 
-				data-points="720" 
-				data-colors="#ee9911">
-			</div>
-
-			<!-- traffic graph -->
-			<br><br>
-			<div data-netdata="sensors.temp_scpi_sensors_hwmon_hwmon0" 
-				data-chart-library="dygraph" 
-				data-title="TEMP" 
-				data-units="آ°C" 
-				data-dygraph-max-value="100" 
-				data-height="150px"
-				data-width="100%"
-				data-after="-720" 
-				data-points="720" 
-				data-colors="#66AA00">
-			</div>
+			<!-- Script Mod by Helmi Amirudin (helmiau.com) -->
+			<script type='text/javascript'>
+				var dashboard = '<a href="' + window.location.protocol + '//' + window.location.host + ':19999" target="_blank" class="btn">Open NetData Dashboard</a>';
+				document.write(dashboard);
+			</script>
+			<br>
+			<br>
+			<a href="http://www.helmiau.com">Helmi Amirudin</a> ® 2021 <br> Thank You ! 🤝</h6>
 		</center>
 	</main>
 </body>
