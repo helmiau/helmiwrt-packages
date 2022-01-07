@@ -8,12 +8,16 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI Shutdown Your Router in One-Click
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-shutdown
-PKG_VERSION:=1.2
+PKG_VERSION:=1.3
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
+endef
+
+define Package/$(PKG_NAME)/description
+	Simple turn off your router with this app.
 endef
 
 define Package/$(PKG_NAME)/install

@@ -12,13 +12,17 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-json +php7-mod-session
 
 PKG_NAME:=luci-app-freevpnsite
-PKG_VERSION:=1.2
+PKG_VERSION:=1.3
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
 	DEPENDS:=$(LUCI_DEPENDS)
+endef
+
+define Package/$(PKG_NAME)/description
+	Provide you many VPN site lists, which used by Indonesian users.
 endef
 
 define Package/$(PKG_NAME)/install

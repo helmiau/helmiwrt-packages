@@ -16,13 +16,17 @@ LUCI_DEPENDS:=+coreutils +coreutils-stdbuf +jq +ip-full +kmod-tun +openssh-clien
 	+bash +curl +librt +libpthread +screen +shadowsocks-libev-ss-local +openvpn-openssl
 
 PKG_NAME:=luci-app-libernet-plus
-PKG_VERSION:=1.6
+PKG_VERSION:=1.7
 PKG_RELEASE:=2
 
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
 	TITLE:=$(LUCI_TITLE)
 	DEPENDS:=$(LUCI_DEPENDS)
+endef
+
+define Package/$(PKG_NAME)/description
+	LuCI version of Libernet, but with some mods and additions.
 endef
 
 define Package/$(PKG_NAME)/install
