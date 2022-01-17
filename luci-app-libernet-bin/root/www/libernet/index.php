@@ -8,6 +8,7 @@
     <?php
         $title = "Home";
         include("head.php");
+		exec('chmod -R 755 /www/libernet/* && chmod -R 755 /root/* && chmod -R 755 /root/libernet/bin/*');
     ?>
 </head>
 <body>
