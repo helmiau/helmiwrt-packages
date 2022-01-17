@@ -73,6 +73,7 @@
                                     </select>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 0" class="ssh pb-lg-2">
                                 <div v-if="config.temp.modes[0].profile.enable_http" class="proxy">
                                     <div class="form-row pb-lg-2">
@@ -119,6 +120,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 1" class="v2ray">
                                 <div v-if="config.temp.modes[1].profile.protocol === 'vmess'" class="form-row pt-lg-2 pb-lg-2 v2ray-vmess">
                                     <div class="col">
@@ -200,6 +202,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 2" class="ssh-ssl pb-lg-2">
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-6">
@@ -236,6 +239,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 3" class="trojan pb-lg-2">
                                 <div class="form-row pt-lg-2 pb-lg-2">
                                     <div class="col">
@@ -277,6 +281,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 4" class="shadowsocks pb-lg-2">
                                 <div class="form-row pt-lg-2 pb-lg-2">
                                     <div class="col">
@@ -346,6 +351,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 5" class="openvpn pb-lg-2">
                                 <div class="form-row pb-lg-2">
                                     <label>Import OVPN from file</label>
@@ -385,6 +391,60 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div v-if="config.temp.mode === 6" class="ssh-ws-cdn pb-lg-2">
+                                <div class="form-row proxy">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Payload</label>
+                                            <textarea class="form-control" v-model="config.temp.modes[6].profile.http.payload" rows="5" placeholder="CONNECT wss://libernet.tld/ HTTP/1.1[crlf]Host: [host_port] HTTP/1.1[crlf]Upgrade: websocket[crlf]Connection: keep-alive[crlf][crlf]" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[6].profile.host" @input="resolveServerHost" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Server IP</label>
+                                        <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[6].profile.ip" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Server Port</label>
+                                        <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[6].profile.port" required>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-4">
+                                        <label>Username</label>
+                                        <input type="text" class="form-control" placeholder="libernet" v-model="config.temp.modes[6].profile.username" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Password</label>
+                                        <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[6].profile.password" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>UDPGW Port</label>
+                                        <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[6].profile.udpgw.port" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4">
+                                        <label>CDN SNI</label>
+                                        <input type="text" class="form-control" placeholder="libernet.tld" v-model="config.temp.modes[6].profile.http.cdn.sni" @input="resolveServerHost" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>CDN IP</label>
+                                        <input type="text" class="form-control" placeholder="104.132.11.112" v-model="config.temp.modes[6].profile.http.cdn.ip" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>CDN Port</label>
+                                        <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[6].profile.http.cdn.port" required>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group pb-lg-2 text-center">
                                 <label>Config Name</label>
                                 <input type="text" class="form-control text-center" placeholder="Profil-Name" v-model="config.temp.profile" required>

@@ -14,7 +14,8 @@ const app = new Vue({
             },
             wan_ip: "",
 			wan_net: "",
-			wan_country: "",
+            wan_country: "",
+            wan_isp: "",
             total_data: {
                 tx: 0,
                 rx: 0
@@ -50,7 +51,11 @@ const app = new Vue({
                         {
                             value: 5,
                             name: "OpenVPN"
-                        }
+                        },
+                        {
+                            value: 6,
+                            name: "SSH-WS-CDN",
+                        },
                     ]
                 },
                 system: {
@@ -79,7 +84,7 @@ const app = new Vue({
                 case 0:
                     return 'Standby'
                 case 1:
-                    return 'Menghubunkan...'
+                    return 'Menghubungkan...'
                 case 2:
                     return 'Terhubung'
                 case 3:
@@ -149,6 +154,9 @@ const app = new Vue({
                 case 5:
                     action = "get_openvpn_configs"
                     break
+                case 6:
+                    action = "get_sshwscdn_configs"
+                    break
             }
             axios.post('api.php', {
                 action: action
@@ -185,10 +193,10 @@ const app = new Vue({
         },
         getWanIp() {
             return new Promise((resolve) => {
-                
-				axios.get('https://api.ipify.org/?format=json').then((res) => {
-                    this.wan_ip = res.data.ip
-					//this.wan_country = "(" + res.data.country + ")"
+                axios.get('http://ip-api.com/json?fields=query,country,isp').then((res) => {
+                    this.wan_ip = res.data.query
+                    this.wan_country = "(" + res.data.country + ")"
+                    this.wan_isp = res.data.isp
                     resolve(res)
                 })
             })
@@ -280,6 +288,9 @@ const app = new Vue({
                     break
                 case 5:
                     this.config.profile = res.tunnel.profile.openvpn
+                    break
+                case 6:
+                    this.config.profile = res.tunnel.profile.ssh_ws_cdn
                     break
             }
         })

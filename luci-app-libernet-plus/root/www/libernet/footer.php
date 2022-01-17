@@ -1,3 +1,3 @@
 <footer class="text-center">
-    <font color="white">© 2021 Libernet Plus v1.5.3.</a>
+    <font color="white">© 2021-2022 Libernet Plus v1.5.4.</a>
 </footer>
