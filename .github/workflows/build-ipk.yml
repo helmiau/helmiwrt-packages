@@ -130,9 +130,9 @@ jobs:
             rm -f ${FILE} ;
           done
           # Checking all IPK's location
-          find . -type f -name 'luci-*' | while read FILE ; do
-            echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
-          done
+          #find . -type f -name 'luci-*' | while read FILE ; do
+            #echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
+          #done
           # Set LuCI Theme and App Path
           echo "THEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
           echo "APPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
@@ -163,7 +163,7 @@ jobs:
         id: tag
         if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          sleep 20
+          sleep 10
           echo "::set-output name=release_tag::ipk"
           touch release.txt
           echo "::set-output name=status::success"
@@ -175,8 +175,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           prerelease: false
-          name: HelmiWrt IPK releases ${{ env.FILE_DATE }}
+          name: HelmiWrt Packages Build ${{ env.FILE_DATE }}
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
             ${{ env.THEMEPATH }}-*
             ${{ env.APPPATH }}-*
+          body: |
+            **HelmiWrt LuCI App and Theme IPK for OpenWrt**
+            LEDE FIRMWARE IS RECOMMENDED !!!!!
+            [Donation here](https://www.helmiau.com/pay/index_en.html) • [Installation Tutorial](https://www.helmiau.com/blog/helmiwrt-packages)
