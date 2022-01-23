@@ -40,7 +40,7 @@ elif [[ $1 = "list" ]]; then
 	echo -e "${R}======================================================${N}"
 	curl -sL https://api.github.com/repos/helmiau/helmiwrt-packages/releases/tags/ipk | grep 'luci-app\|luci-theme' | awk -F '"' '{print $4}' | sed 's/https/http/g' | sed '/helmiau/d'
 	echo -e "${R}======================================================${N}"
-	echo -e " ${Y}Read installation steps by running ${G}$SCRIPTNAME${Y} command"
+	echo -e " ${Y}Read installation steps by run ${G}$SCRIPTNAME${Y} command"
 	echo -e "${R}======================================================${N}"
 else
 	echo -e "${R}======================================================"
