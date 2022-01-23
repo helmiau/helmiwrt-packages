@@ -184,3 +184,11 @@ jobs:
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             LEDE FIRMWARE IS RECOMMENDED !!!!!
             [Donation here](https://www.helmiau.com/pay/index_en.html) • [Installation Tutorial](https://www.helmiau.com/blog/helmiwrt-packages)
+
+      - name: Delete Workflow Runs
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        uses: GitRML/delete-workflow-runs@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          retain_days: 3
+          keep_minimum_runs: 5
