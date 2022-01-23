@@ -1,0 +1,182 @@
+#=================================================
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+# Blog: https://helmiau.com
+# HelmiWrt by helmiau.com
+# Script base by P3TERX
+#=================================================
+
+name: Build IPK
+
+on:
+  workflow_dispatch:
+
+env:
+  TOOLCHAIN_TAG: coolsnowwolf-lede-master
+  TOOLCHAIN_NAME: toolchain-image-coolsnowwolf-lede-master-rpi-4.img
+  CONFIG_FILE: build-ipk/universal.config
+  DIY1_SH: build-ipk/hook-feeds.sh
+  DIY2_SH: build-ipk/lean-openwrt.sh
+  UPLOAD_RELEASE: true
+  TZ: Asia/Jakarta
+  THIS_REPO_NAME: ${{ github.event.repository.name }}
+
+jobs:
+  Build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Initialization Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804) rdate
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+          docker image prune -a -f
+          echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+
+      - name: Free Up More Space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 256
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          overprovision-lvm: 'true'
+
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Prepare Toolchain Image
+        id: prepare
+        run: |
+          df -hT $PWD
+          wget -q https://github.com/helmiau/OpenWrt-Toolchain/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_NAME -O toolchain-image.img
+          mkdir openwrt-ro openwrt workdir overlay
+          sudo mount -o loop toolchain-image.img openwrt-ro
+          sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
+          cd openwrt
+          echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+          echo "::set-output name=OPENWRTROOT::$(echo $PWD)"
+          git pull
+
+      - name: Install Feeds
+        id: feeds
+        run: |
+          cd $OPENWRTROOT
+          chmod +x ../build-ipk/*.sh
+          ../$DIY1_SH
+
+      - name: Load Custom Configuration
+        run: |
+          [ -e files ] && mv files $OPENWRTROOT/files
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRTROOT/.config
+          cd $OPENWRTROOT
+          ../$DIY2_SH
+          sed -i "/KERNEL_PATCHVER=/c\KERNEL_PATCHVER=5.4" "target/linux/bcm27xx/Makefile"
+
+      - name: Download Package
+        id: package
+        run: |
+          cd $OPENWRTROOT
+          make defconfig
+          make download -j16 && make download -j16
+          find dl -size -1024c -exec ls -l {} \;
+          find dl -size -1024c -exec rm -f {} \;
+
+      - name: Compile Tools
+        id: tools
+        run: |
+          cd $OPENWRTROOT
+          echo -e "$(nproc) thread compile"
+          make tools/compile -j$(nproc) || make tools/compile -j1 V=s
+
+      - name: Compile Packages
+        id: compile
+        run: |
+          cd $OPENWRTROOT
+          echo -e "$(nproc) thread compile"
+          make target/compile -j$(nproc) || make target/compile -j1 V=s IGNORE_ERRORS=1
+          make diffconfig
+          make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j1 V=s IGNORE_ERRORS=1
+          make package/index
+          cd $OPENWRTROOT/bin/packages/*
+          PLATFORM=$(basename `pwd`)
+          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
+          echo "::set-output name=PLATFORM::$(echo $PLATFORM)"
+          cd $OPENWRTROOT/bin/targets/*
+          TARGET=$(basename `pwd`)
+          echo "TARGET=$TARGET" >> $GITHUB_ENV
+          echo "::set-output name=TARGET::$(echo $TARGET)"
+          cd *
+          SUBTARGET=$(basename `pwd`)
+          echo "SUBTARGET=$SUBTARGET" >> $GITHUB_ENV
+          echo "::set-output name=SUBTARGET::$(echo $SUBTARGET)"
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          echo "::set-output name=FIRMWARE::$(echo $PWD)"
+          echo "::set-output name=COMPILE_STATUS::success"
+
+      - name: Organize Files
+        id: organize
+        if: steps.compile.outputs.COMPILE_STATUS == 'success' && !cancelled()
+        run: |
+          cd openwrt/bin/packages
+          # Delete Firewall IPK
+          find . -type f -name 'luci-app-firewall*' | while read FILE ; do
+            rm -f ${FILE} ;
+          done
+          # Checking all IPK's location
+          find . -type f -name 'luci-*' | while read FILE ; do
+            echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
+          done
+          # Set LuCI Theme and App Path
+          echo "THEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
+          echo "APPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
+          # Checking Files and places
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          echo -e "===== End of Information ====="
+          echo -e "FILE_DATE is ....... $FILE_DATE"
+          echo -e "OPENWRTROOT is ....... $TARGET"
+          echo -e "PLATFORM is ....... $PLATFORM"
+          echo -e "TARGET is ....... $TARGET"
+          echo -e "FIRMWARE is ....... $FIRMWARE"
+          echo -e "===== End of Information ====="
+          echo "::set-output name=status::success"
+          echo "::set-output name=ORGANIZE_STATUS::success"
+
+
+      - name: Delete Older Releases and Tags
+        uses: dev-drprasad/delete-older-releases@v0.2.0
+        if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          keep_latest: 0
+          delete_tags: true
+          delete_tag_pattern: ipk
+
+      - name: Generate New Release Tag
+        id: tag
+        if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          sleep 20
+          echo "::set-output name=release_tag::ipk"
+          touch release.txt
+          echo "::set-output name=status::success"
+
+      - name: Upload HelmiWrt Packages to GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          prerelease: false
+          name: HelmiWrt IPK releases ${{ env.FILE_DATE }}
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: |
+            ${{ env.THEMEPATH }}-*
+            ${{ env.APPPATH }}-*
