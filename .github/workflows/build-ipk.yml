@@ -175,7 +175,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           prerelease: false
-          name: HelmiWrt Packages Build ${{ env.FILE_DATE }}
+          name: IPK Build ${{ env.FILE_DATE }}
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
             ${{ env.THEMEPATH }}-*
