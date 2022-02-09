@@ -880,7 +880,7 @@ if (!empty($_FILES) && !FM_READONLY) {
 
     $targetPath = $path . $ds;
     if ( is_writable($targetPath) ) {
-        $fullPath = $path . '/' . $_REQUEST['fullpath'];
+        $fullPath = $path . '/' . str_replace("./","_",$_REQUEST['fullpath']);
         $folder = substr($fullPath, 0, strrpos($fullPath, "/"));
 
         if(file_exists ($fullPath) && !$override_file_name) {
@@ -1785,7 +1785,7 @@ if (isset($_GET['edit'])) {
                 <?php if ($is_text) { ?>
                     <?php if ($isNormalEditor) { ?>
                         <a title="Advanced" class="btn btn-sm btn-outline-primary" href="?p=<?php echo urlencode(trim(FM_PATH)) ?>&amp;edit=<?php echo urlencode($file) ?>&amp;env=ace"><i class="fa fa-pencil-square-o"></i> <?php echo lng('AdvancedEditor') ?></a>
-                        <button type="button" class="btn btn-sm btn-outline-primary name="Save" data-url="<?php echo fm_enc($file_url) ?>" onclick="edit_save(this,'nrl')"><i class="fa fa-floppy-o"></i> Save
+                        <button type="button" class="btn btn-sm btn-outline-primary" name="Save" data-url="<?php echo fm_enc($file_url) ?>" onclick="edit_save(this,'nrl')"><i class="fa fa-floppy-o"></i> Save
                         </button>
                     <?php } else { ?>
                         <a title="Plain Editor" class="btn btn-sm btn-outline-primary" href="?p=<?php echo urlencode(trim(FM_PATH)) ?>&amp;edit=<?php echo urlencode($file) ?>"><i class="fa fa-text-height"></i> <?php echo lng('NormalEditor') ?></a>
@@ -2062,7 +2062,7 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                 <tfoot>
                     <tr><?php if (!FM_READONLY): ?>
                             <td></td><?php endif; ?>
-                        <td colspan="<?php echo (!FM_IS_WIN && !$hide_Cols) ? '6' : '4' ?>"><em><?php echo 'Folder is empty' ?></em></td>
+                        <td colspan="<?php echo (!FM_IS_WIN && !$hide_Cols) ? '6' : '4' ?>"><em><?php echo lng('Folder is empty') ?></em></td>
                     </tr>
                 </tfoot>
                 <?php
@@ -2501,7 +2501,8 @@ function fm_get_filesize($size)
 {
     $size = (float) $size;
     $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-    $power = $size > 0 ? floor(log($size, 1024)) : 0;
+    $power = ($size > 0) ? floor(log($size, 1024)) : 0;
+    $power = ($power > (count($units) - 1)) ? (count($units) - 1) : $power;
     return sprintf('%s %s', round($size / pow(1024, $power), 2), $units[$power]);
 }
 
@@ -3816,7 +3817,7 @@ $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
                     url: window.location,
                     // The key needs to match your method's input parameter (case-sensitive).
                     data: JSON.stringify(data),
-                    contentType: "multipart/form-data-encoded; charset=utf-8",
+                    contentType: "application/json; charset=utf-8",
                     //dataType: "json",
                     success: function(mes){toast("Saved Successfully"); window.onbeforeunload = function() {return}},
                     failure: function(mes) {toast("Error: try again");},
