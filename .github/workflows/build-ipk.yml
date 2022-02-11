@@ -148,17 +148,6 @@ jobs:
           echo "::set-output name=status::success"
           echo "::set-output name=ORGANIZE_STATUS::success"
 
-
-      - name: Delete Older Releases and Tags
-        uses: dev-drprasad/delete-older-releases@v0.2.0
-        if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && !cancelled()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          keep_latest: 0
-          delete_tags: true
-          delete_tag_pattern: ipk
-
       - name: Generate New Release Tag
         id: tag
         if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
