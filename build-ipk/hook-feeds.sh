@@ -70,6 +70,9 @@ cp -r temp/luci/applications/luci-app-ramfree luci/applications/luci-app-ramfree
 # Add luci-theme-darkmatter
 cp -r temp/luci/themes/luci-theme-darkmatter luci/themes/luci-theme-darkmatter
 
+# Remove lede argon theme
+rm -rf luci/themes/luci-theme-argon
+
 # Fix stubby: add libunbound to stubby package
 sed -i 's#+ca-certs#+ca-certs +libunbound#g' packages/net/stubby/Makefile
 
