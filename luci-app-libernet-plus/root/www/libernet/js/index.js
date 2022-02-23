@@ -93,6 +93,10 @@ const app = new Vue({
         },
         connectedTime() {
             return '[' + this.pad(this.connected.days, 2) + ':' + this.pad(this.connected.hours, 2) + ':' + this.pad(this.connected.minutes, 2) + ':' + this.pad(this.connected.seconds, 2) + ']'
+        },
+        sortedModes() {
+            const modes = [...this.config.temp.modes];
+            return modes.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
         }
     },
     watch: {
@@ -104,6 +108,7 @@ const app = new Vue({
         runLibernet() {
             if (!this.status) {
                 // apply configuration
+                if (this.config.profile === '--- Empty ---') return
                 this.applyConfig().then(() => {
                     // set auto start Libernet
                     axios.post('api.php', {
@@ -161,7 +166,12 @@ const app = new Vue({
             axios.post('api.php', {
                 action: action
             }).then((res) => {
-                this.config.profiles = res.data.data
+                if (res.data.data.length > 0) {
+                    this.config.profiles = res.data.data
+                } else {
+                    this.config.profiles = ['--- Empty ---']
+                }
+                this.config.profile = this.config.profiles[0]
             })
         },
         applyConfig() {

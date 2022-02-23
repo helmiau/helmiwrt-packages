@@ -2,7 +2,7 @@
 
 # Libernet Service Wrapper
 # by Lutfa Ilham
-# v1.0
+# v1.0.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -28,8 +28,6 @@ function check_connection() {
     "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[${counter} + 1]"
     echo -e "Checking connection, attempt: $[${counter} + 1]"
     if curl -so /dev/null -x "socks5://127.0.0.1:${DYNAMIC_PORT}" "http://bing.com"; then
-	#ntpdate pool.ntp.org
-	#ntpdate time.cloudflare.com
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Socks connection available</span>"
       echo -e "Socks connection available!"
@@ -265,9 +263,9 @@ function stop_services() {
 }
 
 function restart_services() {
-stop_services
-sleep 10
-start_services
+  stop_services
+  sleep 10
+  start_services
 }
 
 function cancel_services() {

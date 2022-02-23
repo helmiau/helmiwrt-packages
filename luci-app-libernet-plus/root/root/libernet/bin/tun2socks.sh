@@ -2,7 +2,7 @@
 
 # Tun2socks Wrapper
 # by Lutfa Ilham
-# v1.0
+# v1.0.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -110,6 +110,7 @@ function route_del_ip {
   for IP in "${PROXY_IPS[@]}"; do
     ip route del ${IP} &
   done
+  ip route del ${CDN_IP} &
   ip route del ${SERVER_IP} &
   echo -e "Routes removed!"
 }
