@@ -397,14 +397,14 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Payload</label>
-                                            <textarea class="form-control" v-model="config.temp.modes[6].profile.http.payload" rows="5" placeholder="CONNECT wss://libernet.tld/ HTTP/1.1[crlf]Host: [host_port] HTTP/1.1[crlf]Upgrade: websocket[crlf]Connection: keep-alive[crlf][crlf]" required></textarea>
+                                            <textarea class="form-control" v-model="config.temp.modes[6].profile.http.payload" rows="5" placeholder="CONNECT wss://www.bugcdn.com/ HTTP/1.1[crlf]Host: [host_port] HTTP/1.1[crlf]Upgrade: websocket[crlf]Connection: keep-alive[crlf][crlf]" required></textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-6">
                                         <label>Server Host</label>
-                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[6].profile.host" @input="resolveServerHost" required>
+                                        <input type="text" class="form-control" placeholder="Host/IP" v-model="config.temp.modes[6].profile.host" @input="resolveServerHost" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label>Server IP</label>
@@ -418,11 +418,11 @@
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-4">
                                         <label>Username</label>
-                                        <input type="text" class="form-control" placeholder="libernet" v-model="config.temp.modes[6].profile.username" required>
+                                        <input type="text" class="form-control" placeholder="Username" v-model="config.temp.modes[6].profile.username" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label>Password</label>
-                                        <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[6].profile.password" required>
+                                        <input type="text" class="form-control" placeholder="Password" v-model="config.temp.modes[6].profile.password" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label>UDPGW Port</label>
@@ -432,11 +432,11 @@
                                 <div class="form-row">
                                     <div class="col-md-4">
                                         <label>CDN SNI</label>
-                                        <input type="text" class="form-control" placeholder="libernet.tld" v-model="config.temp.modes[6].profile.http.cdn.sni" @input="resolveServerHost" required>
+                                        <input type="text" class="form-control" placeholder="www.bugcdn.com" v-model="config.temp.modes[6].profile.http.cdn.sni" @input="resolveServerHost" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label>CDN IP</label>
-                                        <input type="text" class="form-control" placeholder="104.132.11.112" v-model="config.temp.modes[6].profile.http.cdn.ip" required>
+                                        <input type="text" class="form-control" placeholder="192.168.553.123" v-model="config.temp.modes[6].profile.http.cdn.ip" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label>CDN Port</label>

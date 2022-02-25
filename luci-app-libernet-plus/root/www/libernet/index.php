@@ -100,27 +100,29 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-									<i class="fa fa-flag"></i>
+									<i class="fa fa-inbox"></i>
                                     <span class="text-primary">Status: </span><span :class="{ 'text-primary': connection === 0, 'text-warning': connection === 1, 'text-success': connection === 2, 'text-info': connection === 3 }">{{ connectionText }}</span>
                                     <span v-if="connection === 2" class="text-primary">{{ connectedTime }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
 									<i class="fa fa-server"></i>
-                                    <span class="text-primary">WAN IP: {{ wan_ip }} {{ wan_country }}</span>
+                                    <span class="text-primary">IP: {{ wan_ip }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6 d-sm-block d-md-block d-lg-none">
-                                    <span class="text-primary">WAN ISP: {{ wan_isp }}</span>
+									<i class="fa fa-globe"></i>
+                                    <span class="text-primary">ISP: {{ wan_isp }}</span>
                                 </div>
 								<div class="col-lg-6 col-md-6 pb-lg-1" >
 								<i class="fa fa-flag-o"></i>
-                                    <span class="text-primary">ISP	: {{ wan_net }} | {{ wan_country }}</span>
+                                    <span class="text-primary">Location	: {{ wan_country }}</span>
                                 </div>
                                 <div v-if="connection === 2" class="col-lg-6 col-md-6" >
 									<i class="fa fa-exchange"></i>
-                                    <span class="text-primary">TX|RX: </span><span class="text-primary">{{ total_data.tx }}|{{ total_data.rx }}</span>
+                                    <span class="text-primary">TX|RX: </span><span class="text-primary">{{ total_data.tx }} | {{ total_data.rx }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6 d-none d-lg-block d-xl-block">
-                                    <span class="text-primary">WAN ISP: {{ wan_isp }}</span>
+									<i class="fa fa-globe"></i>
+                                    <span class="text-primary">ISP: {{ wan_isp }}</span>
                                 </div>
                                 <div class="col pt-2">
                                     <pre ref="log" v-html="log" class="form-control text-left" style="height: auto; width: auto; font-size:80%; background-image-position: center; background-color: #141d26 "></pre>
