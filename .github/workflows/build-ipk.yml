@@ -171,8 +171,9 @@ jobs:
             ${{ env.APPPATH }}-*
           body: |
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
-            COOLSNOWWOLF LEDE FIRMWARE IS RECOMMENDED !!!!!
-            [Donation here](https://www.helmiau.com/pay/index_en.html) • [Installation Tutorial](https://www.helmiau.com/blog/helmiwrt-packages)
+            THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
+            DWYOR (DO WITH YOUR OWN RISK)
+            [Donation here](https://www.helmiau.com/pay/index_en.html) • [Installation Tutorial](https://www.google.com/search?q=helmiau.com+helmiwrt+packages)
 
       - name: Delete Workflow Runs
         if: steps.tag.outputs.status == 'success' && !cancelled()
