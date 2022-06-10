@@ -455,14 +455,6 @@ if (isset($_POST['ajax']) && !FM_READONLY) {
         die(true);
     }
 
-    //search : get list of files from the current folder
-    if(isset($_POST['type']) && $_POST['type']=="search") {
-        $dir = FM_ROOT_PATH;
-        $response = scan(fm_clean_path($_POST['path']), $_POST['content']);
-        echo json_encode($response);
-        exit();
-    }
-
     // backup files
     if (isset($_POST['type']) && $_POST['type'] == "backup" && !empty($_POST['file'])) {
         $fileName = $_POST['file'];
@@ -629,6 +621,16 @@ if (isset($_POST['ajax']) && !FM_READONLY) {
     }
 
     exit();
+}
+
+if (isset($_POST['ajax'])) {
+    //search : get list of files from the current folder
+    if(isset($_POST['type']) && $_POST['type']=="search") {
+        $dir = FM_ROOT_PATH;
+        $response = scan(fm_clean_path($_POST['path']), $_POST['content']);
+        echo json_encode($response);
+        exit();
+    }
 }
 
 // Delete file / folder
@@ -1988,9 +1990,9 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                 ?>
                 <tr><?php if (!FM_READONLY): ?>
                     <td class="nosort"></td><?php endif; ?>
-                    <td class="border-0"><a href="?p=<?php echo urlencode($parent) ?>"><i class="fa fa-chevron-circle-left go-back"></i> ..</a></td>
-                    <td class="border-0"></td>
-                    <td class="border-0"></td>
+                    <td class="border-0" data-sort><a href="?p=<?php echo urlencode($parent) ?>"><i class="fa fa-chevron-circle-left go-back"></i> ..</a></td>
+                    <td class="border-0" data-order></td>
+                    <td class="border-0" data-order></td>
                     <td class="border-0"></td>
                     <?php if (!FM_IS_WIN && !$hide_Cols) { ?>
                         <td class="border-0"></td>
@@ -2030,14 +2032,14 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                             <label class="custom-control-label" for="<?php echo $ii ?>"></label>
                         </div>
                         </td><?php endif; ?>
-                    <td>
+                    <td data-sort=<?php echo fm_convert_win(fm_enc($f)) ?>>
                         <div class="filename"><a href="?p=<?php echo urlencode(trim(FM_PATH . '/' . $f, '/')) ?>"><i class="<?php echo $img ?>"></i> <?php echo fm_convert_win(fm_enc($f)) ?>
                             </a><?php echo($is_link ? ' &rarr; <i>' . readlink($path . '/' . $f) . '</i>' : '') ?></div>
                     </td>
-                    <td data-sort="a-<?php echo str_pad($filesize_raw, 18, "0", STR_PAD_LEFT);?>">
+                    <td data-order="a-<?php echo str_pad($filesize_raw, 18, "0", STR_PAD_LEFT);?>">
                         <?php echo $filesize; ?>
                     </td>
-                    <td data-sort="a-<?php echo $modif_raw;?>"><?php echo $modif ?></td>
+                    <td data-order="a-<?php echo $modif_raw;?>"><?php echo $modif ?></td>
                     <?php if (!FM_IS_WIN && !$hide_Cols): ?>
                         <td><?php if (!FM_READONLY): ?><a title="Change Permissions" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;chmod=<?php echo urlencode($f) ?>"><?php echo $perms ?></a><?php else: ?><?php echo $perms ?><?php endif; ?>
                         </td>
@@ -2082,7 +2084,7 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                             <label class="custom-control-label" for="<?php echo $ik ?>"></label>
                         </div>
                         </td><?php endif; ?>
-                    <td>
+                    <td data-sort=<?php echo fm_enc($f) ?>>
                         <div class="filename">
                         <?php
                            if (in_array(strtolower(pathinfo($f, PATHINFO_EXTENSION)), array('gif', 'jpg', 'jpeg', 'png', 'bmp', 'ico', 'svg', 'webp', 'avif'))): ?>
@@ -2096,10 +2098,10 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                                 <?php echo($is_link ? ' &rarr; <i>' . readlink($path . '/' . $f) . '</i>' : '') ?>
                         </div>
                     </td>
-                    <td data-sort=b-"<?php echo str_pad($filesize_raw, 18, "0", STR_PAD_LEFT); ?>"><span title="<?php printf('%s bytes', $filesize_raw) ?>">
+                    <td data-order="b-<?php echo str_pad($filesize_raw, 18, "0", STR_PAD_LEFT); ?>"><span title="<?php printf('%s bytes', $filesize_raw) ?>">
                         <?php echo $filesize; ?>
                         </span></td>
-                    <td data-sort="b-<?php echo $modif_raw;?>"><?php echo $modif ?></td>
+                    <td data-order="b-<?php echo $modif_raw;?>"><?php echo $modif ?></td>
                     <?php if (!FM_IS_WIN && !$hide_Cols): ?>
                         <td><?php if (!FM_READONLY): ?><a title="<?php echo 'Change Permissions' ?>" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;chmod=<?php echo urlencode($f) ?>"><?php echo $perms ?></a><?php else: ?><?php echo $perms ?><?php endif; ?>
                         </td>
@@ -3062,9 +3064,14 @@ function fm_download_file($fileLocation, $fileName, $chunkSize  = 1024)
     $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
     $contentType = fm_get_file_mimes($extension);
+
+    if(is_array($contentType)) {
+        $contentType = implode(' ', $contentType);
+    }
+
     header("Cache-Control: public");
     header("Content-Transfer-Encoding: binary\n");
-    header('Content-Type: $contentType');
+    header("Content-Type: $contentType");
 
     $contentDisposition = 'attachment';
 
@@ -3985,7 +3992,8 @@ $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
         var $table = $('#main-table'),
             tableLng = $table.find('th').length,
             _targets = (tableLng && tableLng == 7 ) ? [0, 4,5,6] : tableLng == 5 ? [0,4] : [3],
-            mainTable = $('#main-table').DataTable({"paging": false, "info": false, "order": [], "columnDefs": [{"targets": _targets, "orderable": false}]
+            emptyType = $.fn.dataTable.absoluteOrder([{ value: '', position: 'top' }]);
+            mainTable = $('#main-table').DataTable({paging: false, info: false, order: [], columnDefs: [{targets: _targets, orderable: false}, {type: emptyType, targets: '_all',},]
         });
         //search
         $('#search-addon').on( 'keyup', function () {

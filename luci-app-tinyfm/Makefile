@@ -13,7 +13,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-session +php7-mod-ctype +php7-mod-fileinfo +php7-mod-zip +php7-mod-iconv +php7-mod-mbstring +php7-mod-json +zoneinfo-asia 
 
 PKG_NAME:=luci-app-tinyfm
-PKG_VERSION:=1.8
+PKG_VERSION:=1.9
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
@@ -34,6 +34,7 @@ define Package/$(PKG_NAME)/install
 	chmod -R 755 /root/www/*
 	chmod -R 755 /root/www/tinyfm/*
 	chmod -R 755 /root/www/tinyfm/cdn/*
+	[ ! -d /root/www/tinyfm/rootfs ] && ln -s / /root/www/tinyfm/rootfs
 endef
 
 define Package/$(PKG_NAME)/postinst
@@ -45,6 +46,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /www/*
 	chmod -R 755 /www/tinyfm/*
 	chmod -R 755 /www/tinyfm/cdn/*
+	[ ! -d /www/tinyfm/rootfs ] && ln -s / /www/tinyfm/rootfs
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
 		echo -e "  helmilog : system not using php-cgi, patching php config ..."

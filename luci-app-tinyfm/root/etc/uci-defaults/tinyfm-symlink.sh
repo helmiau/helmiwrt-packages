@@ -1,5 +1,5 @@
 #!/bin/sh
 
 cd /
-ln -s / /www/tinyfm/rootfs
+[ ! -d /www/tinyfm/rootfs ] && ln -s / /www/tinyfm/rootfs
 exit 0
