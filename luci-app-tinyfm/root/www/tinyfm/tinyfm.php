@@ -3672,7 +3672,7 @@ $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" />
 	-->
 	<link rel="stylesheet" href="cdn/bootstrap.min.css">
-	<link rel="stylesheet" href="cdn/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="cdn/ekko-lightbox.css" />
     <?php if (FM_USE_HIGHLIGHTJS): ?>
     <!-- 
