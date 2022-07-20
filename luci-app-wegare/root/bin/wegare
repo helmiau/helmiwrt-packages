@@ -40,8 +40,8 @@ if [[ $1 = "l2i" ]]; then
 	/etc/init.d/xl2tpd disable 2>/dev/null
 	ipsec stop 2>/dev/null
 	killall -q charon
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/l2i/main/l2i.sh" -O /usr/bin/l2i
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/l2i/main/autorekonek-l2i.sh" -O /usr/bin/autorekonek-l2i
+	wget -q --no-check-certificate "$rawgit/$usergit/l2i/main/l2i.sh" -O /usr/bin/l2i
+	wget -q --no-check-certificate "$rawgit/$usergit/l2i/main/autorekonek-l2i.sh" -O /usr/bin/autorekonek-l2i
 	chmod +x /usr/bin/l2i
 	chmod +x /usr/bin/autorekonek-l2i
 	rm -r ~/install.sh
@@ -60,9 +60,9 @@ elif [[ $1 = "opvc" ]]; then
 	echo -e "Installing Wegare Tools - ${G}opvc${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvc/main/opvc.sh" -O /usr/bin/opvc
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/opvc/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvc/main/autorekonek-opvc.sh" -O /usr/bin/autorekonek-opvc
+	wget -q --no-check-certificate "$rawgit/$usergit/opvc/main/opvc.sh" -O /usr/bin/opvc
+	wget -q --no-check-certificate "$comgit/$usergit/opvc/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
+	wget -q --no-check-certificate "$rawgit/$usergit/opvc/main/autorekonek-opvc.sh" -O /usr/bin/autorekonek-opvc
 	opkg update && opkg install lsof && opkg install openvpn-openssl fping
 	chmod +x /usr/bin/opvc
 	chmod +x /usr/bin/ck-client
@@ -83,8 +83,8 @@ elif [[ $1 = "opvs" ]]; then
 	echo -e "Installing Wegare Tools - ${G}opvs${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvs/main/opvs.sh" -O /usr/bin/opvs
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvs/main/autorekonek-opvs.sh" -O /usr/bin/autorekonek-opvs
+	wget -q --no-check-certificate "$rawgit/$usergit/opvs/main/opvs.sh" -O /usr/bin/opvs
+	wget -q --no-check-certificate "$rawgit/$usergit/opvs/main/autorekonek-opvs.sh" -O /usr/bin/autorekonek-opvs
 	opkg update && opkg install lsof openvpn-openssl stunnel fping
 	chmod +x /usr/bin/opvs
 	chmod +x /usr/bin/autorekonek-opvs
@@ -105,10 +105,10 @@ elif [[ $1 = "opvss" ]]; then
 	echo -e "================================"
 	echo -e "${N}"
 	opkg update
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvss/main/opvss.sh" -O /usr/bin/opvss
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/opvss/main/autorekonek-opvss.sh" -O /usr/bin/autorekonek-opvss
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/simple-obfs_0.0.5-5_aarch64_cortex-a53.ipk?raw=true" -O ~/simple-obfs.ipk
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
+	wget -q --no-check-certificate "$rawgit/$usergit/opvss/main/opvss.sh" -O /usr/bin/opvss
+	wget -q --no-check-certificate "$rawgit/$usergit/opvss/main/autorekonek-opvss.sh" -O /usr/bin/autorekonek-opvss
+	wget -q --no-check-certificate "$comgit/$usergit/sst/blob/main/simple-obfs_0.0.5-5_aarch64_cortex-a53.ipk?raw=true" -O ~/simple-obfs.ipk
+	wget -q --no-check-certificate "$comgit/$usergit/sst/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
 	cek2=$(ls /usr/bin/ | grep ss-local)
 	if [ $cek2 = "ss-local" ]; then
 	echo > /dev/null
@@ -137,9 +137,9 @@ elif [[ $1 = "slowdns" ]]; then
 	echo -e "Installing Wegare Tools - ${G}slowdns${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/slowdns/main/slowdns.sh" -O /usr/bin/slowdns
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/slowdns/main/autorekonek-slowdns.sh" -O /usr/bin/autorekonek-slowdns
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/slowdns/blob/main/dns-client-v19?raw=true" -O /usr/bin/dns-client
+	wget -q --no-check-certificate "$rawgit/$usergit/slowdns/main/slowdns.sh" -O /usr/bin/slowdns
+	wget -q --no-check-certificate "$rawgit/$usergit/slowdns/main/autorekonek-slowdns.sh" -O /usr/bin/autorekonek-slowdns
+	wget -q --no-check-certificate "$comgit/$usergit/slowdns/blob/main/dns-client-v19?raw=true" -O /usr/bin/dns-client
 	chmod +x /usr/bin/slowdns
 	chmod +x /usr/bin/dns-client
 	chmod +x /usr/bin/autorekonek-slowdns
@@ -162,15 +162,15 @@ elif [[ $1 = "ssrt" ]]; then
 	echo -e "Installing Wegare Tools - ${G}ssrt${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/ssrt/main/ssrt.sh" -O /usr/bin/ssrt
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/ssrt/main/autorekonek-ssrt.sh" -O /usr/bin/autorekonek-ssrt
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	wget -q --no-check-certificate "$rawgit/$usergit/ssrt/main/ssrt.sh" -O /usr/bin/ssrt
+	wget -q --no-check-certificate "$rawgit/$usergit/ssrt/main/autorekonek-ssrt.sh" -O /usr/bin/autorekonek-ssrt
+	wget -q --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
 	chmod +x /usr/bin/tun2socks
 	cek=$(cat /etc/openwrt_r* | grep -i RELEASE | cut -d= -f2 | cut -d"'" -f2 | cut -d. -f1)
 	if [ "$cek" = "19" ]; then
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/ssrt/blob/main/shadowsocksr-libev_1-0-0-wegare_aarch64_cortex-a53.ipk?raw=true" -O ~/ssr-libev.ipk
+	wget -q --no-check-certificate "$comgit/$usergit/ssrt/blob/main/shadowsocksr-libev_1-0-0-wegare_aarch64_cortex-a53.ipk?raw=true" -O ~/ssr-libev.ipk
 	elif [ "$cek" = "18" ]; then
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/ssrt/blob/main/shadowsocksr-libev_2.5.6-5_aarch64_cortex-a53.ipk?raw=true" -O ~/ssr-libev.ipk
+	wget -q --no-check-certificate "$comgit/$usergit/ssrt/blob/main/shadowsocksr-libev_2.5.6-5_aarch64_cortex-a53.ipk?raw=true" -O ~/ssr-libev.ipk
 	else
 	echo "frimware versi yang anda gunakan tidak terdeteksi silahkan install sendiri shadowsocksr-libev nya"
 	fi
@@ -196,11 +196,11 @@ elif [[ $1 = "sst" ]]; then
 	echo -e "Installing Wegare Tools - ${G}sst${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sst/main/sst.sh" -O /usr/bin/sst
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sst/main/autorekonek-sst.sh" -O /usr/bin/autorekonek-sst
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/simple-obfs_0.0.5-5_aarch64_cortex-a53.ipk?raw=true" -O ~/simple-obfs.ipk
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/sst/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	wget -q --no-check-certificate "$rawgit/$usergit/sst/main/sst.sh" -O /usr/bin/sst
+	wget -q --no-check-certificate "$rawgit/$usergit/sst/main/autorekonek-sst.sh" -O /usr/bin/autorekonek-sst
+	wget -q --no-check-certificate "$comgit/$usergit/sst/blob/main/simple-obfs_0.0.5-5_aarch64_cortex-a53.ipk?raw=true" -O ~/simple-obfs.ipk
+	wget -q --no-check-certificate "$comgit/$usergit/sst/blob/main/ck-client?raw=true" -O /usr/bin/ck-client
+	wget -q --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
 	chmod +x /usr/bin/tun2socks
 	opkg install ip-full && opkg install *.ipk && opkg install lsof && opkg install fping
 	chmod +x /usr/bin/sst
@@ -227,8 +227,8 @@ elif [[ $1 = "sstp" ]]; then
 	echo -e "${N}"
 	printf 'ctrl+c' | crontab -e > /dev/null
 	opkg update && opkg install sstp-client pptpd fping
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sstp/main/sstp.sh" -O /usr/bin/sstp
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/sstp/main/autorekonek-sstp.sh" -O /usr/bin/autorekonek-sstp
+	wget -q --no-check-certificate "$rawgit/$usergit/sstp/main/sstp.sh" -O /usr/bin/sstp
+	wget -q --no-check-certificate "$rawgit/$usergit/sstp/main/autorekonek-sstp.sh" -O /usr/bin/autorekonek-sstp
 	chmod +x /usr/bin/sstp
 	chmod +x /usr/bin/autorekonek-sstp
 	rm -r ~/install.sh
@@ -248,12 +248,12 @@ elif [[ $1 = "stl" ]]; then
 	echo -e "================================"
 	echo -e "${N}"
 	mkdir -p ~/akun/
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/stl.sh" -O /usr/bin/stl
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/gproxy.sh" -O /usr/bin/gproxy
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/autorekonek-stl.sh" -O /usr/bin/autorekonek-stl
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/tunnel.py" -O /root/akun/tunnel.py
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/ssh.py" -O /root/akun/ssh.py
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/stl/main/stl/inject.py" -O /root/akun/inject.py
+	wget -q --no-check-certificate "$rawgit/$usergit/stl/main/stl/stl.sh" -O /usr/bin/stl
+	wget -q --no-check-certificate "$rawgit/$usergit/stl/main/stl/gproxy.sh" -O /usr/bin/gproxy
+	wget -q --no-check-certificate "$rawgit/$usergit/stl/main/stl/autorekonek-stl.sh" -O /usr/bin/autorekonek-stl
+	wget -q --no-check-certificate "$rawgit/$usergit/stl/main/stl/tunnel.py" -O /root/akun/tunnel.py
+	wget -q --no-check-certificate "$rawgit/$usergit/stl/main/stl/ssh.py" -O /root/akun/ssh.py
+	wget -q --no-check-certificate "$rawgit/$usergit/stl/main/stl/inject.py" -O /root/akun/inject.py
 	opkg install openvpn-openssl && opkg install ip-full && opkg install openssh-client && opkg install stunnel && opkg install --force-depends *.ipk && opkg install lsof && opkg install 'httping\|fping\|screen\|python\|python3\|coreutils-nohup\|libevent2\|redsocks'
 	chmod +x /usr/bin/gproxy
 	chmod +x /usr/bin/stl
@@ -281,10 +281,10 @@ elif [[ $1 = "tjg" ]]; then
 	echo -e "Installing Wegare Tools - ${G}tjg${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjg/main/tjg.sh" -O /usr/bin/tjg
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/tjg/blob/main/trojan-go_0.10.1-generic_aarch64_cortex-a53.ipk?raw=true" -O ~/trojan-go.ipk
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjg/main/autorekonek-tjg.sh" -O /usr/bin/autorekonek-tjg
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	wget -q --no-check-certificate "$rawgit/$usergit/tjg/main/tjg.sh" -O /usr/bin/tjg
+	wget -q --no-check-certificate "$comgit/$usergit/tjg/blob/main/trojan-go_0.10.1-generic_aarch64_cortex-a53.ipk?raw=true" -O ~/trojan-go.ipk
+	wget -q --no-check-certificate "$rawgit/$usergit/tjg/main/autorekonek-tjg.sh" -O /usr/bin/autorekonek-tjg
+	wget -q --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
 	chmod +x /usr/bin/tun2socks
 	opkg install ip-full ipset lsof fping && opkg install *.ipk
 	chmod +x /usr/bin/tjg
@@ -307,10 +307,10 @@ elif [[ $1 = "tjt" ]]; then
 	echo -e "Installing Wegare Tools - ${G}tjt${Y}..."
 	echo -e "================================"
 	echo -e "${N}"
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjt/main/tjt.sh" -O /usr/bin/tjt
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjt/main/trojan" -O /usr/bin/trojan
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/tjt/main/autorekonek-tjt.sh" -O /usr/bin/autorekonek-tjt
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	wget -q --no-check-certificate "$rawgit/$usergit/tjt/main/tjt.sh" -O /usr/bin/tjt
+	wget -q --no-check-certificate "$rawgit/$usergit/tjt/main/trojan" -O /usr/bin/trojan
+	wget -q --no-check-certificate "$rawgit/$usergit/tjt/main/autorekonek-tjt.sh" -O /usr/bin/autorekonek-tjt
+	wget -q --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
 	chmod +x /usr/bin/tun2socks
 	opkg install ip-full ipset lsof fping && opkg install *.ipk
 	chmod +x /usr/bin/tjt
@@ -335,13 +335,13 @@ elif [[ $1 = "vmt" ]]; then
 	echo -e "================================"
 	echo -e "${N}"
 	mkdir -p /usr/share/v2ray/
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/vmt.sh" -O /usr/bin/vmt
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/autorekonek-vmt.sh" -O /usr/bin/autorekonek-vmt
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ray" -O /usr/bin/v2ray
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ctl" -O /usr/bin/v2ctl
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/v2ray/geoip.dat
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/v2ray/geosite.dat
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/vmt.sh" -O /usr/bin/vmt
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/autorekonek-vmt.sh" -O /usr/bin/autorekonek-vmt
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/v2ray" -O /usr/bin/v2ray
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/v2ctl" -O /usr/bin/v2ctl
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/v2ray/geoip.dat
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/v2ray/geosite.dat
+	wget -q --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
 	chmod +x /usr/bin/tun2socks
 	cek2=$(opkg list-installed | grep dnsmasq-full | awk '{print $1}')
 	if [ $cek2 = "dnsmasq-full" ]; then
@@ -376,16 +376,16 @@ elif [[ $1 = "vless" ]]; then
 	echo -e "${N}"
 	mkdir -p /usr/share/xray/
 	mkdir -p /usr/share/v2ray/
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vless/main/vless.sh" -O /usr/bin/vless
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vless/main/autorekonek-vless.sh" -O /usr/bin/autorekonek-vless
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/vless/blob/main/xray?raw=true" -O /usr/bin/xray
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ray" -O /usr/bin/v2ray
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/v2ctl" -O /usr/bin/v2ctl
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/xray/geoip.dat
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/xray/geosite.dat
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/v2ray/geoip.dat
-	wget -q --show-progress --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/v2ray/geosite.dat
-	wget -q --show-progress --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
+	wget -q --no-check-certificate "$rawgit/$usergit/vless/main/vless.sh" -O /usr/bin/vless
+	wget -q --no-check-certificate "$rawgit/$usergit/vless/main/autorekonek-vless.sh" -O /usr/bin/autorekonek-vless
+	wget -q --no-check-certificate "$comgit/$usergit/vless/blob/main/xray?raw=true" -O /usr/bin/xray
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/v2ray" -O /usr/bin/v2ray
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/v2ctl" -O /usr/bin/v2ctl
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/xray/geoip.dat
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/xray/geosite.dat
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/geoip.dat" -O /usr/share/v2ray/geoip.dat
+	wget -q --no-check-certificate "$rawgit/$usergit/vmt/main/geosite.dat" -O /usr/share/v2ray/geosite.dat
+	wget -q --no-check-certificate "$comgit/$usergit/backup/blob/main/tun2socks?raw=true" -O /usr/bin/tun2socks
 	chmod +x /usr/bin/tun2socks
 	cek2=$(opkg list-installed | grep dnsmasq-full | awk '{print $1}')
 	if [ $cek2 = "dnsmasq-full" ]; then
