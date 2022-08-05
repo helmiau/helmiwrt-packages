@@ -1,8 +1,10 @@
 #
-# Xderm Limit GUI Software by Ryan Fauzi <https://github.com/ryanfauzi1/xderm-mini_GUI>
+# Mikrotik monitor package for OpenWrt by laksa19 <https://laksa19.github.io>
 # LuCI Xderm Mini GUI App by Helmi Amirudin <https://www.helmiau.com>
 #
-# Copyright (C) 2021 Helmi Amirudin <helmilaw@gmail.com>
+# Copyright (C) 2022 Laksamadi Guko
+# Copyright (C) 2022 Helmi Amirudin
+#
 # This is free software, licensed under the Apache License, Version 2.0
 #
 

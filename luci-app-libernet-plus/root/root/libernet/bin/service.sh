@@ -17,11 +17,10 @@ DNS_RESOLVER="$(grep 'dns_resolver":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 
 MEMORY_CLEANER="$(grep 'memory_cleaner":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 PING_LOOP="$(grep 'ping_loop":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 AUTO_RECON="$(grep 'auto_recon":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
-void="/usr/bin/void.sh"
 
 function check_connection() {
   counter=0
-  max_retries=5
+  max_retries=3
   while [[ "${counter}" -lt "${max_retries}" ]]; do
     sleep 5
     # write connection checking to service log
@@ -39,8 +38,6 @@ function check_connection() {
     if [[ "${counter}" -eq "${max_retries}" ]]; then
       # write not connectivity to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
-	  /etc/init.d/network restart
-	  sleep 2
       echo -e "Socks connection unavailable!"
       # cancel Libernet service
       restart_services
@@ -55,7 +52,7 @@ function run_other_services() {
     dns_resolver_service
     memory_cleaner_service
     ping_loop_service
-	auto_recon_service
+    auto_recon_service
   fi
 }
 
@@ -143,7 +140,7 @@ function openvpn_service() {
       dns_resolver_service
       memory_cleaner_service
       ping_loop_service
-	  auto_recon_service
+      auto_recon_service
       break
     fi
     counter=$[${counter} + 1]
@@ -153,7 +150,7 @@ function openvpn_service() {
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">OpenVPN connection unavailable</span>"
       echo -e "OpenVPN connection unavailable!"
       # cancel Libernet service
-      cancel_services
+      restart_services
       exit 1
     fi
   done
@@ -168,13 +165,12 @@ function ssh_ws_cdn_service() {
 function start_services() {
   # clear service log
   "${LIBERNET_DIR}/bin/log.sh" -r
-    #bash $void
-  #"${LIBERNET_DIR}/bin/log.sh" -w "Wait Sync time&date"
-  #sleep 5
   # write service status: running
   "${LIBERNET_DIR}/bin/log.sh" -s 1
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting Libernet service"
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Firewall service restarted</span>"
+  /etc/init.d/firewall reload 2>/dev/null
   case "${TUNNEL_MODE}" in
     "0")
       ssh_service
@@ -246,7 +242,7 @@ function stop_services() {
     if [[ "${PING_LOOP}" == 'true' ]]; then
       "${LIBERNET_DIR}/bin/ping-loop.sh" -s
     fi
-	  # kill auto recon service
+    # kill auto recon service
     if [[ "${AUTO_RECON}" == 'true' ]]; then
       "${LIBERNET_DIR}/bin/auto_recon.sh" -s
     fi
@@ -258,20 +254,21 @@ function stop_services() {
   # write service status: stop
   "${LIBERNET_DIR}/bin/log.sh" -s 0
   # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Firewall service restarted</span>"
+  /etc/init.d/firewall reload 2>/dev/null
   "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: gray\">Libernet service stopped</span>"
   echo -e "Libernet services stopped!"
 }
 
-function restart_services() {
-  stop_services
-  sleep 10
-  start_services
-}
-
 function cancel_services() {
   stop_services -c
-  sleep 5
   killall service.sh
+}
+
+function restart_services() {
+  stop_services -c
+  sleep 10
+  start_services
 }
 
 function auto_start() {
@@ -332,11 +329,11 @@ case "${1}" in
   -ds)
     stop_services
     ;;
-  -rl)
-    restart_services
-    ;;
   -cl)
     cancel_services
+    ;;
+  -rl)
+    restart_services
     ;;
   -ea)
     enable_auto_start

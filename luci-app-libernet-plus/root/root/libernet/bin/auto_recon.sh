@@ -11,51 +11,113 @@ fi
 
 SERVICE_NAME="Auto Reconnect"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-#INTERVAL="1"
-#HOST="bing.com"
+TUNNEL_MODE="$(grep 'mode":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
 function loop() {
 n=0
 while [ 1 ]; do
-  #ping with timeout 10 seconds
-  #ping -c 1 -W 10 -w 10 8.8.8.8
-  
   wan=$(curl --connect-timeout 10 'https://api.ipify.org/?format=json' | jq '.ip' | sed ' s/"//g')
   ip=$(jq .server '/root/libernet/system/config.json' | sed ' s/"//g')
-  #ret=$?
 echo $wan $ip
-  #echo ping result $ret
   if  [ $wan = $ip ]; then
-    echo ping ok
-    sleep 30
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: Green\">Checking Connection... </span>"
+  sleep 1
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: Green\">HTTP/1.1 200 OK [IP: ${ip}]</span>"
+    echo wan ok
+    sleep 3
 	n=0
-	#ipCheck
-  else 
+  else
     echo ping fail
     n=$((n+1))
-    # when wan-dhcp fail, 
-    # net is unreachable and ping return without any delay
-    # using sleep 1 avoid fail count overflow too fast
-    sleep 1
+	"${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: Green\">Checking Connection... </span>"
+  sleep 1
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Failed ${n}</span>"
+    sleep 3
   fi
-
   echo fail counter $n
-  if [ $n -gt 5 ]; then
-    # in case of wan-dhcp fail total time to reboot is 1 min (60 seconds)
-    # in case of ping-timeout total time to reboot is 11 min (660 seconds)
+  if [ $n -gt 4 ]; then
+	"${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Auto Reconnecting</span>"
     n=0
-        recon
+    recon
   fi
 done
 }
 
 #stop libernet
 recon(){
-    curl -d '{"action":"restart_libernet"}' -H "Content-Type: application/json" -X POST http://192.168.1.1/libernet/api.php
+    stop_services
+	sleep 2
+	start_services
+}
+
+function start_services() {
+  # write to service log
+  case "${TUNNEL_MODE}" in
+    "0")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart SSH"
+      "${LIBERNET_DIR}/bin/ssh.sh" -r
+      ;;
+    "1")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart v2ray"
+      "${LIBERNET_DIR}/bin/v2ray.sh" -r
+      ;;
+    "2")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart SSH-SSL"
+      "${LIBERNET_DIR}/bin/ssh-ssl.sh" -r
+      ;;
+    "3")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart Trojan"
+      "${LIBERNET_DIR}/bin/trojan.sh" -r
+      ;;
+    "4")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart shadowsocks"
+      "${LIBERNET_DIR}/bin/shadowsocks.sh" -r
+      ;;
+	"5")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart openvpn"
+      "${LIBERNET_DIR}/bin/openvpn.sh" -r
+      ;;
+	"6")
+	  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart ssh-ws-cdn"
+      "${LIBERNET_DIR}/bin/ssh-ws-cdn.sh" -r
+      ;;
+  esac
+  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Reconnect Restart Tun2Socks"
+  "${LIBERNET_DIR}/bin/tun2socks.sh" -v
+  sleep 5
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: blue\">Auto Reconnect Checking...</span>"
+}
+
+function stop_services() {
+  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Stopping Tunnel"
+  case "${TUNNEL_MODE}" in
+    "0")
+      "${LIBERNET_DIR}/bin/ssh.sh" -s
+      ;;
+    "1")
+      "${LIBERNET_DIR}/bin/v2ray.sh" -s
+      ;;
+    "2")
+      "${LIBERNET_DIR}/bin/ssh-ssl.sh" -s
+      ;;
+    "3")
+      "${LIBERNET_DIR}/bin/trojan.sh" -s
+      ;;
+    "4")
+      "${LIBERNET_DIR}/bin/shadowsocks.sh" -s
+      ;;
+    "5")
+      "${LIBERNET_DIR}/bin/openvpn.sh" -s
+      ;;
+	"6")
+      "${LIBERNET_DIR}/bin/ssh-ws-cdn.sh" -s
+      ;;
+  esac
+  "${LIBERNET_DIR}/bin/log.sh" -w "Auto Stopping Tun2Socks"
+  "${LIBERNET_DIR}/bin/tun2socks.sh" -w
 }
 
 function run() {
-  # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
   screen -AmdS auto-recon "${LIBERNET_DIR}/bin/auto_recon.sh" -l \

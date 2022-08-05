@@ -307,7 +307,7 @@ fi
    echo "Ketik: opkg update && opkg install stunnel" >> screenlog.0
    exit
   fi
- if [ -f $(v2ray -version 2>/dev/null|awk '{print $1}'|awk "NR==1") ]; then
+ if [ -f $(v2ray version 2>/dev/null|awk '{print $1}'|awk "NR==1") ]; then
   echo "Paket V2Ray belom terinstall. install dulu!" >> screenlog.0
   echo "Gunakan Koneksi normal dan" >> screenlog.0
   echo "Installer: https://github.com/vitoharhari/xderm-mini" >> screenlog.0

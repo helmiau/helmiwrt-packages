@@ -120,7 +120,7 @@ const app = new Vue({
                             action: "start_libernet"
                         })
                         // refresh browser to prevent unwanted error
-                        setTimeout(() => location.reload(),1000)
+                        setTimeout(() => location.reload(), 500)
                     })
                 })
             } else {
