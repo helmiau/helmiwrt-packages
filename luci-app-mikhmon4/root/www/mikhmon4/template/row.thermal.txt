@@ -1,0 +1,66 @@
+<table class="voucher" style=" width: 180px;">
+	<tbody>
+		<tr>
+			<td style="text-align: center; font-size: 14px; font-weight:bold;">%hotspotName%</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; font-size: 14px; border-bottom: 1px black solid;">
+				<img src="%logo%" alt="logo" style="height:30px;border:0;"><br>
+				<span>%timeStamp%</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table style=" text-align: center; width: 170px; font-size: 12px;">
+					<tbody>
+						<tr>
+							<td>
+								<table style="width:100%;">
+									<tr class="vc">
+										<td font-size: 12px;>Kode Voucher</td>
+									</tr>
+									<tr  class="vc">
+										<td style="width:100%; border: 1px solid black; font-weight:bold; font-size:16px;">%username%</td>
+									</tr>
+									<tr class="up">
+										<td style="width: 50%">Username</td>
+										<td >Password</td>
+									</tr>
+									<tr style="font-size: 14px;" class="up">
+										<td style="border: 1px solid black; font-weight:bold;">%username%</td>
+										<td style="border: 1px solid black; font-weight:bold;">%password%</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2" style="border-top: 1px solid black;font-weight:bold; font-size:14px"><span class="validity">%validity%</span> <span class="timelimit">%limitUptime%</span> <span>%limitBytesTotal%</span></td>
+						</tr>
+						<tr>
+							<td><span class="price">%price%</span></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div >%qrCode% </div>
+								%comment%
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="font-weight:bold; font-size:12px">Login: http://%dnsName%</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script>
+	if("%username%" == "%password%"){
+		$(".vc").show()
+	}else if("%username%" != "%password%"){
+		$(".up").show()
+	}
+</script>
+
+

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Voucher</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<link rel="icon" href="assets/img/favicon.png" />
+		<script src="assets/js/jquery.min.js"></script>
+		<style>
+			body {
+				color: #000000;
+				background-color: #FFFFFF;
+				font-size: 14px;
+				font-family:  'Helvetica', arial, sans-serif;
+				margin: 0px;
+				-webkit-print-color-adjust: exact;
+			}
+			table.voucher {
+				display: inline-block;
+				border: 2px solid black;
+				margin: 2px;
+			}
+			@page
+			{
+				size: auto;
+				margin-left: 7mm;
+				margin-right: 3mm;
+				margin-top: 9mm;
+				margin-bottom: 3mm;
+			}
+			@media print
+			{
+				table { page-break-after:auto }
+				tr    { page-break-inside:avoid; page-break-after:auto }
+				td    { page-break-inside:avoid; page-break-after:auto }
+				thead { display:table-header-group }
+				tfoot { display:table-footer-group }
+			}
+			.rotate {
+				max-width: 15px;
+				white-space: nowrap;
+				vertical-align: bottom;
+				padding-right: 5px;
+			}
+
+			.rotate > div {
+				transform: rotate(-90deg);
+			}
+			.qrcode{
+				height:100px;
+				width:100px;
+			}
+			.vc{
+				display:none;
+			}	
+			.up{
+				display:none;
+			}
+			.price{
+				font-size:20px;
+
+			}
+
+		</style>
+	</head>
+	<body>

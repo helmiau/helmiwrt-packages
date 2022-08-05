@@ -1,0 +1,43 @@
+<table class="voucher" style="width: 230px;">
+	<tbody>
+		<tr>
+			<td style="font-weight: bold; border-right: 2px  dashed black;" class="rotate" rowspan="4"><div><span class="price">%price%</span></div></td>
+			<td style="font-weight: bold" colspan="2">%hotspotName%</td>
+			<td rowspan="3"><div >%qrCode% </div></td>  
+		</tr>
+		<tr>
+			<td class="vc">%username%</td>
+			<td class="up">
+				User: %username%
+				<br>
+				Pass: %password%
+			</td>
+		</tr>
+		<tr>
+			<td style="font-size: 10px;">
+				<span class="validity">%validity%</span> 
+				<span class="timelimit">%limitUptime%</span> 
+				<span>%limitBytesTotal%</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" style="font-size: 10px;">Login: http://%dnsName% <span class="num"> [%#%]</span></td>
+		</tr>
+	</tbody>
+</table>
+<script>
+	if("%username%" == "%password%"){
+		$(".vc").show()
+	}else if("%username%" != "%password%"){
+		$(".up").show()
+	}
+
+	// var tcolor = {
+	//   15000 : "red",
+	// }
+
+	// $(".price").css("color",tcolor["%price%"]);
+
+</script>
+
+

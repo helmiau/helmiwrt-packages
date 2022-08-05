@@ -1,0 +1,26 @@
+
+<script>
+    if($(".validity")){
+        nice('.validity')
+    }
+    if($(".timelimit")){
+        nice('.timelimit')
+    }
+
+    if($(".price")){
+        $(".price").html(currencyFormat(Number($(".price").html()),currency));
+    }
+    
+    function nice(e){
+        var x =  $(e).html();
+        if(x.substring(x.length - 1) == "d"){
+            $(e).html(x.replace("d","Hari"));
+        }else if(x.substring(x.length - 1) == "h"){
+            $(e).html(x.replace("h","Jam"));
+        }else if(x.substring(x.length - 1) == "w"){
+            $(e).html(x.replace("w","Minggu"));
+        }
+    }
+</script>
+</body>
+</html>

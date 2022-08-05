@@ -1,0 +1,31 @@
+<table class="voucher" style=" width: 140px;">
+	<thead>
+		<tr>
+			<th colspan="2" style="width:100%;text-align: left; font-size: 12px; font-weight:bold; border-bottom: 1px black solid;">%hotspotName%<span class="num">%#%</span>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="color: black; font-size: 10px; text-align: center;">
+			<td class="vc" style="display:none; width: 160px;">Voucher &nbsp;</td>
+			<td class="up" style="display:none; width: 80px;">Username</td>
+			<td class="up" style="display:none; width: 80px;">Password</td>
+		</tr>
+		<tr style="color: black; font-size: 12px; text-align: center;">
+			<td style="border: 1px solid black; font-weight:bold;">%username%</td>
+			<td class="up" style="border: 1px solid black; font-weight:bold;display:none;">%password%</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr style="color: black; font-size: 10px; text-align: center;">
+			<th colspan="2" ><span class="validity">%validity%</span> <span class="timelimit">%limitUptime%</span> <span>%limitBytesTotal%</span> <span class="price">%price%</span></th>
+		</tr>
+	</tfoot>
+</table>
+<script>
+	if("%username%" == "%password%"){
+		$(".vc").show()
+	}else if("%username%" != "%password%"){
+		$(".up").show()
+	}
+</script>

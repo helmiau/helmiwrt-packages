@@ -1,0 +1,44 @@
+
+<script>
+    if($(".validity")){
+        nice('.validity')
+    }
+    if($(".timelimit")){
+        nice('.timelimit')
+    }
+
+    if($(".price")){
+        $(".price").html(currencyFormat(Number($(".price").html()),currency));
+    }
+    
+    function nice(e){
+        var x =  $(e).html();
+		var s = "";
+		var cid = ["Rp","RP","IDR"];
+		var d_ = "";
+		var h_ = "";
+		var w_ = "";
+		if(Number(x.substring(0,1)) > 1){
+			s = "s"
+		}
+		console.log(cid.indexOf(currency)+" "+currency)
+		if(cid.indexOf(currency) > -1){
+			d_ = "hari";
+			h_ = "jam";
+			w_ = "minggu";
+		}else{
+			d_ = "day"+s;
+			h_ = "hour"+s;
+			w_ = "week"+s;
+		}
+        if(x.substring(x.length - 1) == "d"){
+            $(e).html(x.replace("d",d_));
+        }else if(x.substring(x.length - 1) == "h"){
+            $(e).html(x.replace("h",h_));
+        }else if(x.substring(x.length - 1) == "w"){
+            $(e).html(x.replace("w",w_));
+        }
+    }
+</script>
+</body>
+</html>
