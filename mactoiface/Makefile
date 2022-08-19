@@ -17,7 +17,7 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
 	TITLE:=MAC To Interface
-	DEPENDS:=+bash +screen
+	DEPENDS:=+bash
 	SECTION:=net
 	CATEGORY:=Network
 	SUBMENU:=Routing and Redirection
@@ -27,6 +27,15 @@ endef
 
 define Package/$(PKG_NAME)/description
 	Lock OpenWrt mac address to preferred interface.
+endef
+
+define Build/Prepare
+endef
+
+define Build/Configure
+endef
+
+define Build/Compile
 endef
 
 define Package/$(PKG_NAME)/install
