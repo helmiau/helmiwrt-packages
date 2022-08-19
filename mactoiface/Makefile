@@ -41,8 +41,7 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
-	[ -f /root/etc/init.d/mactoiface ] && chmod 755 /root/etc/init.d/mactoiface
-	[ -f /etc/init.d/mactoiface ] && chmod 755 /etc/init.d/mactoiface
+	[ -f $(1)/etc/init.d/mactoiface ] && chmod 755 $(1)/etc/init.d/mactoiface
 endef
 
 define Package/$(PKG_NAME)/postinst
