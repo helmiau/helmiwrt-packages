@@ -8,45 +8,46 @@
 
 include $(TOPDIR)/rules.mk
 
-LUCI_TITLE:=MAC Todong
-LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+bash +screen
-
-PKG_NAME:=mactodong
+PKG_NAME:=mactoiface
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
+PKG_MAINTAINER:=Reyre and Helmi Amirudin <helmiau.com>
+
+include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-	$(call Package/luci/webtemplate)
-	TITLE:=$(LUCI_TITLE)
-	DEPENDS:=$(LUCI_DEPENDS)
+	TITLE:=MAC To Interface
+	DEPENDS:=+bash +screen
+	SECTION:=net
+	CATEGORY:=Network
+	SUBMENU:=Routing and Redirection
+	MAINTAINER:=Reyre and Helmi Amirudin <helmiau.com>
+	PKGARCH:=all
 endef
 
 define Package/$(PKG_NAME)/description
-	Lock many OpenWrt interfaces to preferred settings.
+	Lock OpenWrt mac address to preferred interface.
 endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
-	chmod 755 /root/etc/config/mactodong
-	chmod 755 /root/etc/init.d/mactodong
+	chmod 755 /root/etc/config/mactoiface
+	chmod 755 /root/etc/init.d/mactoiface
 endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-	chmod 755 /root/etc/config/mactodong
-	chmod 755 /root/etc/init.d/mactodong
+	chmod 755 /root/etc/config/mactoiface
+	chmod 755 /root/etc/init.d/mactoiface
 exit 0
 endef
 
 define Package/$(PKG_NAME)/postrm
 #!/bin/sh
-	[[ -f /root/etc/config/mactodong ]] && rm -f /root/etc/config/mactodong
-	[[ -f /root/etc/init.d/mactodong ]] && rm -f /root/etc/init.d/mactodong
+	[[ -f /root/etc/config/mactoiface ]] && rm -f /root/etc/config/mactoiface
+	[[ -f /root/etc/init.d/mactoiface ]] && rm -f /root/etc/init.d/mactoiface
 exit 0
 endef
-
-include $(TOPDIR)/feeds/luci/luci.mk
 
 $(eval $(call BuildPackage,$(PKG_NAME)))

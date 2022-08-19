@@ -6,7 +6,7 @@ grep(){
 }
 for i in $( ls /sys/class/net/*/device/uevent | awk -F'/' '{print $5}' | tr '\n' ' ' );
 do	
-	mac_addr=$( grep $i /etc/config/mactodong | awk '{print $3}' | tr -d '"' )	
+	mac_addr=$( grep $i /etc/config/mactoiface | awk '{print $3}' | tr -d '"' )	
 	if [ "$mac_addr" != '' ]; then			
 		ip link set "$i" down 		
 		ip link set "$i" name old"$i"			
@@ -15,7 +15,7 @@ done
 for i in $( ls /sys/class/net/*/device/uevent | awk -F'/' '{print $5}' | tr '\n' ' ' );
 do
 	mac_addr=$( cat /sys/class/net/$i/address  )	
-	iface_name=$( grep -i $mac_addr /etc/config/mactodong | awk '{print $2}' )	
+	iface_name=$( grep -i $mac_addr /etc/config/mactoiface | awk '{print $2}' )	
 	if [ "$iface_name" != '' ]; then			
 		ip link set "$i" down 		
 		ip link set "$i" name "$iface_name"			
