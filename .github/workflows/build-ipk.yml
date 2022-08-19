@@ -25,7 +25,7 @@ env:
 
 jobs:
   Build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Initialization Environment
@@ -33,7 +33,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804) rdate
+          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004) squashfs-tools rdate
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
@@ -136,8 +136,9 @@ jobs:
             #echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
           #done
           # Set LuCI Theme and App Path
-          echo "THEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
-          echo "APPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
+          echo "LUCITHEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
+          echo "LUCIAPPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
+          echo "PKGPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/packages" >> $GITHUB_ENV
           # Checking Files and places
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo -e "===== End of Information ====="
@@ -169,8 +170,9 @@ jobs:
           name: IPK Build ${{ env.FILE_DATE }}
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            ${{ env.THEMEPATH }}-*
-            ${{ env.APPPATH }}-*
+            ${{ env.LUCITHEMEPATH }}-*
+            ${{ env.LUCIAPPPATH }}-*
+            ${{ env.PKGPATH }}/mactoiface.*
           body: |
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
