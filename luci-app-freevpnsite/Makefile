@@ -12,7 +12,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session
 
 PKG_NAME:=luci-app-freevpnsite
-PKG_VERSION:=1.3
+PKG_VERSION:=1.4
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)

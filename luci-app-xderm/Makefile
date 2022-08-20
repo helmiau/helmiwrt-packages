@@ -15,7 +15,7 @@ LUCI_DEPENDS:=+bash +screen +coreutils +coreutils-base64 +coreutils-timeout +htt
 	+openssl-util +php8 +php8-cgi +php8-mod-session +https-dns-proxy +badvpn +trojan
 
 PKG_NAME:=luci-app-xderm
-PKG_VERSION:=1.4
+PKG_VERSION:=1.5
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)

@@ -15,7 +15,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session +php8-fpm +php8-mod-curl +php8-mod-dom +php8-mod-filter +php8-mod-gettext +php8-mod-gmp +php8-mod-iconv +php8-mod-mbstring +php8-mod-opcache +php8-mod-pcntl +php8-mod-pdo +php8-mod-zip +zoneinfo-core +zoneinfo-simple
 
 PKG_NAME:=luci-app-mikhmon4
-PKG_VERSION:=1.0
+PKG_VERSION:=1.1
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)

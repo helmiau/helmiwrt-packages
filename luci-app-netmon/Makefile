@@ -14,7 +14,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session +zoneinfo-core +zoneinfo-asia +luci-app-tinyfm +netdata
 
 PKG_NAME:=luci-app-netmon
-PKG_VERSION:=1.1
+PKG_VERSION:=1.2
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
