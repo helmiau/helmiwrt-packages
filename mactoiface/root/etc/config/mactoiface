@@ -1,4 +1,4 @@
-config mactodong
+config mactoiface
 	# option eth1 "00:E1:4C:82:56:BE"
 	# option eth2 "00:E2:5F:23:09:ZT"
 	# option eth3 "00:E3:9K:27:21:VG"
