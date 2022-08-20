@@ -12,7 +12,7 @@ LUCI_TITLE:=LuCI Xderm Limit App
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+bash +screen +coreutils +coreutils-base64 +coreutils-timeout +httping +v2ray-core \
 	+corkscrew +procps-ng +procps-ng-ps +git +curl +sshpass +python3-pip +python3 +openssh-client \
-	+openssl-util +php7 +php7-cgi +php7-mod-session +https-dns-proxy +badvpn +trojan
+	+openssl-util +php8 +php8-cgi +php8-mod-session +https-dns-proxy +badvpn +trojan
 
 PKG_NAME:=luci-app-xderm-limit
 PKG_VERSION:=1.7

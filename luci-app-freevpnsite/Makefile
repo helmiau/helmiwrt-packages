@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Free VPN Site Lists
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-json +php7-mod-session
+LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session
 
 PKG_NAME:=luci-app-freevpnsite
 PKG_VERSION:=1.3

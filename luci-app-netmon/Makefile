@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Net Monitor Lite
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-session +zoneinfo-core +zoneinfo-asia +luci-app-tinyfm +netdata
+LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session +zoneinfo-core +zoneinfo-asia +luci-app-tinyfm +netdata
 
 PKG_NAME:=luci-app-netmon
 PKG_VERSION:=1.1

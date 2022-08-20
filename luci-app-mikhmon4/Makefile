@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Mikrotik Monitor App v4
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+php7 +php7-cgi +php7-mod-json +php7-mod-session +php7-fpm +php7-mod-curl +php7-mod-dom +php7-mod-filter +php7-mod-gettext +php7-mod-gmp +php7-mod-iconv +php7-mod-mbstring +php7-mod-opcache +php7-mod-pcntl +php7-mod-pdo +php7-mod-zip +zoneinfo-core +zoneinfo-simple
+LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session +php8-fpm +php8-mod-curl +php8-mod-dom +php8-mod-filter +php8-mod-gettext +php8-mod-gmp +php8-mod-iconv +php8-mod-mbstring +php8-mod-opcache +php8-mod-pcntl +php8-mod-pdo +php8-mod-zip +zoneinfo-core +zoneinfo-simple
 
 PKG_NAME:=luci-app-mikhmon4
 PKG_VERSION:=1.0
