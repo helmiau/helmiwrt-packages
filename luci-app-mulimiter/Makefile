@@ -73,6 +73,7 @@ define Package/$(PKG_NAME)/postrm
 	export NAMAPAKET="mulimiter"
 	if [ -d /www/$NAMAPAKET ]; then
 		rm -rf /www/$NAMAPAKET
+		rm -rf /root/.$NAMAPAKET
 	fi
 	unset NAMAPAKET
 exit 0

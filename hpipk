@@ -1,0 +1,33 @@
+#!/bin/bash
+# Script by Helmi Amirudin <helmiau.com>
+
+IPK=$( echo -e "$1" | sed -e 's/ //g' -e 's/.ipk//g' )
+if [[ $1 =~ ".ipk" ]] ; then
+	echo -e "===================================="
+	echo -e "  Downloading ${IPK}.ipk"
+	echo -e "===================================="
+	wget --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/${IPK}.ipk -O /root/${IPK}.ipk
+	echo -e "===================================="
+	echo -e "  Updating package lists..."
+	echo -e "===================================="
+	opkg update
+	echo -e "===================================="
+	echo -e "  Installing ${IPK}.ipk"
+	echo -e "===================================="
+	opkg install /root/${IPK}.ipk $2
+	echo -e "===================================="
+	echo -e "  Cleaning cache..."
+	echo -e "===================================="
+	rm /root/${IPK}.ipk
+	echo -e "  Cache cleaned! Done!."
+	echo -e "===================================="
+else
+	echo -e "====================================" > /tmp/helmiwrt-packages-ipk
+	echo -e "Usage: hpipk luci-app-name_1.1_all.ipk" >> /tmp/helmiwrt-packages-ipk
+	echo -e "====================================" >> /tmp/helmiwrt-packages-ipk
+	echo -e "List available ipk from helmiwrt-packages:\n" >> /tmp/helmiwrt-packages-ipk
+	echo -e "$(curl -sL https://api.github.com/repos/helmiau/helmiwrt-packages/releases/tags/ipk | sed -e 's/ //g' -e 's/\"//g' -e 's/,//g' | grep 'name:luci' | sed 's/name://g')" >> /tmp/helmiwrt-packages-ipk
+	cat < /tmp/helmiwrt-packages-ipk
+	rm /tmp/helmiwrt-packages-ipk
+fi
+
