@@ -1,0 +1,30 @@
+.container-sm {
+  padding-top: 5px;
+}
+.card {
+  margin: 10px 0;
+}
+.card-header {
+  font-weight: bold;
+}
+.list-group {
+  margin: 3px 0;
+}
+.nama-paket {
+  position: absolute;
+  text-align: left;
+  margin-bottom: 3;
+}
+.text-quota {
+  position: relative;
+  text-align: right;
+  margin-bottom: 3;
+}
+.text-remaining-quota {
+  text-align: right;
+  margin-bottom: 3px;
+  margin-top: 5px;
+}
+.progress-bar {
+  height: 5px;
+}
