@@ -229,7 +229,7 @@ if ( window.history.replaceState ) {
 	<center>
 <?php
 $filename = 'login.php';
-if (file_exists($filename)) {
+if (file_exists(isset($filename))) {
     echo '<a href="login.php" onClick="logout()">';
 } else {
     echo '<a href="index.php" onClick="logout()">';
@@ -297,6 +297,7 @@ echo '<script>
 
 ?>
 <?php
+ error_reporting(0);
  if (isset($_POST['simpan'])) {
  $config=$_POST['configbox'];
  $conf=$_POST['profile'];
