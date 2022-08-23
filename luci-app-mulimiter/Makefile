@@ -76,6 +76,7 @@ define Package/$(PKG_NAME)/postrm
 		rm -rf /root/.$NAMAPAKET
 	fi
 	unset NAMAPAKET
+	sed -i "/\/root\/.mulimiter\/run/d" /etc/firewall.user
 exit 0
 endef
 
