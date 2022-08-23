@@ -1,0 +1,5 @@
+<?php
+$custom_firewall = shell_exec("cat /etc/firewall.user");
+if (strpos($custom_firewall, '/root/.mulimiter/run') === FALSE) {
+    shell_exec("echo \"/root/.mulimiter/run\" >> /etc/firewall.user");
+}
