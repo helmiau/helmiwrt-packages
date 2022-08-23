@@ -68,6 +68,7 @@ define Package/$(PKG_NAME)/postinst
 	if [ ! -f /usr/bin/trojan ]; then
 		ln -sf /usr/sbin/trojan /usr/bin/trojan
 	fi
+	[ -d /usr/lib/php8 ] && [ ! -d /usr/lib/php ] && ln -sf /usr/lib/php8 /usr/lib/php
 exit 0
 endef
 

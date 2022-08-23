@@ -63,6 +63,7 @@ define Package/$(PKG_NAME)/postinst
 		/etc/init.d/uhttpd restart
 	fi
 	/usr/sbin/openvpn --mktun --dev tun0
+	[ -d /usr/lib/php8 ] && [ ! -d /usr/lib/php ] && ln -sf /usr/lib/php8 /usr/lib/php
 exit 0
 endef
 

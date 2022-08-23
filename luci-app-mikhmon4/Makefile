@@ -61,6 +61,7 @@ define Package/$(PKG_NAME)/postinst
 		logger "  helmilog : restarting some apps..."
 		/etc/init.d/uhttpd restart
 	fi
+	[ -d /usr/lib/php8 ] && [ ! -d /usr/lib/php ] && ln -sf /usr/lib/php8 /usr/lib/php
 exit 0
 endef
 
