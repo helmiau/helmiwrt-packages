@@ -2,7 +2,7 @@
  exec('chmod -R 755 /www/* && chmod -R 755 /root/*');
  if (!is_dir('/www/xderm/var')) {mkdir('/www/xderm/var', 0755, true);}
  exec("ls login.php|awk 'NR==1'|awk -F '.' '{print $1}'",$clo);
-  if ($clo[0]) {
+  if (isset($clo[0])) {
 include 'header.php';
 ceklogin();
   };
@@ -259,7 +259,7 @@ if (file_exists($filename)) {
 <table align="center"><tr><td class="script_txt"><div class="inline-block"><pre>
 <?php
   exec('cat /www/xderm/var/update.xderm',$z);
-    if ($z[0]) {
+    if (isset($z[0])) {
  if ( $z[0] != '3.1' ){
 echo '<pre><h3 style="color:lime">New versi GUI Detected, Please Update!!</h3></pre>';
 };
@@ -337,7 +337,7 @@ if ($use_boot <> 'yes' ){ exec('./xderm-mini disable');
  exec("cat config/default",$default);
  }
 
-if($_POST['button5']){
+if(isset($_POST['button5'])){
 echo "<h3><center><b>Xderm Mini Informations</b></center></h3>";
 echo "<center><p align='center'><textarea name='aboutbox' id='aboutbox' rows='9' cols='50' style='
 			border-radius: 0px;
@@ -407,9 +407,9 @@ echo '<div class="footer slide" style="display: flex; height: 110%; flex-shrink:
                 Main Developer <a href="https://github.com/ryanfauzi1" target="_blank">Ryan Fauzi</a> • Copyright &copy 2021
     </div>';
 }
-if($_POST['button2']){
+if(isset($_POST['button2'])){
 exec("cat config/mode.list|awk 'NR==1'",$adamode);
-$adamode=$adamode[0];
+$adamode=isset($adamode[0]);
 if (!$adamode) {
 exec("echo SSH. >> config/mode.list");
 exec("echo Vmess. >> config/mode.list");
@@ -511,18 +511,18 @@ echo '<input type="checkbox" name="use_waitmodem" value="yes" checked>Waiting Mo
 else {
 echo '<input type="checkbox" name="use_waitmodem" value="yes">Waiting Modem '; }
 
- if ($boot[0]) {
+ if (isset($boot[0])) {
 echo '<input type="checkbox" name="use_boot" value="yes" checked>ON-Boot'; }
 else {
 echo '<input type="checkbox" name="use_boot" value="yes">ON-Boot'; }
 echo '<input type="submit" name="simpan" class="btn geser" width: 98%; height: 30px; margin-right: 20px; flex-shrink: 0; font-weight: bold; ! important;" value="Simpan"/></form></div>';
 echo '<div id="logx" class="scr"></div></pre>';
 } else {
-if(!$_POST['button5']){
+if(!isset($_POST['button5'])){
  if (!isset($_POST['simpan'])) {
-  if(!$_POST['button6']){
-   if(!$_POST['button7']){
-    if(!$_POST['button4']){
+  if(!isset($_POST['button6'])){
+   if(!isset($_POST['button7'])){
+    if(!isset($_POST['button4'])){
 echo '<div id="log" class="scroll"></div></pre>';
     }
    }
@@ -530,7 +530,7 @@ echo '<div id="log" class="scroll"></div></pre>';
  }
 }
 }
-if($_POST['button6']){
+if(isset($_POST['button6'])){
 if (file_exists("login.php") | file_exists("header.php")) {
  echo 'Loginpage Tersedia, Menghapus...<br/>';
  rename("login.php", "login.php.xdrtool");
@@ -547,7 +547,7 @@ if (file_exists("login.php") | file_exists("header.php")) {
  exec('wget -O /www/xderm/header.php https://github.com/helmiau/helmiwrt-packages/raw/main/luci-app-xderm-bin/root/www/xderm/header.php.xdrtool -q');
  echo 'Login page installed ! Refresh this page'; }
 }
-if($_POST['button7']){
+if(isset($_POST['button7'])){
 echo 'Force Reinstall Xderm Mini LuCI Version...!<br>';
 exec('chmod 777 /bin/xderm_luci_install');
 exec('/bin/xderm_luci_install');

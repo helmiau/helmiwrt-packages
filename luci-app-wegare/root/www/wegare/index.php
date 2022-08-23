@@ -51,7 +51,7 @@ if (preg_match('/TERHUBUNG/', $log)) $terhubung = true;
                         <div class="form-group col text-center mx-auto">
                             <div class="col form-row py-1">
                                 <div class="col">
-                                    <button type="submit" onclick="start();" id="start" class="btn btn-primary" <?php if ($terhubung) echo "disabled"; ?>>Start</button>
+                                    <button type="submit" onclick="start();" id="start" class="btn btn-primary" <?php if (isset($terhubung)) echo "disabled"; ?>>Start</button>
                                     <button type="submit" onclick="stop();" id="stop" class="btn btn-danger">Stop</button>
                                 </div>
                             </div>
@@ -60,7 +60,7 @@ if (preg_match('/TERHUBUNG/', $log)) $terhubung = true;
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="autoBootRecon" oninput="autoBootRecon(this.checked);" <?php if ($checked) echo "checked"; ?>>
+                                        <input class="form-check-input" type="checkbox" id="autoBootRecon" oninput="autoBootRecon(this.checked);" <?php if (isset($checked)) echo "checked"; ?>>
                                         <label class="form-check-label" for="autoBootRecon">
                                             Auto Booting & Auto Reconnect
                                         </label>
