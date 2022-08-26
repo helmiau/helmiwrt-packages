@@ -1,0 +1,86 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 15px 130px 25px 130px;
+}
+.paralax {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.side-left {
+  width: 50%;
+}
+.side-right {
+  width: 50%;
+}
+.card {
+  margin: 15px;
+}
+.nama-paket {
+  position: absolute;
+  text-align: left;
+  margin-bottom: 3;
+}
+.text-quota {
+  position: relative;
+  text-align: right;
+  margin-bottom: 3;
+}
+.text-remaining-quota {
+  text-align: right;
+  margin-bottom: 3px;
+  margin-top: 5px;
+}
+.progress-bar {
+  height: 5px;
+}
+.progress {
+  height: 5px;
+}
+.navbar {
+  padding: 15px 135px;
+}
+
+.card-header {
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* RESPONSIVE BREAKPOINT*/
+@media only screen and (min-width: 600px) {
+  .main {
+    padding: 0px 15px;
+  }
+  .navbar {
+    padding: 15px 20px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .main {
+    display: block;
+    padding: 0px 0px;
+  }
+  .navbar {
+    padding: 10px 5px;
+  }
+  .side-left,
+  .side-right {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .main {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 15px 130px 25px 130px;
+  }
+  .navbar {
+    padding: 15px 135px;
+  }
+}

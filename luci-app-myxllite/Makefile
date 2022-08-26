@@ -13,7 +13,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+curl +php8 +php8-mod-curl
 
 PKG_NAME:=luci-app-myxllite
-PKG_VERSION:=1.0
+PKG_VERSION:=1.1
 PKG_RELEASE:=1
 
 define Package/$(PKG_NAME)
