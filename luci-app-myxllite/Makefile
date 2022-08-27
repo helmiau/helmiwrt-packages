@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI myXL Lite
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+curl +php8 +php8-mod-curl
+LUCI_DEPENDS:=+curl +php8
 
 PKG_NAME:=luci-app-myxllite
 PKG_VERSION:=1.1
