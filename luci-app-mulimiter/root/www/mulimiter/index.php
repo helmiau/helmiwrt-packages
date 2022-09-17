@@ -101,6 +101,98 @@ if ($_SESSION[$app_name]['logedin'] == true) {
                     'success' => true
                 ]);
             }
+        } elseif ($_GET['act'] == 'edit') {
+
+            if ($_POST['drule'] && $_POST['urule'] && $_POST['iprange0'] && $_POST['dspeed'] && $_POST['uspeed']) {
+
+                //add first
+                $iprange = $_POST['iprange0'] . '-' . ($_POST['iprange1'] ? $_POST['iprange1'] : $_POST['iprange0']);
+                $uspeed   = $_POST['uspeed'] . 'kb/s';
+                $dspeed   = $_POST['dspeed'] . 'kb/s';
+
+                $timestart = $_POST['timestart'];
+                $timestop = $_POST['timestop'];
+
+                $mod_time = '';
+                if ($timestart && $timestop) {
+                    $mod_time = "-m time --timestart $timestart --timestop $timestop";
+                }
+
+                $arr_weekdays = $_POST['weekdays'];
+                if ($arr_weekdays) {
+                    $weekdays = implode(',', $arr_weekdays);
+                    if ($mod_time) {
+                        $mod_time .= " --weekdays $weekdays";
+                    } else {
+                        $mod_time .= "-m time --weekdays $weekdays";
+                    }
+                }
+
+                $mulid = dechex(time());
+                $uname = 'mulimiter_u' . $mulid;
+                $dname = 'mulimiter_d' . $mulid;
+
+                //APPLY
+                //download
+                shell_exec("iptables -I FORWARD -m iprange --dst-range $iprange -m hashlimit --hashlimit-above $dspeed --hashlimit-mode dstip --hashlimit-name $dname $mod_time -j DROP");
+                //upload
+                shell_exec("iptables -I FORWARD -m iprange --src-range $iprange -m hashlimit --hashlimit-above $uspeed --hashlimit-mode srcip --hashlimit-name $uname $mod_time -j DROP");
+                //END APPLY
+
+                $list = shell_exec('iptables -S');
+                $list = str_replace("\r\n", "\n", $list);
+                $list = explode("\n", $list);
+                $limiters = [];
+                $dcurrent = '';
+                $ucurrent = '';
+                foreach ($list as $ls) {
+                    if (strpos($ls, 'mulimiter') !== FALSE) {
+                        $limiters[] = $ls;
+                    }
+                    if (strpos($ls, $dname) !== FALSE) {
+                        $dcurrent = $ls;
+                    }
+                    if (strpos($ls, $uname) !== FALSE) {
+                        $ucurrent = $ls;
+                    }
+                }
+                if ($dcurrent && $ucurrent) {
+                    $old    = shell_exec("cat $dir/save");
+                    $new    = trim($dcurrent . "\n" . $old, "\n");
+                    $new    = trim($ucurrent . "\n" . $new, "\n");
+
+                    shell_exec("echo \"$new\" > $dir/save");
+                    //end of add }
+
+                    //then delete {
+                    $drule           = base64_decode($_POST['drule']);
+                    $urule           = base64_decode($_POST['urule']);
+
+                    $delete_drule    = str_replace('-A ', '-D ', $drule);
+                    $delete_urule    = str_replace('-A ', '-D ', $urule);
+
+                    $saved_rules    = str_replace("\r\n", "\n", shell_exec("cat $dir/save"));
+                    $saved_rules    = explode("\n", $saved_rules);
+                    $untouched      = '';
+                    foreach ($saved_rules as $sv) {
+                        if ($sv != $urule && $sv != $drule) {
+                            $untouched .= $sv . "\n";
+                        }
+                    }
+
+                    $untouched = trim($untouched, "\n");
+
+                    shell_exec("iptables $delete_drule");
+                    shell_exec("iptables $delete_urule");
+
+                    shell_exec("echo \"$untouched\" > $dir/save");
+                    //end of delete
+
+                    echo json_encode([
+                        'success' => true
+                    ]);
+                }
+            }
         } elseif ($_GET['act'] == 'password') {
             $password       = $_POST['password'];
             $new_password   = $_POST['new_password'];
@@ -167,7 +259,7 @@ if ($_SESSION[$app_name]['logedin'] == true) {
         <style>
             .wraper {
                 margin: auto;
-                max-width: 720px;
+                max-width: 100%;
             }
         </style>
         <script src="asset/jquery.min.js"></script>
@@ -314,12 +406,15 @@ if ($_SESSION[$app_name]['logedin'] == true) {
                                 $uspeed         = $xurule[9];
                         ?>
                                 <tr>
-                                    <td><?= $iprange ?></td>
-                                    <td><?= str_replace('kb', ' kB', $dspeed) ?></td>
-                                    <td><?= str_replace('kb', ' kB', $uspeed) ?></td>
-                                    <td><?= $time ?></td>
-                                    <td><?= $weekdays ?></td>
-                                    <td><button type="button" class="btn btn-danger btn-sm" data-drule="<?= base64_encode($ls) ?>" data-urule="<?= base64_encode($urule) ?>" onclick="deleteRule(this)">Delete</button></td>
+                                    <td><span id="textIpRange_<?= $i ?>"><?= $iprange ?></span></td>
+                                    <td><span id="textDSpeed_<?= $i ?>"><?= str_replace('kb', ' kB', $dspeed) ?></span></td>
+                                    <td><span id="textUSpeed_<?= $i ?>"><?= str_replace('kb', ' kB', $uspeed) ?></span></td>
+                                    <td><span id="textTime_<?= $i ?>"><?= $time ?></span></td>
+                                    <td><span id="textWeekdays_<?= $i ?>"><?= $weekdays ?></span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-success btn-sm" data-drule="<?= base64_encode($ls) ?>" data-urule="<?= base64_encode($urule) ?>" onclick="editRule(this)">Edit</button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-drule="<?= base64_encode($ls) ?>" data-urule="<?= base64_encode($urule) ?>" onclick="deleteRule(this)">Delete</button>
+                                    </td>
                                 </tr>
                         <?php }
                         }
@@ -353,24 +448,73 @@ if ($_SESSION[$app_name]['logedin'] == true) {
                 </form>
             </div>
             <hr>
-            <p class="text-center">Author: &nbsp;&nbsp;<a href="https://github.com/tegohsx/">Tegohsx</a></p>
+            <p class="text-center">Author: &nbsp;&nbsp;<a href="https://github.com/tegohsx/" target="_blank">Tegohsx</a></p>
         </div>
         <script>
+            let state = {}
+            state.formEditType = 'add'
+
+            if (!inIframe()) {
+                $('.wraper').css({
+                    maxWidth: '720px'
+                })
+            }
+
+            function inIframe() {
+                try {
+                    return window.self !== window.top;
+                } catch (e) {
+                    return true;
+                }
+            }
+
             $("#mulimiterFormAdd").on('submit', function(e) {
                 e.preventDefault();
-                $(this).find('[type=submit]').val('Adding...').prop('disabled', true)
-                $.ajax({
-                    type: 'post',
-                    url: '<?= $_SERVER['PHP_SELF'] ?>?act=add',
-                    dataType: 'json',
-                    cache: false,
-                    data: $(this).serialize(),
-                    success: r => {
-                        if (r.success) {
-                            location.reload()
+                if (state.formEditType == 'add') {
+                    $(this).find('[type=submit]').val('Adding...').prop('disabled', true)
+                    $.ajax({
+                        type: 'post',
+                        url: '<?= $_SERVER['PHP_SELF'] ?>?act=add',
+                        dataType: 'json',
+                        cache: false,
+                        data: $(this).serialize(),
+                        success: r => {
+                            if (r.success) {
+                                location.reload()
+                            } else {
+                                alert(r.message)
+                            }
                         }
-                    }
-                })
+                    })
+                } else if (state.formEditType == 'edit') {
+                    $(this).find('[type=submit]').val('Saving...').prop('disabled', true)
+                    let fdata = new FormData(this)
+                    fdata.append('drule', state.drule)
+                    fdata.append('urule', state.urule)
+                    $.ajax({
+                        type: 'post',
+                        url: '<?= $_SERVER['PHP_SELF'] ?>?act=edit',
+                        dataType: 'json',
+                        cache: false,
+                        data: fdata,
+                        contentType: false,
+                        processData: false,
+                        success: r => {
+                            if (r.success) {
+                                location.reload()
+                            } else {
+                                alert(r.message)
+                            }
+                        }
+                    })
+                }
+            })
+
+            $("#mulimiterFormAdd").on('click', '#btnCancelEdit', function() {
+                state.formEditType = 'add'
+                $('#mulimiterFormAdd').find('[type=submit]').val('Add')
+                $("#mulimiterFormAdd")[0].reset()
+                $(this).remove()
             })
 
             $("#mulimiterFormPassword").on('submit', function(e) {
@@ -393,6 +537,38 @@ if ($_SESSION[$app_name]['logedin'] == true) {
                     }
                 })
             })
+
+            function editRule(el) {
+                state.formEditType = 'edit'
+                state.drule = $(el).attr('data-drule')
+                state.urule = $(el).attr('data-urule')
+                let iprange = $(el).closest('tr').find('[id^=textIpRange_]').text().split(' - ')
+                let iprange0 = iprange[0],
+                    iprange1 = iprange[1] || '',
+                    dspeed = parseInt($(el).closest('tr').find('[id^=textDSpeed_]').text()),
+                    uspeed = parseInt($(el).closest('tr').find('[id^=textUSpeed_]').text()),
+                    time_ = $(el).closest('tr').find('[id^=textTime_]').text().split(' - '),
+                    timestart = time_[0] == 'All time' ? '' : (time_[0] || ''),
+                    timestop = time_[1] || '',
+                    weekdays = $(el).closest('tr').find('[id^=textWeekdays_]').text().split(',')
+
+                $('#mulimiterFormAdd').find('[name=iprange0]').val(iprange0).focus()
+                $('#mulimiterFormAdd').find('[name=iprange1]').val(iprange1)
+                $('#mulimiterFormAdd').find('[name=dspeed]').val(dspeed)
+                $('#mulimiterFormAdd').find('[name=uspeed]').val(uspeed)
+                $('#mulimiterFormAdd').find('[name=timestart]').val(timestart)
+                $('#mulimiterFormAdd').find('[name=timestop]').val(timestop)
+
+                $('#mulimiterFormAdd').find('[name^=weekdays]').prop('checked', false)
+                weekdays.forEach(v => {
+                    $('#mulimiterFormAdd').find('[name^=weekdays][value=' + v + ']').prop('checked', true)
+                })
+
+                if (!$('#mulimiterFormAdd').find('#btnCancelEdit').length) {
+                    $('#mulimiterFormAdd').find('[type=submit]').val('Save').after(`<input id="btnCancelEdit" type="reset" class="btn btn-danger btn-sm ms-1" value="Cancel">`)
+                }
+
+            }
 
             function deleteRule(el) {
                 if (confirm('Delete this rule?')) {
@@ -509,7 +685,7 @@ if ($_SESSION[$app_name]['logedin'] == true) {
         <style>
             .wraper {
                 margin: auto;
-                max-width: 720px;
+                max-width: 100%;
             }
         </style>
         <script src="asset/jquery.min.js"></script>
@@ -528,9 +704,22 @@ if ($_SESSION[$app_name]['logedin'] == true) {
                 </div>
             </form>
             <hr>
-            <p class="text-center">Author: &nbsp;&nbsp;<a href="https://github.com/tegohsx/">Tegohsx</a></p>
+            <p class="text-center">Author: &nbsp;&nbsp;<a href="https://github.com/tegohsx/" target="_blank">Tegohsx</a></p>
         </div>
         <script>
+            if (!inIframe()) {
+                $('.wraper').css({
+                    maxWidth: '720px'
+                })
+            }
+
+            function inIframe() {
+                try {
+                    return window.self !== window.top;
+                } catch (e) {
+                    return true;
+                }
+            }
             $("#mulimiterFormLogin").on('submit', function(e) {
                 e.preventDefault();
                 $(this).find('[type=submit]').val('Loging in...').prop('disabled', true)
