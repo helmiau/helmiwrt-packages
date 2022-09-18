@@ -3,13 +3,13 @@
 $CONFIG = '{"lang":"en","error_reporting":false,"show_hidden":true,"hide_Cols":false,"calc_folder":false,"theme":"light"}';
 
 /**
- * H3K | Tiny File Manager V2.4.7
+ * H3K | Tiny File Manager V2.4.8
  * CCP Programmers | ccpprogrammers@gmail.com
  * https://tinyfilemanager.github.io
  */
 
 //TFM version
-define('VERSION', '2.4.7');
+define('VERSION', '2.4.8');
 
 //Application Title
 define('APP_TITLE', 'Tiny File Manager');
@@ -1579,7 +1579,6 @@ if (isset($_GET['help'])) {
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item"><a href="https://github.com/prasathmani/tinyfilemanager/wiki" target="_blank"><i class="fa fa-question-circle"></i> <?php echo lng('Help Documents') ?> </a> </li>
                                 <li class="list-group-item"><a href="https://github.com/prasathmani/tinyfilemanager/issues" target="_blank"><i class="fa fa-bug"></i> <?php echo lng('Report Issue') ?></a></li>
-                                <li class="list-group-item"><a href="javascript:latest_release_info('<?php echo VERSION; ?>');"><i class="fa fa-link"> </i> <?php echo lng('Check Latest Version') ?></a></li>
                                 <?php if(!FM_READONLY) { ?>
                                 <li class="list-group-item"><a href="javascript:show_new_pwd();"><i class="fa fa-lock"></i> <?php echo lng('Generate new password hash') ?></a></li>
                                 <?php } ?>
@@ -2785,6 +2784,9 @@ function fm_get_file_icon_class($path)
         case 'conf':
         case 'log':
         case 'htaccess':
+        case 'yaml':
+        case 'yml':
+        case 'toml':
             $img = 'fa fa-file-text-o';
             break;
         case 'css':
@@ -2854,6 +2856,7 @@ function fm_get_file_icon_class($path)
         case '3gp':
         case 'asf':
         case 'wmv':
+        case 'webm':
             $img = 'fa fa-file-video-o';
             break;
         case 'eml':
@@ -2952,7 +2955,7 @@ function fm_get_text_exts()
         'php', 'php4', 'php5', 'phps', 'phtml', 'htm', 'html', 'shtml', 'xhtml', 'xml', 'xsl', 'm3u', 'm3u8', 'pls', 'cue',
         'eml', 'msg', 'csv', 'bat', 'twig', 'tpl', 'md', 'gitignore', 'less', 'sass', 'scss', 'c', 'cpp', 'cs', 'py',
         'map', 'lock', 'dtd', 'svg', 'scss', 'asp', 'aspx', 'asx', 'asmx', 'ashx', 'jsx', 'jsp', 'jspx', 'cfm', 'cgi',
-		'yaml', 'yml', 'ipset'
+		'yaml', 'yml', 'ipset', 'toml'
     );
 }
 
@@ -2968,6 +2971,7 @@ function fm_get_text_mimes()
         'application/x-javascript',
         'image/svg+xml',
         'message/rfc822',
+        'application/json',
     );
 }
 
@@ -4027,12 +4031,6 @@ $isStickyNavBar = $sticky_navbar ? 'navbar-fixed' : 'navbar-normal';
                 o.appendChild(c), a.appendChild(o), document.body.appendChild(a), a.submit()
             }
         }
-    }
-    //Check latest version
-    function latest_release_info(v) {
-        if(!!window.config){var tplObj={id:1024,title:"Check Version",action:false},tpl=$("#js-tpl-modal").html();
-        if(window.config.version!=v){tplObj.content=window.config.newUpdate;}else{tplObj.content=window.config.noUpdate;}
-        $('#wrapper').append(template(tpl,tplObj));$("#js-ModalCenter-1024").modal('show');}else{fm_get_config();}
     }
     function show_new_pwd() { $(".js-new-pwd").toggleClass('hidden'); }
     //Save Settings
