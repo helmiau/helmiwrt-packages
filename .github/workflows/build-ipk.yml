@@ -14,14 +14,15 @@ on:
     - cron: 0 17 * * *
 
 env:
-  TOOLCHAIN_TAG: coolsnowwolf-lede-master
-  TOOLCHAIN_NAME: toolchain-image-coolsnowwolf-lede-master-rpi-4.img
+  TOOLCHAIN_TAG: toolchain
+  TOOLCHAIN_NAME: toolchain-immortalwrt-immortalwrt-openwrt-$SOURCE_BRANCH-bcm27xx-bcm2711.img
   CONFIG_FILE: build-ipk/universal.config
-  DIY1_SH: build-ipk/hook-feeds.sh
-  DIY2_SH: build-ipk/lean-openwrt.sh
   UPLOAD_RELEASE: true
   TZ: Asia/Jakarta
   THIS_REPO_NAME: ${{ github.event.repository.name }}
+  SOURCE_URL: https://github.com/immortalwrt/immortalwrt
+  SOURCE_BRANCH: 21.02
+  DIY_SH: scripts/immortalwrt.sh
 
 jobs:
   Build:
@@ -32,95 +33,96 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004) squashfs-tools rdate
+          sudo -E apt-get -qq install rdate squashfs-tools $(curl -fsSL git.io/depends-ubuntu-2004)
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
           docker image prune -a -f
           echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
 
-      - name: Free Up More Space
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 256
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          overprovision-lvm: 'true'
-
       - name: Checkout
         uses: actions/checkout@main
+
+      - name: Clone Source Code
+        id: clone
+        run: |
+          df -hT $PWD
+          git clone $SOURCE_URL -b openwrt-$SOURCE_BRANCH workspace/openwrt
+          cd workspace/openwrt
+          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
 
       - name: Prepare Toolchain Image
         id: prepare
         run: |
-          df -hT $PWD
-          wget -q https://github.com/helmiau/OpenWrt-Toolchain/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_NAME -O toolchain-image.img
+          mkdir -p workspace
+          cd workspace
+          for i in {0..9}
+          do
+            curl -fsL https://github.com/HelmiWrt-OS-Immortal/releases/download/toolchain/toolchain-immortalwrt-immortalwrt-openwrt-$SOURCE_BRANCH-bcm27xx-bcm2711.img.0$i >> $TOOLCHAIN_IMAGE.img || break
+          done
           mkdir openwrt-ro openwrt workdir overlay
-          sudo mount -o loop toolchain-image.img openwrt-ro
+          sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
           sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-          cd openwrt
-          echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-          echo "::set-output name=OPENWRTROOT::$(echo $PWD)"
+          cd $OPENWRT_ROOT_PATH
           git pull
 
       - name: Install Feeds
         id: feeds
         run: |
-          cd $OPENWRTROOT
+          cd $OPENWRT_ROOT_PATH
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
           chmod +x ../build-ipk/*.sh
-          ../$DIY1_SH
 
       - name: Load Custom Configuration
         run: |
-          [ -e files ] && mv files $OPENWRTROOT/files
-          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRTROOT/.config
-          cd $OPENWRTROOT
-          ../$DIY2_SH
-          sed -i "/KERNEL_PATCHVER=/c\KERNEL_PATCHVER=5.4" "target/linux/bcm27xx/Makefile"
+          [ -e files ] && mv files $OPENWRT_ROOT_PATH/files
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_ROOT_PATH/.config
+          cd $OPENWRT_ROOT_PATH
+          chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
+          $GITHUB_WORKSPACE/build-ipk/$DIY_SH
 
       - name: Download Package
         id: package
         run: |
-          cd $OPENWRTROOT
+          cd $OPENWRT_ROOT_PATH
           make defconfig
-          make download -j16 && make download -j16
-          find dl -size -1024c -exec ls -l {} \;
-          find dl -size -1024c -exec rm -f {} \;
+          make download -j64
 
       - name: Compile Tools
         id: tools
         run: |
-          cd $OPENWRTROOT
+          cd $OPENWRT_ROOT_PATH
           echo -e "$(nproc) thread compile"
           make tools/compile -j$(nproc) || make tools/compile -j1 V=s
 
       - name: Compile Packages
         id: compile
         run: |
-          cd $OPENWRTROOT
+          cd $OPENWRT_ROOT_PATH
           echo -e "$(nproc) thread compile"
           make target/compile -j$(nproc) || make target/compile -j1 V=s IGNORE_ERRORS=1
           make diffconfig
           make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j1 V=s IGNORE_ERRORS=1
           make package/index
-          cd $OPENWRTROOT/bin/packages/*
+          cd $OPENWRT_ROOT_PATH/bin/packages/*
           PLATFORM=$(basename `pwd`)
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
-          echo "::set-output name=PLATFORM::$(echo $PLATFORM)"
-          cd $OPENWRTROOT/bin/targets/*
+          echo "PLATFORM=$(echo $PLATFORM)" >> GITHUB_OUTPUT
+          cd $OPENWRT_ROOT_PATH/bin/targets/*
           TARGET=$(basename `pwd`)
           echo "TARGET=$TARGET" >> $GITHUB_ENV
-          echo "::set-output name=TARGET::$(echo $TARGET)"
+          echo "TARGET=$(echo $TARGET)" >> GITHUB_OUTPUT
           cd *
           SUBTARGET=$(basename `pwd`)
           echo "SUBTARGET=$SUBTARGET" >> $GITHUB_ENV
-          echo "::set-output name=SUBTARGET::$(echo $SUBTARGET)"
+          echo "SUBTARGET=$(echo $SUBTARGET)" >> GITHUB_OUTPUT
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          echo "::set-output name=FIRMWARE::$(echo $PWD)"
-          echo "::set-output name=COMPILE_STATUS::success"
+          echo "FIRMWARE=$(echo $PWD)" >> GITHUB_OUTPUT
+          echo "COMPILE_STATUS=success"
 
       - name: Organize Files
         id: organize
@@ -143,22 +145,22 @@ jobs:
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo -e "===== End of Information ====="
           echo -e "FILE_DATE is ....... $FILE_DATE"
-          echo -e "OPENWRTROOT is ....... $TARGET"
+          echo -e "OPENWRT_ROOT_PATH is ....... $TARGET"
           echo -e "PLATFORM is ....... $PLATFORM"
           echo -e "TARGET is ....... $TARGET"
           echo -e "FIRMWARE is ....... $FIRMWARE"
           echo -e "===== End of Information ====="
-          echo "::set-output name=status::success"
-          echo "::set-output name=ORGANIZE_STATUS::success"
+          echo "status=success" >> GITHUB_OUTPUT
+          echo "ORGANIZE_STATUS=success" >> GITHUB_OUTPUT
 
       - name: Generate New Release Tag
         id: tag
         if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
           sleep 10
-          echo "::set-output name=release_tag::ipk"
+          echo "release_tag=ipk" >> GITHUB_OUTPUT
           touch release.txt
-          echo "::set-output name=status::success"
+          echo "status=success" >> GITHUB_OUTPUT
 
       - name: Upload HelmiWrt Packages to GitHub Release
         uses: softprops/action-gh-release@v1
