@@ -45,14 +45,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
-      - name: Clone Source Code
-        id: clone
+      - name: Checkout 2
         run: |
-          df -hT $PWD
-          git clone $SOURCE_URL -b openwrt-$SOURCE_BRANCH workspace/openwrt
-          cd workspace/openwrt
-          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
+          cd $GITHUB_WORKSPACE
+          git init
+          git config --global credential.helper store
+          git remote add origin https://$GITHUB_REPOSITORY_OWNER:${{ secrets.HELMIWRT_RW }}@github.com/$GITHUB_REPOSITORY
+          git fetch
+          git checkout -t origin/$CURRENT_BRANCH
 
       - name: Prepare Toolchain Image
         id: prepare
@@ -66,7 +66,9 @@ jobs:
           mkdir openwrt-ro openwrt workdir overlay
           sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
           sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-          cd $OPENWRT_ROOT_PATH
+          cd openwrt
+          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
           git pull
 
       - name: Install Feeds
