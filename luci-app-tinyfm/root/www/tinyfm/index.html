@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<!-- Default Redirect Page For Web Root Folder                               -->
-<!-- For Ligthtpd the default document file is index.htm. Lighttpd will open -->
-<!-- an index.htm file when a web folder is specified without any file.      -->
-<!-- Permits easier use of multiple versions optional landing points         -->
-<!--                                                                         -->
-<!-- The above is also true of Apache 2                                      -->
-<!--                                                                         -->
-<!-- Verified : https://validator.w3.org/nu                                  -->
-<!-- Date     : 2020-05-26                                                   -->
-<!-- Copyright: OneOfTheInfiniteMonkeys                                      -->
-<!-- Action   : Redirects to preferred subfolder                             -->
-<!--                                                                         -->
 <html lang="en">
 <head>
-<meta http-equiv="refresh" content="0; URL=tinyfm.php" />
+<!-- Redirector Page -->
+<!-- <meta http-equiv="refresh" content="0; URL=tinyfm.php" />-->
   <title>
     Index - Redirect
   </title>
 </head>
-<body>
-<!--           This page shoud re-direct you to the preferred location       -->
+<body onload="isOnline()">
+	<iframe id="tinyfm" style="width: 100%; min-height: 100vh;"></iframe>
+	<script type="text/javascript">
+            if (navigator.onLine) {
+                // window.open("tinyfm_online.php");
+				document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm_online.php";
+                console.log("tinyfm_log: Network available, using online resource.");
+            } else {
+                // window.open("tinyfm.php");
+				document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm.php";
+                console.log("tinyfm_log: Network unavailable, using offline resource.");
+            };
+    </script>
 <div>
 </div>
 </body>

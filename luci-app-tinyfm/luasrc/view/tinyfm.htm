@@ -1,9 +1,16 @@
 <%+header%>
 <div class="cbi-map">
-<br>
 <iframe id="tinyfm" style="width: 100%; min-height: 100vh; border: none; border-radius: 2px;"></iframe>
 </div>
 <script type="text/javascript">
-document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm";
+        if (navigator.onLine) {
+            // window.open("tinyfm_online.php");
+			document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm_online.php";
+            console.log("tinyfm_log: Network available, using online resource.");
+        } else {
+            // window.open("tinyfm.php");
+			document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm.php";
+			console.log("tinyfm_log: Network unavailable, using offline resource.");
+        };
 </script>
 <%+footer%>
