@@ -7,18 +7,11 @@
     Index - Redirect
   </title>
 </head>
-<body onload="isOnline()">
+<body>
 	<iframe id="tinyfm" style="width: 100%; min-height: 100vh;"></iframe>
 	<script type="text/javascript">
-            if (navigator.onLine) {
-                // window.open("tinyfm_online.php");
-				document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm_online.php";
-                console.log("tinyfm_log: Network available, using online resource.");
-            } else {
-                // window.open("tinyfm.php");
-				document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm.php";
-                console.log("tinyfm_log: Network unavailable, using offline resource.");
-            };
+		document.getElementById("tinyfm").src = window.location.protocol + "//" + window.location.host + "/tinyfm/tinyfm.php";
+        console.log("tinyfm_log: Network unavailable, using offline resource.");
     </script>
 <div>
 </div>
