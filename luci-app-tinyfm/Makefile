@@ -14,7 +14,7 @@ LUCI_DEPENDS:=+php8 +php8-cgi +php8-mod-session +php8-mod-ctype +php8-mod-filein
 
 PKG_NAME:=luci-app-tinyfm
 PKG_VERSION:=2.5
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 define Package/$(PKG_NAME)
 	$(call Package/luci/webtemplate)
