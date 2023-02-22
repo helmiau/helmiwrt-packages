@@ -33,7 +33,7 @@ define Package/$(PKG_NAME)/install
 	cp -pR ./root/* $(1)/
 	chmod -R 755 /root/www/*
 	chmod -R 755 /root/www/tinyfm/*
-	chmod -R 755 /root/www/tinyfm/cdn/*
+	chmod -R 755 /root/www/tinyfm/assets/*
 	[ ! -d /root/www/tinyfm/rootfs ] && ln -s / /root/www/tinyfm/rootfs
 endef
 
@@ -45,7 +45,7 @@ define Package/$(PKG_NAME)/postinst
 	chmod -R 755 /usr/lib/lua/luci/view/*
 	chmod -R 755 /www/*
 	chmod -R 755 /www/tinyfm/*
-	chmod -R 755 /www/tinyfm/cdn/*
+	chmod -R 755 /www/tinyfm/assets/*
 	[ ! -d /www/tinyfm/rootfs ] && ln -s / /www/tinyfm/rootfs
 	# Autofix download index.php, index.html
 	if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
@@ -69,11 +69,7 @@ endef
 
 define Package/$(PKG_NAME)/postrm
 #!/bin/sh
-	export NAMAPAKET="tinyfm"
-	if [ -d /www/$NAMAPAKET ] ; then
-		rm -rf /www/$NAMAPAKET
-	fi
-	unset NAMAPAKET
+	[ -d /www/tinyfm ] && rm -rf /www/tinyfm
 exit 0
 endef
 
