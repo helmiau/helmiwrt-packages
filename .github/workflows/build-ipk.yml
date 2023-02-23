@@ -41,6 +41,9 @@ jobs:
           sudo ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
           docker image prune -a -f
           echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+          export CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
+          echo "CURRENT_BRANCH=$CURRENT_BRANCH" >> $GITHUB_ENV
+          echo "CURRENT_BRANCH=$(echo $CURRENT_BRANCH)" >> $GITHUB_OUTPUT
 
       - name: Combine Disks
         run: |
