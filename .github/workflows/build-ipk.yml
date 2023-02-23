@@ -27,11 +27,11 @@ on:
         required: true
         default: bcm27xx/bcm2711
         options: 
-#        - armvirt/32
-#        - armvirt/64
-#        - bcm27xx/bcm2708
-#        - bcm27xx/bcm2709
-#        - bcm27xx/bcm2710
+        - armvirt/32
+        - armvirt/64
+        - bcm27xx/bcm2708
+        - bcm27xx/bcm2709
+        - bcm27xx/bcm2710
         - bcm27xx/bcm2711
 #        - ramips/mt7620
 #        - ramips/mt7621
@@ -39,12 +39,12 @@ on:
 #        - ramips/rt288x
 #        - ramips/rt305x
 #        - ramips/rt3883
-#        - rockchip/armv8
-#        - sunxi/cortexa53
-#        - sunxi/cortexa7
+        - rockchip/armv8
+        - sunxi/cortexa53
+        - sunxi/cortexa7
 #        - sunxi/cortexa8
-#        - x86/64
-#        - x86/generic
+        - x86/64
+        - x86/generic
 #        - x86/geode
 #        - x86/legacy
 
@@ -89,6 +89,8 @@ jobs:
           cd /workdir/openwrt
           export REPO_BRANCH=$REPO_BRANCH
           echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
+          export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
+          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
 
@@ -108,10 +110,10 @@ jobs:
       - name: Load Custom Configuration
         run: |
           [ -e files ] && mv files $OPENWRT_ROOT_PATH/files
-          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_ROOT_PATH/.config
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
-          $GITHUB_WORKSPACE/build-ipk/$DIY_SH
+          $GITHUB_WORKSPACE/$DIY_SH
+          [ -e $CONFIG_FILE ] && cat $CONFIG_FILE $OPENWRT_ROOT_PATH/.config
 
       - name: Download Package
         id: package
@@ -145,8 +147,6 @@ jobs:
             echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
           done
           # Set LuCI Theme and App Path
-          export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
-          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           echo "LUCITHEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
           echo "LUCIAPPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
           echo "PKGPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/packages" >> $GITHUB_ENV
