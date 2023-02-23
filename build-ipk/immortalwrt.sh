@@ -218,6 +218,10 @@ git clone --depth=1 https://github.com/yang229/luci-app-adguardhome
 # Out to openwrt dir
 popd
 
+# Rename hostname to HelmiWrt
+[ -f package/base-files/files/bin/config_generate ] && sed -i 's/ImmortalWrt/HelmiWrt/g' package/base-files/files/bin/config_generate
+echo "Script Executed-Done!!!!!"
+
 #-----------------------------------------------------------------------------
 #   End of @helmiau terminal scripts additionals menu
 #-----------------------------------------------------------------------------
