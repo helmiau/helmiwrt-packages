@@ -6,7 +6,7 @@
 # Script base by P3TERX
 #=================================================
 
-name: Build IPK ${{ github.event.inputs.branch }} for ${{ github.event.inputs.platform }}
+name: Build IPK
 
 on:
   workflow_dispatch:
