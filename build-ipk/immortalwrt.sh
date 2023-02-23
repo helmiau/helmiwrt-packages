@@ -29,7 +29,7 @@ git clone --depth=1 https://github.com/koshev-msk/luci-app-mmconfig
 # Add support for Fibocom L860-GL l850/l860 ncm
 git clone --depth=1 https://github.com/koshev-msk/xmm-modem
 
-if [[ $SOURCE_BRANCH == *"21.02"* ]]; then
+if [[ $REPO_BRANCH == *"21.02"* ]]; then
 	echo "21.02 branch detected! Adding 21.02 repos..."
 	# Add luci-app-modemband
 	echo "Adding luci-app-modemband..."
@@ -59,14 +59,13 @@ svn co https://github.com/helmiau/helmiwrt-adds/trunk/packages/net/telegrambot h
 svn co https://github.com/helmiau/helmiwrt-adds/trunk/luci/luci-app-telegrambot helmiwrt-adds/luci-app-telegrambot
 
 # Add LuCI v2rayA
-if [[ $SOURCE_BRANCH == *"21.02"* ]]; then
-	echo "OpenWrt $SOURCE_BRANCH detected! using luci-app-v2raya master branch..."
+if [[ $REPO_BRANCH == *"21.02"* ]]; then
+	echo "OpenWrt $REPO_BRANCH detected! using luci-app-v2raya master branch..."
 	git clone --depth=1 -b master https://github.com/zxlhhyccc/luci-app-v2raya
-elif [[ $SOURCE_BRANCH == *"18.06"* ]]; then
-	echo "OpenWrt $SOURCE_BRANCH detected! using luci-app-v2raya 18.06 branch..."
+elif [[ $REPO_BRANCH == *"18.06"* ]]; then
+	echo "OpenWrt $REPO_BRANCH detected! using luci-app-v2raya 18.06 branch..."
 	git clone --depth=1 -b 18.06 https://github.com/zxlhhyccc/luci-app-v2raya
 fi
-
 
 # Add luci-theme-neobird theme
 git clone --depth=1 https://github.com/helmiau/luci-theme-neobird
