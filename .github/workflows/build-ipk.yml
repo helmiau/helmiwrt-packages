@@ -45,15 +45,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
-      - name: Checkout 2
-        run: |
-          cd $GITHUB_WORKSPACE
-          git init
-          git config --global credential.helper store
-          git remote add origin https://$GITHUB_REPOSITORY_OWNER:${{ secrets.HELMIWRT_RW }}@github.com/$GITHUB_REPOSITORY
-          git fetch
-          git checkout -t origin/$CURRENT_BRANCH
-
       - name: Prepare Toolchain Image
         id: prepare
         run: |
