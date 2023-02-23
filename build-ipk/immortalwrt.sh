@@ -160,16 +160,16 @@ git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 svn co https://github.com/vernesong/OpenClash/branches/dev/luci-app-openclash vernesong/OpenClash
 
 # Add modeminfo
-git clone --depth=1 https://github.com/koshev-msk/luci-app-modeminfo
+# git clone --depth=1 https://github.com/koshev-msk/luci-app-modeminfo
 
 # Add luci-app-smstools3
-git clone --depth=1 https://github.com/koshev-msk/luci-app-smstools3
+# git clone --depth=1 https://github.com/koshev-msk/luci-app-smstools3
 
 # Add luci-app-mmconfig : configure modem cellular bands via mmcli utility
-git clone --depth=1 https://github.com/koshev-msk/luci-app-mmconfig
+# git clone --depth=1 https://github.com/koshev-msk/luci-app-mmconfig
 
 # Add support for Fibocom L860-GL l850/l860 ncm
-git clone --depth=1 https://github.com/koshev-msk/xmm-modem
+# git clone --depth=1 https://github.com/koshev-msk/xmm-modem
 
 if [[ $REPO_BRANCH == *"21.02"* ]]; then
 	echo "21.02 branch detected! Adding 21.02 repos..."
@@ -184,7 +184,7 @@ else
 	# Add 3ginfo, luci-app-3ginfo
 	echo "Adding luci-app-3ginfo..."
 	git clone --depth=1 https://github.com/4IceG/luci-app-3ginfo
-	sed -i 's/luci-app-3ginfo-lite/luci-app-3ginfo/g' "$OPENWRT_ROOT_PATH"/.config
+	sed -i 's/luci-app-3ginfo-lite/luci-app-3ginfo/g' "$CFGOW"
 fi
 
 # Add luci-app-sms-tool
