@@ -42,22 +42,48 @@ jobs:
           docker image prune -a -f
           echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
 
-      - name: Checkout
-        uses: actions/checkout@main
-
-      - name: Clone Source Code
-        id: clone
+      - name: Combine Disks
         run: |
-          df -hT $PWD
-          git clone $SOURCE_URL -b openwrt-$SOURCE_BRANCH $GITHUB_WORKSPACE/openwrt
-          cd $GITHUB_WORKSPACE/openwrt
-          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
+          sudo swapoff -a
+          sudo rm -f /mnt/swapfile
+          export ROOT_FREE_KB=$(df --block-size=1024 --output=avail / | tail -1)
+          export ROOT_LOOP_KB=$(expr $ROOT_FREE_KB - 1048576)
+          export ROOT_LOOP_BYTES=$(expr $ROOT_LOOP_KB \* 1024)
+          sudo fallocate -l $ROOT_LOOP_BYTES /root.img
+          export ROOT_LOOP_DEVNAME=$(sudo losetup -Pf --show /root.img)
+          sudo pvcreate -f $ROOT_LOOP_DEVNAME
+          export MNT_FREE_KB=$(df --block-size=1024 --output=avail /mnt | tail -1)
+          export MNT_LOOP_KB=$(expr $MNT_FREE_KB - 102400)
+          export MNT_LOOP_BYTES=$(expr $MNT_LOOP_KB \* 1024)
+          sudo fallocate -l $MNT_LOOP_BYTES /mnt/mnt.img
+          export MNT_LOOP_DEVNAME=$(sudo losetup -Pf --show /mnt/mnt.img)
+          sudo pvcreate -f $MNT_LOOP_DEVNAME
+          sudo vgcreate vgstorage $ROOT_LOOP_DEVNAME $MNT_LOOP_DEVNAME
+          sudo lvcreate -n lvstorage -l 100%FREE vgstorage
+          export LV_DEVNAME=$(sudo lvscan | awk -F "'" '{print $2}')
+          sudo mkfs.btrfs -L combinedisk $LV_DEVNAME
+          sudo mount -o compress=zstd $LV_DEVNAME $GITHUB_WORKSPACE
+          sudo chown -R runner:runner $GITHUB_WORKSPACE
+          mkdir $GITHUB_WORKSPACE/tmp
+          chmod 777 $GITHUB_WORKSPACE/tmp
+          sudo cp -rp /tmp/* $GITHUB_WORKSPACE/tmp
+          sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
+          df -hT $GITHUB_WORKSPACE
+          sudo btrfs filesystem usage $GITHUB_WORKSPACE
 
-      - name: Prepare Toolchain Image
-        id: prepare
+      - name: Checkout
         run: |
           cd $GITHUB_WORKSPACE
+          git init
+          git config --global credential.helper store
+          git remote add origin https://$GITHUB_REPOSITORY_OWNER:${{ secrets.HELMIWRT_RW }}@github.com/$GITHUB_REPOSITORY
+          git fetch
+          git checkout -t origin/$CURRENT_BRANCH
+
+      - name: Prepare Toolchain Image From Releases
+        run: |
+          mkdir -p workspace
+          cd workspace
           for i in {0..9}
           do
             curl -fsL https://github.com/HelmiWrt-OS-Immortal/releases/download/toolchain/toolchain-immortalwrt-immortalwrt-openwrt-$SOURCE_BRANCH-bcm27xx-bcm2711.img.0$i >> $TOOLCHAIN_IMAGE.img || break
@@ -65,10 +91,10 @@ jobs:
           mkdir openwrt-ro openwrt workdir overlay
           sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
           sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
+          cd $OPENWRT_ROOT_PATH
           git pull
 
       - name: Install Feeds
-        id: feeds
         run: |
           cd $OPENWRT_ROOT_PATH
           ./scripts/feeds update -a
@@ -90,43 +116,22 @@ jobs:
           make defconfig
           make download -j64
 
-      - name: Compile Tools
-        id: tools
-        run: |
-          cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) thread compile"
-          make tools/compile -j$(nproc) || make tools/compile -j1 V=s
-
       - name: Compile Packages
-        id: compile
         run: |
           cd $OPENWRT_ROOT_PATH
           echo -e "$(nproc) thread compile"
-          make target/compile -j$(nproc) || make target/compile -j1 V=s IGNORE_ERRORS=1
-          make diffconfig
+          make buildinfo
+          make diffconfig buildversion feedsversion
+          make target/compile -j$(nproc) IGNORE_ERRORS="m n" BUILD_LOG=1 || \
+          yes n | make target/compile -j1 V=s IGNORE_ERRORS=1
           make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j1 V=s IGNORE_ERRORS=1
           make package/index
-          cd $OPENWRT_ROOT_PATH/bin/packages/*
-          PLATFORM=$(basename `pwd`)
-          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
-          echo "PLATFORM=$(echo $PLATFORM)" >> GITHUB_OUTPUT
-          cd $OPENWRT_ROOT_PATH/bin/targets/*
-          TARGET=$(basename `pwd`)
-          echo "TARGET=$TARGET" >> $GITHUB_ENV
-          echo "TARGET=$(echo $TARGET)" >> GITHUB_OUTPUT
-          cd *
-          SUBTARGET=$(basename `pwd`)
-          echo "SUBTARGET=$SUBTARGET" >> $GITHUB_ENV
-          echo "SUBTARGET=$(echo $SUBTARGET)" >> GITHUB_OUTPUT
-          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          echo "FIRMWARE=$(echo $PWD)" >> GITHUB_OUTPUT
-          echo "COMPILE_STATUS=success"
 
       - name: Organize Files
         id: organize
         if: steps.compile.outputs.COMPILE_STATUS == 'success' && !cancelled()
         run: |
-          cd openwrt/bin/packages
+          cd $GITHUB_WORKSPACE/openwrt/bin/packages
           # Delete Firewall IPK
           find . -type f -name 'luci-app-firewall*' | while read FILE ; do
             rm -f ${FILE} ;
