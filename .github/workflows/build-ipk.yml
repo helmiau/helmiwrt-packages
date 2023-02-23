@@ -87,6 +87,8 @@ jobs:
           git clone $REPO_URL -b $REPO_BRANCH openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
           cd /workdir/openwrt
+          export REPO_BRANCH=$REPO_BRANCH
+          echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
 
