@@ -10,26 +10,52 @@ name: Build IPK
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: 0 17 * * *
+    inputs:
+      platform:
+        type: choice
+        description: Select Platform.
+        required: true
+        default: bcm27xx/bcm2711
+        options: 
+#        - armvirt/32
+#        - armvirt/64
+#        - bcm27xx/bcm2708
+#        - bcm27xx/bcm2709
+#        - bcm27xx/bcm2710
+        - bcm27xx/bcm2711
+#        - ramips/mt7620
+#        - ramips/mt7621
+#        - ramips/mt76x8
+#        - ramips/rt288x
+#        - ramips/rt305x
+#        - ramips/rt3883
+#        - rockchip/armv8
+#        - sunxi/cortexa53
+#        - sunxi/cortexa7
+#        - sunxi/cortexa8
+#        - x86/64
+#        - x86/generic
+#        - x86/geode
+#        - x86/legacy
 
 env:
-  TOOLCHAIN_TAG: toolchain
-  TOOLCHAIN_NAME: toolchain-immortalwrt-immortalwrt-openwrt-21.02-bcm27xx-bcm2711.img
   CONFIG_FILE: build-ipk/universal.config
   UPLOAD_RELEASE: true
   TZ: Asia/Jakarta
   THIS_REPO_NAME: ${{ github.event.repository.name }}
   THIS_REPO_BRANCH: ${{ github.event.repository.default_branch }}
-  SOURCE_URL: https://github.com/immortalwrt/immortalwrt
-  SOURCE_BRANCH: 21.02
-  DIY_SH: scripts/immortalwrt.sh
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: 21.02
+  DIY_SH: build-ipk/immortalwrt.sh
 
 jobs:
   Build:
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
       - name: Initialization Environment
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -39,61 +65,27 @@ jobs:
           sudo -E apt-get -qq install rdate squashfs-tools $(curl -fsSL git.io/depends-ubuntu-2004)
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
-          sudo ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-          docker image prune -a -f
+          sudo timedatectl set-timezone "$TZ
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
           echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
 
-      - name: Combine Disks
+      - name: Clone Source Code
+        working-directory: /workdir
         run: |
-          sudo swapoff -a
-          sudo rm -f /mnt/swapfile
-          export ROOT_FREE_KB=$(df --block-size=1024 --output=avail / | tail -1)
-          export ROOT_LOOP_KB=$(expr $ROOT_FREE_KB - 1048576)
-          export ROOT_LOOP_BYTES=$(expr $ROOT_LOOP_KB \* 1024)
-          sudo fallocate -l $ROOT_LOOP_BYTES /root.img
-          export ROOT_LOOP_DEVNAME=$(sudo losetup -Pf --show /root.img)
-          sudo pvcreate -f $ROOT_LOOP_DEVNAME
-          export MNT_FREE_KB=$(df --block-size=1024 --output=avail /mnt | tail -1)
-          export MNT_LOOP_KB=$(expr $MNT_FREE_KB - 102400)
-          export MNT_LOOP_BYTES=$(expr $MNT_LOOP_KB \* 1024)
-          sudo fallocate -l $MNT_LOOP_BYTES /mnt/mnt.img
-          export MNT_LOOP_DEVNAME=$(sudo losetup -Pf --show /mnt/mnt.img)
-          sudo pvcreate -f $MNT_LOOP_DEVNAME
-          sudo vgcreate vgstorage $ROOT_LOOP_DEVNAME $MNT_LOOP_DEVNAME
-          sudo lvcreate -n lvstorage -l 100%FREE vgstorage
-          export LV_DEVNAME=$(sudo lvscan | awk -F "'" '{print $2}')
-          sudo mkfs.btrfs -L combinedisk $LV_DEVNAME
-          sudo mount -o compress=zstd $LV_DEVNAME $GITHUB_WORKSPACE
-          sudo chown -R runner:runner $GITHUB_WORKSPACE
-          mkdir $GITHUB_WORKSPACE/tmp
-          chmod 777 $GITHUB_WORKSPACE/tmp
-          sudo cp -rp /tmp/* $GITHUB_WORKSPACE/tmp
-          sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
-          df -hT $GITHUB_WORKSPACE
-          sudo btrfs filesystem usage $GITHUB_WORKSPACE
+          df -hT $PWD
+          git clone $REPO_URL -b $REPO_BRANCH openwrt
+          ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+          cd /workdir/openwrt
+          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
 
-      - name: Checkout
-        run: |
-          cd $GITHUB_WORKSPACE
-          git init
-          git config --global credential.helper store
-          git remote add origin https://$GITHUB_REPOSITORY_OWNER:${{ secrets.HELMIWRT_RW }}@github.com/$GITHUB_REPOSITORY
-          git fetch
-          git checkout -t origin/$THIS_REPO_BRANCH
-
-      - name: Prepare Toolchain Image From Releases
-        run: |
-          mkdir -p workspace
-          cd workspace
-          for i in {0..9}
-          do
-            curl -fsL https://github.com/HelmiWrt-OS-Immortal/releases/download/toolchain/toolchain-immortalwrt-immortalwrt-openwrt-$SOURCE_BRANCH-bcm27xx-bcm2711.img.0$i >> $TOOLCHAIN_IMAGE.img || break
-          done
-          mkdir openwrt-ro openwrt workdir overlay
-          sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
-          sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-          cd $OPENWRT_ROOT_PATH
-          git pull
+#      - name: Load Custom Feeds
+#        run: |
+#          [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+#          chmod +x $DIY_P1_SH
+#          cd openwrt
+#          $GITHUB_WORKSPACE/$DIY_P1_SH
 
       - name: Install Feeds
         run: |
@@ -138,10 +130,12 @@ jobs:
             rm -f ${FILE} ;
           done
           # Checking all IPK's location
-          #find . -type f -name 'luci-*' | while read FILE ; do
-            #echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
-          #done
+          find . -type f -name 'luci-app-*' | while read FILE ; do
+            echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
+          done
           # Set LuCI Theme and App Path
+          export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
+          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           echo "LUCITHEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
           echo "LUCIAPPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
           echo "PKGPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/packages" >> $GITHUB_ENV
@@ -158,8 +152,6 @@ jobs:
           echo "ORGANIZE_STATUS=success" >> GITHUB_OUTPUT
 
       - name: Generate New Release Tag
-        id: tag
-        if: steps.organize.outputs.ORGANIZE_STATUS == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
           sleep 10
           echo "release_tag=ipk" >> GITHUB_OUTPUT
