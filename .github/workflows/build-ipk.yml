@@ -15,7 +15,7 @@ on:
 
 env:
   TOOLCHAIN_TAG: toolchain
-  TOOLCHAIN_NAME: toolchain-immortalwrt-immortalwrt-openwrt-$SOURCE_BRANCH-bcm27xx-bcm2711.img
+  TOOLCHAIN_NAME: toolchain-immortalwrt-immortalwrt-openwrt-21.02-bcm27xx-bcm2711.img
   CONFIG_FILE: build-ipk/universal.config
   UPLOAD_RELEASE: true
   TZ: Asia/Jakarta
@@ -45,11 +45,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
+      - name: Clone Source Code
+        id: clone
+        run: |
+          df -hT $PWD
+          git clone $SOURCE_URL -b openwrt-$SOURCE_BRANCH $GITHUB_WORKSPACE/openwrt
+          cd $GITHUB_WORKSPACE/openwrt
+          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
+
       - name: Prepare Toolchain Image
         id: prepare
         run: |
-          mkdir -p workspace
-          cd workspace
+          cd $GITHUB_WORKSPACE
           for i in {0..9}
           do
             curl -fsL https://github.com/HelmiWrt-OS-Immortal/releases/download/toolchain/toolchain-immortalwrt-immortalwrt-openwrt-$SOURCE_BRANCH-bcm27xx-bcm2711.img.0$i >> $TOOLCHAIN_IMAGE.img || break
@@ -57,9 +65,6 @@ jobs:
           mkdir openwrt-ro openwrt workdir overlay
           sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
           sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-          cd openwrt
-          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
           git pull
 
       - name: Install Feeds
