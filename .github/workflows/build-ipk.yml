@@ -59,7 +59,7 @@ env:
   DIY_SH: build-ipk/immortalwrt.sh
 
 jobs:
-  Build_IPK_${{ github.event.inputs.branch }}_${{ github.event.inputs.platform }}:
+  Build:
     runs-on: ubuntu-20.04
 
     steps:
