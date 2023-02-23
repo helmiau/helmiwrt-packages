@@ -1,0 +1,43 @@
+name: Delete All Workflow Runs
+
+on:
+  workflow_dispatch:
+    inputs:
+      older-than-seconds:
+        description: 'OT: Older than (seconds) (3600s = 1h). example: 86400. Skip this if you use CB option below.'
+        required: false
+        default: 3600
+      created-before:
+        description: 'CB: Date of workflow created before. example: 2021-12-08. Skip this if you use OT option above.'
+        required: false
+        default: 2022-12-12
+      what-if:
+        description: 'Only log actions, do not perform any delete operations.'
+        required: false
+        default: false
+
+jobs:
+  Delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Delete Workflow Runs
+        uses: MajorScruffy/delete-old-workflow-runs@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.HELMIWRT_RW }}
+        with:
+          repository: ${{ github.repository }}
+          older-than-seconds: ${{ github.event.inputs.older-than-seconds }}
+          created-before: ${{ github.event.inputs.created-before }}T23:55:00Z
+          what-if: ${{ github.event.inputs.what-if }}
+          # status: ${{ github.event.inputs.status }}
+          # workflow: ".github/workflows/main.yml"
+          # older-than-seconds: 3600
+          # created-before: "2021-12-08T16:34:00Z"
+          # actor: test@test.com
+          # branch: main
+          # event: push
+          # event: completed
+          # what-if: true
