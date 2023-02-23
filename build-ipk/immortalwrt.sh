@@ -10,7 +10,7 @@
 echo "milogx: Detected platform [$PLATFORM], using [$PLATFORM] config..."
 CFGOW="$OPENWRT_ROOT_PATH/.config"
 if [[ $PLATFORM == *"armvirt/32"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_armvirt=y
 CONFIG_TARGET_armvirt_64=y
@@ -18,15 +18,15 @@ CONFIG_TARGET_armvirt_64_Default=y
 
 EOF
 elif [[ $PLATFORM == *"armvirt/64"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_armvirt=y
 CONFIG_TARGET_armvirt_64=y
 CONFIG_TARGET_armvirt_64_Default=y
 
 EOF
-if [[ $PLATFORM == *"bcm27xx/bcm2708"* ]]; then
-	cat << 'EOF' > $CFGOW
+elif [[ $PLATFORM == *"bcm27xx/bcm2708"* ]]; then
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_bcm27xx=y
 CONFIG_TARGET_bcm27xx_bcm2708=y
@@ -34,7 +34,7 @@ CONFIG_TARGET_bcm27xx_bcm2708_DEVICE_rpi=y
 
 EOF
 elif [[ $PLATFORM == *"bcm27xx/bcm2709"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_bcm27xx=y
 CONFIG_TARGET_bcm27xx_bcm2709=y
@@ -42,7 +42,7 @@ CONFIG_TARGET_bcm27xx_bcm2709_DEVICE_rpi-2=y
 
 EOF
 elif [[ $PLATFORM == *"bcm27xx/bcm2710"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_bcm27xx=y
 CONFIG_TARGET_bcm27xx_bcm2710=y
@@ -50,7 +50,7 @@ CONFIG_TARGET_bcm27xx_bcm2710_DEVICE_rpi-3=y
 
 EOF
 elif [[ $PLATFORM == *"bcm27xx/bcm2711"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_bcm27xx=y
 CONFIG_TARGET_bcm27xx_bcm2711=y
@@ -58,7 +58,7 @@ CONFIG_TARGET_bcm27xx_bcm2711_DEVICE_rpi-4=y
 
 EOF
 elif [[ $PLATFORM == *"rockchip/armv8"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_rockchip=y
 CONFIG_TARGET_rockchip_armv8=y
@@ -74,7 +74,7 @@ CONFIG_TARGET_ALL_PROFILES=y
 
 EOF
 elif [[ $PLATFORM == *"sunxi/cortexa7"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_sunxi=y
 CONFIG_TARGET_sunxi_cortexa7=y
@@ -110,7 +110,7 @@ CONFIG_TARGET_DEVICE_sunxi_cortexa7_DEVICE_sinovoip_bananapi-m2-plus=n
 
 EOF
 elif [[ $PLATFORM == *"sunxi/cortexa53"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_sunxi=y
 CONFIG_TARGET_sunxi_cortexa53=y
@@ -131,7 +131,7 @@ CONFIG_TARGET_DEVICE_sunxi_cortexa53_DEVICE_pine64_sopine-baseboard=n
 
 EOF
 elif [[ $PLATFORM == *"x86/64"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_x86=y
 CONFIG_TARGET_x86_64=y
@@ -139,7 +139,7 @@ CONFIG_TARGET_x86_64_DEVICE_generic=y
 
 EOF
 elif [[ $PLATFORM == *"x86/generic"* ]]; then
-	cat << 'EOF' > $CFGOW
+	cat << 'EOF' > "$CFGOW"
 
 CONFIG_TARGET_x86=y
 CONFIG_TARGET_x86_generic=y
@@ -184,7 +184,7 @@ else
 	# Add 3ginfo, luci-app-3ginfo
 	echo "Adding luci-app-3ginfo..."
 	git clone --depth=1 https://github.com/4IceG/luci-app-3ginfo
-	sed -i 's/luci-app-3ginfo-lite/luci-app-3ginfo/g' $OPENWRT_ROOT_PATH/.config
+	sed -i 's/luci-app-3ginfo-lite/luci-app-3ginfo/g' "$OPENWRT_ROOT_PATH"/.config
 fi
 
 # Add luci-app-sms-tool
@@ -218,3 +218,6 @@ git clone --depth=1 https://github.com/yang229/luci-app-adguardhome
 # Out to openwrt dir
 popd
 
+#-----------------------------------------------------------------------------
+#   End of @helmiau terminal scripts additionals menu
+#-----------------------------------------------------------------------------
