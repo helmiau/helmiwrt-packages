@@ -113,7 +113,6 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
           $GITHUB_WORKSPACE/$DIY_SH
-          cat $CONFIG_FILE >> $OPENWRT_ROOT_PATH/.config
 
       - name: Download Package
         id: package

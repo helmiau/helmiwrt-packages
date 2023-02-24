@@ -148,6 +148,9 @@ CONFIG_TARGET_x86_generic_DEVICE_generic=y
 EOF
 fi
 
+CONFIG_FILE="build-ipk/universal.config"
+cat $CONFIG_FILE >> "$CFGOW"
+
 # Clone community packages to package/community
 mkdir package/community
 pushd package/community
