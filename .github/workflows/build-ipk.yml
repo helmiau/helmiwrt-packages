@@ -47,6 +47,15 @@ on:
         - x86/generic
 #        - x86/geode
 #        - x86/legacy
+      build_option:
+        type: choice
+        description: Select build option.
+        required: true
+        default: IPK-Only
+        options: 
+        - Firmware-Only
+        - IPK-Only
+        - Debug-Test
 
 env:
   CONFIG_FILE: build-ipk/universal.config
@@ -81,6 +90,8 @@ jobs:
           echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
 
       - name: Clone Source Code
+        id: clone_source
+        if: steps.package.outputs.status == 'success' && !cancelled()
         working-directory: /workdir
         run: |
           df -hT $PWD
@@ -93,6 +104,7 @@ jobs:
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
+          echo "status=success" >> GITHUB_OUTPUT
 
 #      - name: Load Custom Feeds
 #        run: |
@@ -100,41 +112,52 @@ jobs:
 #          chmod +x $DIY_P1_SH
 #          cd openwrt
 #          $GITHUB_WORKSPACE/$DIY_P1_SH
+          echo "status=success" >> GITHUB_OUTPUT
 
       - name: Install Feeds
+        id: install_feeds
+        if: steps.clone_source.outputs.status == 'success' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          echo "status=success" >> GITHUB_OUTPUT
 
       - name: Load Custom Configuration
+        id: load_cfg
+        if: steps.install_feeds.outputs.status == 'success' && !cancelled()
         run: |
           [ -e files ] && mv files $OPENWRT_ROOT_PATH/files
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
           $GITHUB_WORKSPACE/$DIY_SH
+          echo "status=success" >> GITHUB_OUTPUT
 
       - name: Download Package
-        id: package
+        id: dl_package
+        if: steps.load_cfg.outputs.status == 'success' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
           make defconfig
           make download -j64
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
+          echo "status=success" >> GITHUB_OUTPUT
 
       - name: Compile Packages
+        id: compile_pkg
+        if: steps.dl_package.outputs.status == 'success' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
-          echo "::set-output name=status::success"
           grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
           [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+          echo "status=success" >> GITHUB_OUTPUT
 
       - name: Organize Files
         id: organize
-        if: steps.compile.outputs.COMPILE_STATUS == 'success' && !cancelled()
+        if: steps.compile_pkg.outputs.status == 'success' && !cancelled()
         run: |
           cd $GITHUB_WORKSPACE/openwrt/bin/packages
           # Delete Firewall IPK
@@ -159,9 +182,10 @@ jobs:
           echo -e "FIRMWARE is ....... $FIRMWARE"
           echo -e "===== End of Information ====="
           echo "status=success" >> GITHUB_OUTPUT
-          echo "ORGANIZE_STATUS=success" >> GITHUB_OUTPUT
 
       - name: Generate New Release Tag
+        id: tag
+        if: steps.organize.outputs.status == 'success' && !cancelled()
         run: |
           sleep 10
           echo "release_tag=ipk" >> GITHUB_OUTPUT
@@ -185,7 +209,7 @@ jobs:
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
             DWYOR (DO WITH YOUR OWN RISK)
-            [Donation here](https://www.helmiau.com/pay/index_en.html) • [Installation Tutorial](https://www.google.com/search?q=helmiau.com+helmiwrt+packages)
+            [Donation here](https://www.helmiau.com/pay) • [Installation Tutorial](https://www.google.com/search?q=helmiau.com+helmiwrt+packages)
 
       - name: Delete Workflow Runs
         if: steps.tag.outputs.status == 'success' && !cancelled()
