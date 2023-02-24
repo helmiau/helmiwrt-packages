@@ -91,7 +91,6 @@ jobs:
 
       - name: Clone Source Code
         id: clone_source
-        if: steps.package.outputs.status == 'success' && !cancelled()
         working-directory: /workdir
         run: |
           df -hT $PWD
