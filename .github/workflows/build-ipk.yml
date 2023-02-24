@@ -97,7 +97,8 @@ jobs:
           git clone $REPO_URL -b $REPO_BRANCH openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
           cd /workdir/openwrt
-          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
+          export OPENWRT_ROOT_PATH="$GITHUB_WORKSPACE/openwrt"
+          echo "OPENWRT_ROOT_PATH=$GITHUB_WORKSPACE/openwrt" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
           export REPO_BRANCH=$REPO_BRANCH
           echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
@@ -135,7 +136,7 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
           $GITHUB_WORKSPACE/$DIY_SH
-          cat $CONFIG_FILE >> $OPENWRT_ROOT_PATH/.config
+          cat $GITHUB_WORKSPACE/$CONFIG_FILE >> $OPENWRT_ROOT_PATH/.config
           echo -e "===== List of Config Files ====="
           cat $OPENWRT_ROOT_PATH/.config
           echo -e "===== List of Config Files ====="       
