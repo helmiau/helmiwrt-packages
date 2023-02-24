@@ -103,7 +103,7 @@ jobs:
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
 #      - name: Load Custom Feeds
 #        run: |
@@ -111,7 +111,7 @@ jobs:
 #          chmod +x $DIY_P1_SH
 #          cd openwrt
 #          $GITHUB_WORKSPACE/$DIY_P1_SH
-#          echo "status=success" >> GITHUB_OUTPUT
+#          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Install Feeds
         id: install_feeds
@@ -120,7 +120,7 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Load Custom Configuration
         id: load_cfg
@@ -130,7 +130,7 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
           $GITHUB_WORKSPACE/$DIY_SH
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Download Package
         id: dl_package
@@ -141,7 +141,7 @@ jobs:
           make download -j64
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Compile Packages
         id: compile_pkg
@@ -152,7 +152,7 @@ jobs:
           make -j$(nproc) || make -j1 || make -j1 V=s
           grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
           [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Organize Files
         id: organize
@@ -180,16 +180,16 @@ jobs:
           echo -e "TARGET is ....... $TARGET"
           echo -e "FIRMWARE is ....... $FIRMWARE"
           echo -e "===== End of Information ====="
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Generate New Release Tag
         id: tag
         if: steps.organize.outputs.status == 'success' && !cancelled()
         run: |
           sleep 10
-          echo "release_tag=ipk" >> GITHUB_OUTPUT
+          echo "release_tag=ipk" >> $GITHUB_OUTPUT
           touch release.txt
-          echo "status=success" >> GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Upload HelmiWrt Packages to GitHub Release
         uses: softprops/action-gh-release@v1
