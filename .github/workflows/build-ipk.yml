@@ -104,6 +104,8 @@ jobs:
           echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
           export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
+          export BUILD_OPT="$(echo '${{ github.event.inputs.build_option }}')"
+          echo "BUILD_OPT=$BUILD_OPT" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
           echo -e "===== Information ====="
           echo -e "FILE_DATE is ....... $FILE_DATE"
@@ -148,25 +150,38 @@ jobs:
         run: |
           cd $OPENWRT_ROOT_PATH
           make defconfig
-          make download -j64
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Compile Packages
-        id: compile_pkg
-        if: steps.dl_package.outputs.status == 'success' && !cancelled()
+      - name: Compile Firmware
+        id: compile_fw
+        if: steps.dl_package.outputs.status == 'success' && ${{ env.BUILD_OPT }} == 'Firmware-Only' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
+          make download -j64
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
           grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
           [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
 
+      - name: Compile Packages
+        id: compile_pkg
+        if: steps.dl_package.outputs.status == 'success' && ${{ env.BUILD_OPT }} == 'IPK-Only' && !cancelled()
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          grep "^CONFIG_PACKAGE_" $OPENWRT_ROOT_PATH/.config > $OPENWRT_ROOT_PATH/compile-ipk-only
+          sed -i '/=n/d' $OPENWRT_ROOT_PATH/compile-ipk-only
+          sed -i 's/CONFIG_PACKAGE_//g;s/=y//g' $OPENWRT_ROOT_PATH/compile-ipk-only
+          while read pkgName; do
+            make package/$pkgName/compile -j$(nproc)
+          done < $OPENWRT_ROOT_PATH/compile-ipk-only
+          echo "status=success" >> $GITHUB_OUTPUT
+
       - name: Organize Files
         id: organize
-        if: steps.compile_pkg.outputs.status == 'success' && !cancelled()
+        if: steps.compile_fw.outputs.status == 'success' || steps.compile_pkg.outputs.status == 'success' && !cancelled()
         run: |
           cd $GITHUB_WORKSPACE/openwrt/bin/packages
           # Delete Firewall IPK
