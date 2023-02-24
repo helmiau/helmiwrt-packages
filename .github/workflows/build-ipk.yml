@@ -154,7 +154,7 @@ jobs:
 
       - name: Compile Firmware
         id: compile_fw
-        if: steps.dl_package.outputs.status == 'success' && ${{ env.BUILD_OPT }} == 'Firmware-Only' && !cancelled()
+        if: steps.dl_package.outputs.status == 'success' && env.BUILD_OPT == 'Firmware-Only' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
           make download -j64
@@ -168,12 +168,12 @@ jobs:
 
       - name: Compile Packages
         id: compile_pkg
-        if: steps.dl_package.outputs.status == 'success' && ${{ env.BUILD_OPT }} == 'IPK-Only' && !cancelled()
+        if: steps.dl_package.outputs.status == 'success' && env.BUILD_OPT == 'IPK-Only' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
           CFGIPKX="$OPENWRT_ROOT_PATH/compile-ipk-only"
           grep "^CONFIG_PACKAGE_" $GITHUB_WORKSPACE/$CONFIG_FILE > $CFGIPKX
-          sed -i '/=n/d' $CFGIPKX
+          sed -i '/=n/d;/#/d;/not set/d' $CFGIPKX
           sed -i 's/CONFIG_PACKAGE_//g;s/=y//g' $CFGIPKX
           while read pkgName; do
             make package/$pkgName/compile -j$(nproc)
