@@ -88,21 +88,9 @@ jobs:
           sudo mkdir -p /workdir
           sudo chown $USER:$GROUPS /workdir
           echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
-          export REPO_BRANCH=$REPO_BRANCH
-          echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
-          export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
-          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
-          export BUILD_OPT="$(echo '${{ github.event.inputs.build_option }}')"
-          echo "BUILD_OPT=$BUILD_OPT" >> $GITHUB_ENV
-          echo -e "===== Information ====="
-          echo -e "FILE_DATE is [$FILE_DATE]"
-          echo -e "REPO_BRANCH is [$REPO_BRANCH]"
-          echo -e "PLATFORM is [$PLATFORM]"
-          echo -e "===== End of Information ====="
 
       - name: Clone Source Code
         id: clone_source
-        if: env.BUILD_OPT == 'Firmware-Only'
         working-directory: /workdir
         run: |
           df -hT $PWD
@@ -112,9 +100,17 @@ jobs:
           export OPENWRT_ROOT_PATH="$GITHUB_WORKSPACE/openwrt"
           echo "OPENWRT_ROOT_PATH=$GITHUB_WORKSPACE/openwrt" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
+          export REPO_BRANCH=$REPO_BRANCH
+          echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
+          export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
+          echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
+          export BUILD_OPT="$(echo '${{ github.event.inputs.build_option }}')"
+          echo "BUILD_OPT=$BUILD_OPT" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
           echo -e "===== Information ====="
-          echo -e "OPENWRT_ROOT_PATH is [$OPENWRT_ROOT_PATH]"
+          echo -e "FILE_DATE is ....... $FILE_DATE"
+          echo -e "OPENWRT_ROOT_PATH is ....... $OPENWRT_ROOT_PATH"
+          echo -e "PLATFORM is ....... $PLATFORM"
           echo -e "===== End of Information ====="
 
 #      - name: Load Custom Feeds
@@ -134,36 +130,9 @@ jobs:
           ./scripts/feeds install -a
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Download SDK for Packages
-        id: install_sdk
-        if: env.BUILD_OPT == 'IPK-Only' && !cancelled()
-        run: |
-          cd $GITHUB_WORKSPACE
-          if [ "$REPO_BRANCH" == *"21.02"* ]; then
-            export SDK_BRANCH="21.02.4"
-            echo "SDK_BRANCH=$SDK_BRANCH" >> $GITHUB_ENV
-          elif [ "$REPO_BRANCH" == *"18.06-k5.4"* ]; then
-            export SDK_BRANCH="18.06-k5.4-SNAPSHOT"
-            echo "SDK_BRANCH=$SDK_BRANCH" >> $GITHUB_ENV
-          elif [ "$REPO_BRANCH" == *"18.06"* ]; then
-            export SDK_BRANCH="18.06-SNAPSHOT"
-            echo "SDK_BRANCH=$SDK_BRANCH" >> $GITHUB_ENV
-          fi
-          export SDK_PLATFORM="$(echo $PLATFORM | sed 's|/|-|g')"
-          echo "SDK_PLATFORM=$SDK_PLATFORM" >> $GITHUB_ENV
-          export SDK_NAME="immortalwrt-sdk-$SDK_BRANCH-$SDK_PLATFORM_gcc-8.4.0_musl.Linux-x86_64.tar.xz"
-          echo "SDK_NAME=$SDK_NAME" >> $GITHUB_ENV
-          export SDK_URL="https://downloads.immortalwrt.org/releases/$SDK_BRANCH/targets/$PLATFORM/$SDK_NAME"
-          echo "SDK_URL=$SDK_URL" >> $GITHUB_ENV
-          wget -q ${SDK_URL}/${SDK_NAME}.tar.xz
-          xz -d ${SDK_NAME}.tar.xz
-          tar -xf ${SDK_NAME}.tar
-          mv $SDK_NAME openwrt
-          echo "status=success" >> $GITHUB_OUTPUT
-
       - name: Load Custom Configuration
         id: load_cfg
-        if: steps.install_feeds.outputs.status == 'success' || steps.install_sdk.outputs.status == 'success' && !cancelled()
+        if: steps.install_feeds.outputs.status == 'success' && !cancelled()
         run: |
           [ -e files ] && mv files $OPENWRT_ROOT_PATH/files
           cd $OPENWRT_ROOT_PATH
@@ -177,7 +146,7 @@ jobs:
 
       - name: Download Package
         id: dl_package
-        if: steps.load_cfg.outputs.status == 'success' && env.BUILD_OPT == 'Firmware-Only' && !cancelled()
+        if: steps.load_cfg.outputs.status == 'success' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
           make defconfig
@@ -197,21 +166,22 @@ jobs:
           [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Compile Packages
+      - name: Organize Packages
         id: compile_pkg
-        if: steps.install_sdk.outputs.status == 'success' && steps.load_cfg.outputs.status == 'success' && !cancelled()
+        if: steps.dl_package.outputs.status == 'success' && !cancelled()
         run: |
-          cd $OPENWRT_ROOT_PATH
+          cd $GITHUB_WORKSPACE/openwrt/bin/packages
           CFGIPKX="$OPENWRT_ROOT_PATH/compile-ipk-only"
-          grep "^CONFIG_PACKAGE_" $GITHUB_WORKSPACE/$CONFIG_FILE > $CFGIPKX
-          sed -i '/=n/d;/#/d;/not set/d' $CFGIPKX
-          sed -i 's/CONFIG_PACKAGE_//g;s/=y//g' $CFGIPKX
-          while read pkgName; do
-            make package/$pkgName/compile -j$(nproc)
-          done < $CFGIPKX
-          echo "status=success" >> $GITHUB_OUTPUT
+          grep "^CONFIG_PACKAGE_" "$GITHUB_WORKSPACE"/"$CONFIG_FILE" > "$CFGIPKX"
+          sed -i '/=n/d;/#/d;/not set/d' "$CFGIPKX"
+          sed -i 's/CONFIG_PACKAGE_//g;s/=y//g' "$CFGIPKX"
+          mkdir paketHelmiWrt
+          while read -r pkgName; do
+            find . -type f -name "$pkgName*" -exec mv {} $GITHUB_WORKSPACE/openwrt/bin/packages/paketHelmiWrt \;
+          done < "$CFGIPKX"
+          echo "status=success" >> "$GITHUB_OUTPUT"
 
-      - name: Organize Files
+      - name: Organize Firmware
         id: organize
         if: steps.compile_fw.outputs.status == 'success' || steps.compile_pkg.outputs.status == 'success' && !cancelled()
         run: |
@@ -250,7 +220,7 @@ jobs:
 
       - name: Upload HelmiWrt Packages to GitHub Release
         uses: softprops/action-gh-release@v1
-        if: steps.tag.outputs.status == 'succ-xxxxxxx-ess' && !cancelled()
+        if: steps.tag.outputs.status == 'success' && !cancelled()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -258,9 +228,10 @@ jobs:
           name: IPK Build ${{ env.FILE_DATE }}
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            ${{ env.LUCITHEMEPATH }}-*
-            ${{ env.LUCIAPPPATH }}-*
-            ${{ env.PKGPATH }}/mactoiface.*
+            # ${{ env.LUCITHEMEPATH }}-*
+            # ${{ env.LUCIAPPPATH }}-*
+            # ${{ env.PKGPATH }}/mactoiface.*
+            $GITHUB_WORKSPACE/openwrt/bin/packages/paketHelmiWrt
           body: |
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
