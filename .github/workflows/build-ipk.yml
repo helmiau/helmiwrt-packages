@@ -151,8 +151,10 @@ jobs:
           fi
           export SDK_PLATFORM="$(echo $PLATFORM | sed 's|/|-|g')"
           echo "SDK_PLATFORM=$SDK_PLATFORM" >> $GITHUB_ENV
-          SDK_NAME="immortalwrt-sdk-$SDK_BRANCH-$SDK_PLATFORM_gcc-8.4.0_musl.Linux-x86_64.tar.xz"
-          SDK_URL="https://downloads.immortalwrt.org/releases/$SDK_BRANCH/targets/$PLATFORM/$SDK_NAME"
+          export SDK_NAME="immortalwrt-sdk-$SDK_BRANCH-$SDK_PLATFORM_gcc-8.4.0_musl.Linux-x86_64.tar.xz"
+          echo "SDK_NAME=$SDK_NAME" >> $GITHUB_ENV
+          export SDK_URL="https://downloads.immortalwrt.org/releases/$SDK_BRANCH/targets/$PLATFORM/$SDK_NAME"
+          echo "SDK_URL=$SDK_URL" >> $GITHUB_ENV
           wget -q ${SDK_URL}/${SDK_NAME}.tar.xz
           xz -d ${SDK_NAME}.tar.xz
           tar -xf ${SDK_NAME}.tar
