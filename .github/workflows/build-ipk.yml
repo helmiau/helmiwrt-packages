@@ -124,6 +124,8 @@ jobs:
       - name: Compile Packages
         run: |
           cd $OPENWRT_ROOT_PATH
+          make defconfig
+          make download -j64
           echo -e "$(nproc) thread compile"
           make buildinfo
           make diffconfig buildversion feedsversion
