@@ -150,8 +150,6 @@ jobs:
         run: |
           cd $OPENWRT_ROOT_PATH
           make defconfig
-          find dl -size -1024c -exec ls -l {} \;
-          find dl -size -1024c -exec rm -f {} \;
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Compile Firmware
@@ -160,6 +158,8 @@ jobs:
         run: |
           cd $OPENWRT_ROOT_PATH
           make download -j64
+          find dl -size -1024c -exec ls -l {} \;
+          find dl -size -1024c -exec rm -f {} \;
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
           grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
@@ -171,12 +171,13 @@ jobs:
         if: steps.dl_package.outputs.status == 'success' && ${{ env.BUILD_OPT }} == 'IPK-Only' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
-          grep "^CONFIG_PACKAGE_" $OPENWRT_ROOT_PATH/.config > $OPENWRT_ROOT_PATH/compile-ipk-only
-          sed -i '/=n/d' $OPENWRT_ROOT_PATH/compile-ipk-only
-          sed -i 's/CONFIG_PACKAGE_//g;s/=y//g' $OPENWRT_ROOT_PATH/compile-ipk-only
+          CFGIPKX="$OPENWRT_ROOT_PATH/compile-ipk-only"
+          grep "^CONFIG_PACKAGE_" $GITHUB_WORKSPACE/$CONFIG_FILE > $CFGIPKX
+          sed -i '/=n/d' $CFGIPKX
+          sed -i 's/CONFIG_PACKAGE_//g;s/=y//g' $CFGIPKX
           while read pkgName; do
             make package/$pkgName/compile -j$(nproc)
-          done < $OPENWRT_ROOT_PATH/compile-ipk-only
+          done < $CFGIPKX
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Organize Files
