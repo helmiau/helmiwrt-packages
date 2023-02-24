@@ -97,13 +97,18 @@ jobs:
           git clone $REPO_URL -b $REPO_BRANCH openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
           cd /workdir/openwrt
+          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
           export REPO_BRANCH=$REPO_BRANCH
           echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
           export PLATFORM="$(echo '${{ github.event.inputs.platform }}')"
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
           echo "status=success" >> $GITHUB_OUTPUT
+          echo -e "===== Information ====="
+          echo -e "FILE_DATE is ....... $FILE_DATE"
+          echo -e "OPENWRT_ROOT_PATH is ....... $OPENWRT_ROOT_PATH"
+          echo -e "PLATFORM is ....... $PLATFORM"
+          echo -e "===== End of Information ====="
 
 #      - name: Load Custom Feeds
 #        run: |
@@ -130,6 +135,9 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
           $GITHUB_WORKSPACE/$DIY_SH
+          echo -e "===== List of Config Files ====="
+          cat $OPENWRT_ROOT_PATH/.config
+          echo -e "===== List of Config Files ====="       
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Download Package
@@ -168,17 +176,17 @@ jobs:
             echo -e "helmilog:: luci app and theme located at $(readlink -f ${FILE})" ;
           done
           # Set LuCI Theme and App Path
-          echo "LUCITHEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-theme" >> $GITHUB_ENV
-          echo "LUCIAPPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/luci-app" >> $GITHUB_ENV
-          echo "PKGPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/$PLATFORM/base/packages" >> $GITHUB_ENV
+          echo "LUCITHEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/*/base/luci-theme" >> $GITHUB_ENV
+          echo "LUCIAPPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/*/base/luci-app" >> $GITHUB_ENV
+          echo "PKGPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/*/base/packages" >> $GITHUB_ENV
           # Checking Files and places
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo -e "===== End of Information ====="
           echo -e "FILE_DATE is ....... $FILE_DATE"
-          echo -e "OPENWRT_ROOT_PATH is ....... $TARGET"
+          echo -e "OPENWRT_ROOT_PATH is ....... $OPENWRT_ROOT_PATH"
           echo -e "PLATFORM is ....... $PLATFORM"
-          echo -e "TARGET is ....... $TARGET"
-          echo -e "FIRMWARE is ....... $FIRMWARE"
+          # echo -e "TARGET is ....... $TARGET"
+          # echo -e "FIRMWARE is ....... $FIRMWARE"
           echo -e "===== End of Information ====="
           echo "status=success" >> $GITHUB_OUTPUT
 
