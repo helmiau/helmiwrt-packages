@@ -1,33 +1,59 @@
 #!/bin/bash
-# Script by Helmi Amirudin <helmiau.com>
+#--------------------------------------------------------
+#   Don't remove this section for credits
+#   Don't rename this file
+#--------------------------------------------------------
+#   If you use some codes frome here, please give credit to www.helmiau.com
+#--------------------------------------------------------
+#   Script by Helmi Amirudin a.k.a helmiau
+#   my profile page https://wwww.helmiau.com
+#   my github https://github.com/helmiau
+#--------------------------------------------------------
 
-IPK=$( echo -e "$1" | sed -e 's/ //g' -e 's/.ipk//g' )
-if [[ $1 =~ ".ipk" ]] ; then
-	echo -e "===================================="
-	echo -e "  Downloading ${IPK}.ipk"
-	echo -e "===================================="
-	wget --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/${IPK}.ipk -O /root/${IPK}.ipk
-	echo -e "===================================="
-	echo -e "  Updating package lists..."
-	echo -e "===================================="
-	opkg update
-	echo -e "===================================="
-	echo -e "  Installing ${IPK}.ipk"
-	echo -e "===================================="
-	opkg install /root/${IPK}.ipk $2
-	echo -e "===================================="
-	echo -e "  Cleaning cache..."
-	echo -e "===================================="
-	rm /root/${IPK}.ipk
-	echo -e "  Cache cleaned! Done!."
-	echo -e "===================================="
+#--- Warna Warna
+R='\033[1;31m' # Merah Muda
+G='\033[1;32m' # Hijau Muda
+Y='\033[1;33m' # Kuning
+N='\033[1;37m' # Putih
+SCRIPTVER="25-02-2023"
+SCRIPTNAME="$(basename "$0")"
+
+if [[ $1 == *".ipk"* ]]; then
+	export IPK="$1"
+	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
+	opkg update && opkg install "${IPK}"
+	rm "${IPK}"
+	unset IPK
+elif [[ $1 == "-fd" ]] && [[ $2 == *".ipk"* ]]; then
+	export IPK="$1"
+	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
+	opkg update && opkg install "${IPK}" --force-depends
+	rm "${IPK}"
+	unset IPK
+elif [[ $1 == "-dl" ]] && [[ $2 == *".ipk"* ]]; then
+	export IPK="$1"
+	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
+	unset IPK
+elif [[ $1 == "-l" ]]; then
+	echo -e "${R}======================================================${N}"
+	echo -e "      ${Y}Lists of available HelmiWrt Packages IPK"
+	echo -e "${R}======================================================${N}"
+	curl -sL https://api.github.com/repos/helmiau/helmiwrt-packages/releases/tags/ipk | grep 'browser_download_url' | awk -F '"' '{print $4}' | sed 's|^.*ipk/||g'
+	echo -e "${R}======================================================${N}"
+	echo -e " ${Y}Read installation steps by run ${G}$SCRIPTNAME${Y} command"
+	echo -e "${R}======================================================${N}"
 else
-	echo -e "====================================" > /tmp/helmiwrt-packages-ipk
-	echo -e "Usage: hpipk luci-app-name_1.1_all.ipk" >> /tmp/helmiwrt-packages-ipk
-	echo -e "====================================" >> /tmp/helmiwrt-packages-ipk
-	echo -e "List available ipk from helmiwrt-packages:\n" >> /tmp/helmiwrt-packages-ipk
-	echo -e "$(curl -sL https://api.github.com/repos/helmiau/helmiwrt-packages/releases/tags/ipk | sed -e 's/ //g' -e 's/\"//g' -e 's/,//g' | grep 'name:luci' | sed 's/name://g')" >> /tmp/helmiwrt-packages-ipk
-	cat < /tmp/helmiwrt-packages-ipk
-	rm /tmp/helmiwrt-packages-ipk
+	echo -e "${R}======================================================"
+	echo -e "   ${G}HelmiWrt Packages Command Lists by Helmi Amirudin"
+	echo -e "              ${Y}Script Version : ${G}$SCRIPTVER"
+	echo -e "${R}======================================================${N}"
+	echo -e "  Run ${G}$SCRIPTNAME -l ${N}to read lists of available ipks"
+	echo -e "     ex: ${G}$SCRIPTNAME -l${N}"
+	echo -e "  Run ${G}$SCRIPTNAME luci-app-name_v999.ipk ${N}to install ipk"
+	echo -e "     ex: ${G}$SCRIPTNAME luci-app-tinyfm_1.6_all.ipk${N}"
+	echo -e "  Run ${G}$SCRIPTNAME -fd luci-app-name_v999.ipk ${N}to force install ipk"
+	echo -e "     ex: ${G}$SCRIPTNAME -fd luci-app-tinyfm_1.6_all.ipk${N}"
+	echo -e "  Run ${G}$SCRIPTNAME -dl luci-app-name_v999.ipk ${N}to download ipk only"
+	echo -e "     ex: ${G}$SCRIPTNAME -dl luci-app-tinyfm_1.6_all.ipk${N}"
+	echo -e "${R}======================================================${N}"
 fi
-
