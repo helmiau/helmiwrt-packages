@@ -198,6 +198,7 @@ jobs:
           echo "LUCITHEMEPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/*/base/luci-theme" >> $GITHUB_ENV
           echo "LUCIAPPPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/*/base/luci-app" >> $GITHUB_ENV
           echo "PKGPATH=$GITHUB_WORKSPACE/openwrt/bin/packages/*/base/packages" >> $GITHUB_ENV
+          echo "paketHelmiWrt=$GITHUB_WORKSPACE/openwrt/bin/packages/paketHelmiWrt" >> $GITHUB_ENV
           # Checking Files and places
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo -e "===== End of Information ====="
@@ -231,17 +232,9 @@ jobs:
             # ${{ env.LUCITHEMEPATH }}-*
             # ${{ env.LUCIAPPPATH }}-*
             # ${{ env.PKGPATH }}/mactoiface.*
-            $GITHUB_WORKSPACE/openwrt/bin/packages/paketHelmiWrt
+            ${{ env.paketHelmiWrt }}
           body: |
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
             DWYOR (DO WITH YOUR OWN RISK)
             [Donation here](https://www.helmiau.com/pay) • [Installation Tutorial](https://www.google.com/search?q=helmiau.com+helmiwrt+packages)
-
-      - name: Delete Workflow Runs
-        if: steps.tag.outputs.status == 'success' && !cancelled()
-        uses: GitRML/delete-workflow-runs@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          retain_days: 3
-          keep_minimum_runs: 5
