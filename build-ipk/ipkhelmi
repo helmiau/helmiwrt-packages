@@ -24,17 +24,17 @@ if [[ $1 == *".ipk"* ]]; then
 	opkg update && opkg install "${IPK}"
 	rm "${IPK}"
 	unset IPK
-elif [[ $1 = "-fd" ]] && [[ $2 == *".ipk"* ]]; then
+elif [[ $1 == "-fd" ]] && [[ $2 == *".ipk"* ]]; then
 	export IPK="$1"
 	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
 	opkg update && opkg install "${IPK}" --force-depends
 	rm "${IPK}"
 	unset IPK
-elif [[ $1 = "-dl" ]] && [[ $2 == *".ipk"* ]]; then
+elif [[ $1 == "-dl" ]] && [[ $2 == *".ipk"* ]]; then
 	export IPK="$1"
 	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
 	unset IPK
-elif [[ $1 = "-l" ]]; then
+elif [[ $1 == "-l" ]]; then
 	echo -e "${R}======================================================${N}"
 	echo -e "      ${Y}Lists of available HelmiWrt Packages IPK"
 	echo -e "${R}======================================================${N}"
