@@ -15,30 +15,30 @@ R='\033[1;31m' # Merah Muda
 G='\033[1;32m' # Hijau Muda
 Y='\033[1;33m' # Kuning
 N='\033[1;37m' # Putih
-SCRIPTVER="23-01-2022"
+SCRIPTVER="25-02-2023"
 SCRIPTNAME="$(basename "$0")"
 
-if [[ $1 == *"luci-app"* || $1 == *"luci-theme"* ]]; then
+if [[ $1 == *".ipk"* ]]; then
 	export IPK="$1"
 	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
 	opkg update && opkg install "${IPK}"
 	rm "${IPK}"
 	unset IPK
-elif [[ $1 = "-fd" ]] && [[ $2 == *"luci-app"* || $2 == *"luci-theme"* ]]; then
+elif [[ $1 = "-fd" ]] && [[ $2 == *".ipk"* ]]; then
 	export IPK="$1"
 	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
-	opkg update && opkg install "${IPK}"
+	opkg update && opkg install "${IPK}" --force-depends
 	rm "${IPK}"
 	unset IPK
-elif [[ $1 = "-dl" ]] && [[ $2 == *"luci-app"* || $2 == *"luci-theme"* ]]; then
+elif [[ $1 = "-dl" ]] && [[ $2 == *".ipk"* ]]; then
 	export IPK="$1"
 	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
 	unset IPK
-elif [[ $1 = "list" ]]; then
+elif [[ $1 = "-l" ]]; then
 	echo -e "${R}======================================================${N}"
 	echo -e "      ${Y}Lists of available HelmiWrt Packages IPK"
 	echo -e "${R}======================================================${N}"
-	curl -sL https://api.github.com/repos/helmiau/helmiwrt-packages/releases/tags/ipk | grep 'luci-app\|luci-theme' | awk -F '"' '{print $4}' | sed 's/https/http/g' | sed '/helmiau/d'
+	curl -sL https://api.github.com/repos/helmiau/helmiwrt-packages/releases/tags/ipk | grep 'browser_download_url' | awk -F '"' '{print $4}' | sed 's|^.*ipk/||g'
 	echo -e "${R}======================================================${N}"
 	echo -e " ${Y}Read installation steps by run ${G}$SCRIPTNAME${Y} command"
 	echo -e "${R}======================================================${N}"
@@ -47,8 +47,8 @@ else
 	echo -e "   ${G}HelmiWrt Packages Command Lists by Helmi Amirudin"
 	echo -e "              ${Y}Script Version : ${G}$SCRIPTVER"
 	echo -e "${R}======================================================${N}"
-	echo -e "  Run ${G}$SCRIPTNAME list ${N}to read available ipk lists"
-	echo -e "     ex: ${G}$SCRIPTNAME list${N}"
+	echo -e "  Run ${G}$SCRIPTNAME -l ${N}to read lists of available ipks"
+	echo -e "     ex: ${G}$SCRIPTNAME -l${N}"
 	echo -e "  Run ${G}$SCRIPTNAME luci-app-name_v999.ipk ${N}to install ipk"
 	echo -e "     ex: ${G}$SCRIPTNAME luci-app-tinyfm_1.6_all.ipk${N}"
 	echo -e "  Run ${G}$SCRIPTNAME -fd luci-app-name_v999.ipk ${N}to force install ipk"
