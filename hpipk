@@ -17,23 +17,24 @@ Y='\033[1;33m' # Kuning
 N='\033[1;37m' # Putih
 SCRIPTVER="25-02-2023"
 SCRIPTNAME="$(basename "$0")"
+URLX="https://github.com/helmiau/helmiwrt-packages/releases/download/ipk"
+
+dlIpk () {
+	if [[ $1 == *".ipk"* ]]; then
+		wget --no-check-certificate "$URLX"/"$1" -O /root/"$1"
+	elif [[ $1 != *".ipk"* ]] && [[ $2 == *".ipk"* ]]; then
+		wget --no-check-certificate "$URLX"/"$2" -O /root/"$2"
+	fi
+}
 
 if [[ $1 == *".ipk"* ]]; then
-	export IPK="$1"
-	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
-	opkg update && opkg install "${IPK}"
-	rm "${IPK}"
-	unset IPK
+	dlIpk
+	[ -f /root/$1 ] && opkg update && opkg install "$1" && rm "$1"
 elif [[ $1 == "-fd" ]] && [[ $2 == *".ipk"* ]]; then
-	export IPK="$1"
-	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
-	opkg update && opkg install "${IPK}" --force-depends
-	rm "${IPK}"
-	unset IPK
+	dlIpk
+	[ -f /root/$2 ] && opkg update && opkg install "$3" --force-depends && rm "$2"
 elif [[ $1 == "-dl" ]] && [[ $2 == *".ipk"* ]]; then
-	export IPK="$1"
-	wget --show-progress --no-check-certificate https://github.com/helmiau/helmiwrt-packages/releases/download/ipk/"$IPK"
-	unset IPK
+	dlIpk
 elif [[ $1 == "-l" ]]; then
 	echo -e "${R}======================================================${N}"
 	echo -e "      ${Y}Lists of available HelmiWrt Packages IPK"
