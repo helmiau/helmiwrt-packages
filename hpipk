@@ -29,10 +29,10 @@ dlIpk () {
 
 if [[ $1 == *".ipk"* ]]; then
 	dlIpk
-	[ -f /root/$1 ] && opkg update && opkg install "$1" && rm "$1"
+	[ -f /root/$1 ] && opkg update && opkg install /root/"$1" && rm "$1"
 elif [[ $1 == "-fd" ]] && [[ $2 == *".ipk"* ]]; then
 	dlIpk
-	[ -f /root/$2 ] && opkg update && opkg install "$3" --force-depends && rm "$2"
+	[ -f /root/$2 ] && opkg update && opkg install /root/"$2" --force-depends && rm "$2"
 elif [[ $1 == "-dl" ]] && [[ $2 == *".ipk"* ]]; then
 	dlIpk
 elif [[ $1 == "-l" ]]; then
