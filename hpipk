@@ -15,7 +15,7 @@ R='\033[1;31m' # Merah Muda
 G='\033[1;32m' # Hijau Muda
 Y='\033[1;33m' # Kuning
 N='\033[1;37m' # Putih
-SCRIPTVER="25-02-2023"
+SCRIPTVER="26-02-2023"
 SCRIPTNAME="$(basename "$0")"
 URLX="https://github.com/helmiau/helmiwrt-packages/releases/download/ipk"
 
