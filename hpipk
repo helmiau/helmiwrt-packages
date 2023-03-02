@@ -26,7 +26,7 @@ if [[ $1 == *".ipk"* ]]; then
 elif [[ $1 == "-fd" ]] && [[ $2 == *".ipk"* ]]; then
 	[ -f /root/$2 ] && rm "$2"
 	wget --no-check-certificate "$URLX"/"$2" -O /root/"$2"
-	[ -f /root/$2 ] && opkg update && opkg install /root/"$2" --force-depends && rm "$2"
+	[ -f /root/$2 ] && opkg update && opkg install --force-depends /root/"$2" && rm "$2"
 elif [[ $1 == "-dl" ]] && [[ $2 == *".ipk"* ]]; then
 	[ -f /root/$2 ] && rm "$2"
 	wget --no-check-certificate "$URLX"/"$2" -O /root/"$2"
