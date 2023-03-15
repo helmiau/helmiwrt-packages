@@ -2,5 +2,27 @@
 <iframe id="netmon-config" style="width: 100%; min-height: 100vh; border: none; border-radius: 2px;"></iframe>
 </div>
 <script type="text/javascript">
-document.getElementById("netmon-config").src = window.location.protocol + "//" + window.location.hostname + "/tinyfm/tinyfm.php?p=www%2Fnetmon&edit=netmon.html";
+var UseFile;
+function chkFile(fileName) {
+    fetch(fileName, { method: "HEAD" }) 
+        .then(response => { 
+            if (response.ok) { 
+                console.log("File exists: " + fileName);
+                document.getElementById("netmon-config").src = window.location.protocol + "//" + window.location.hostname + fileName + "?p=www%2Fnetmon&edit=index.html&env=ace";
+                return;
+            } else { 
+                console.log("File does not exist: " + fileName);
+                return;
+            } 
+        }) 
+        .catch(error => { 
+            console.log("An error occurred: ", error); 
+            return;
+        }); 
+}
+
+// If you have different directories of tiny file manager, write down below
+chkFile('/tinyfm/index.php');
+chkFile('/tinyfm/tinyfm.php');
+
 </script>
