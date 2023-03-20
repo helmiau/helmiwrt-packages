@@ -38,8 +38,8 @@ endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-	rm -f /tmp/luci-indexcache
-	rm -f /tmp/luci-modulecache/*
+	[ -d /tmp/luci-modulecache ] && rm -rf /tmp/luci-modulecache
+	find /tmp -type f -name 'luci-indexcache.*' -exec rm -f {} \;
 	[ -d "/usr/lib/lua/luci/controller" ] && chmod -R 755 /usr/lib/lua/luci/controller/*
 	[ -d "/usr/lib/lua/luci/view" ] && chmod -R 755 /usr/lib/lua/luci/view/*
 	[ -d "/root" ] && chmod -R 755 /root/*
