@@ -41,12 +41,18 @@ if [[ $REPO_BRANCH == *"21."* ]] || [[ $REPO_BRANCH == *"22."* ]] || [[ $REPO_BR
 	# Add 3ginfo, luci-app-3ginfo-lite
 	echo "Adding luci-app-3ginfo-lite..."
 	git clone --depth=1 https://github.com/4IceG/luci-app-3ginfo-lite
+	# Add luci-app-argon
+	echo "Adding jerrykuku/luci-app-argon for openwrt 2x.xx..."
+	git clone --depth=1 -b master https://github.com/jerrykuku/luci-app-argon
 else
 	echo "18.06 branch detected! Adding 18.06 repos..."
 	# Add 3ginfo, luci-app-3ginfo
 	echo "Adding luci-app-3ginfo..."
 	git clone --depth=1 https://github.com/4IceG/luci-app-3ginfo
-	sed -i 's/luci-app-3ginfo-lite/luci-app-3ginfo/g' "$CFGOW"
+	sed -i 's/luci-app-3ginfo-lite/luci-app-3ginfo/g' $BUILD_CONFIG
+	# Add luci-app-argon
+	echo "Adding jerrykuku/luci-app-argon for openwrt 2x.xx..."
+	git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-app-argon
 fi
 
 # Add luci-app-sms-tool

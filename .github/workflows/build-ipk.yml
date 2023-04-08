@@ -116,6 +116,8 @@ jobs:
             export BRANCH_REL=$(echo "releases/$REPO_BRANCH")
           fi
           echo "BRANCH_REL=$BRANCH_REL" >> $GITHUB_ENV
+          export BUILD_CONFIG="$GITHUB_WORKSPACE/$CONFIG_FILE"
+          echo "BUILD_CONFIG=$BUILD_CONFIG" >> $GITHUB_ENV
 
       - name: Clone SDK
         id: clone_sdk
@@ -165,14 +167,13 @@ jobs:
         run: |
           [[ ! -d ipkg ]] && mkdir -p ipkg
           cd $OPENWRT_ROOT_PATH
-          BUILD_CONFIG="$GITHUB_WORKSPACE/$CONFIG_FILE"
           sed -i -e '/^#/d' -i -e '/^[[:blank:]]*$/ d' "${BUILD_CONFIG}"
           echo -e "===== List of Apps ====="
           cat $BUILD_CONFIG
-          echo -e "===== List of Apps ====="       
+          echo -e "===== List of Apps ====="    
+          make defconfig   
           while IFS= read -r line # Read a line
           do
-            make defconfig
             make package/${line}/compile -j${nproc} V=w
             find bin/ -type f -name '*${line}*' -exec mv -t ../ipkg {} +
           done < "$BUILD_CONFIG"
