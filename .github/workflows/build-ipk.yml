@@ -170,7 +170,7 @@ jobs:
           [[ ! -d ipkg ]] && mkdir -p ipkg
           cd $OPENWRT_ROOT_PATH
           BUILD_CONFIG="$GITHUB_WORKSPACE/$CONFIG_FILE"
-          sed -i '/^#/d' $BUILD_CONFIG
+          sed -i -e '/^#/d' -i -e '/^[[:blank:]]*$/ d' "${BUILD_CONFIG}"
           echo -e "===== List of Apps ====="
           cat $BUILD_CONFIG
           echo -e "===== List of Apps ====="       
