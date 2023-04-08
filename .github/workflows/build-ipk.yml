@@ -140,18 +140,14 @@ jobs:
           echo -e "===== End of Information ====="
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Load Custom Script Configuration
+      - name: Load Configuration
         id: load_cfg
         if: steps.clone_sdk.outputs.status == 'success' && !cancelled()
         run: |
-          [ -e files ] && mv files $OPENWRT_ROOT_PATH/files
           cd $OPENWRT_ROOT_PATH
           chmod +x $GITHUB_WORKSPACE/build-ipk/*.sh
           $GITHUB_WORKSPACE/$DIY_SH
-          cat $GITHUB_WORKSPACE/$CONFIG_FILE >> $OPENWRT_ROOT_PATH/.config
-          echo -e "===== List of Config Files ====="
-          cat $OPENWRT_ROOT_PATH/.config
-          echo -e "===== List of Config Files ====="       
+          # cat $GITHUB_WORKSPACE/$CONFIG_FILE >> $OPENWRT_ROOT_PATH/.config
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Install Feeds
@@ -163,7 +159,7 @@ jobs:
           ./scripts/feeds install -a
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Compile Firmware
+      - name: Compile Packages
         id: compile
         if: steps.install_feeds.outputs.status == 'success' && !cancelled()
         run: |
