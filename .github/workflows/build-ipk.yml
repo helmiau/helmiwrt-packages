@@ -122,9 +122,9 @@ jobs:
         working-directory: /workdir
         run: |
           df -hT $PWD
-          export REPO_SDK=$(echo "https://downloads.openwrt.org/$BRANCH_REL/targets/$PLATFORM/openwrt-sdk-$REPO_BRANCH-$PLATFORM_SUB_gcc-8.4.0_musl.Linux-x86_64.tar.xz")
-          echo "REPO_SDK=$REPO_SDK" >> $GITHUB_ENV
-          echo "sdk url:: $REPO_SDK"
+          export REPO_SDK=$(echo "https://downloads.openwrt.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-8.4.0_musl.Linux-x86_64.tar.xz")
+          echo "REPO_SDK=${REPO_SDK}" >> $GITHUB_ENV
+          echo "sdk url:: ${REPO_SDK}"
           wget ${REPO_SDK}
           tar xf *.tar.xz
           rm -f *.tar.xz
