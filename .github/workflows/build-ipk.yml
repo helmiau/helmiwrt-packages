@@ -169,11 +169,14 @@ jobs:
         run: |
           [[ ! -d ipkg ]] && mkdir -p ipkg
           cd $OPENWRT_ROOT_PATH
-          make defconfig
           BUILD_CONFIG="$GITHUB_WORKSPACE/$CONFIG_FILE"
           sed -i '/^#/d' $BUILD_CONFIG
+          echo -e "===== List of Apps ====="
+          cat $BUILD_CONFIG
+          echo -e "===== List of Apps ====="       
           while IFS= read -r line # Read a line
           do
+            make defconfig
             make package/${line}/compile -j${nproc} V=w
             find bin/ -type f -name '*${line}*' -exec mv -t ../ipkg {} +
           done < "$BUILD_CONFIG"
