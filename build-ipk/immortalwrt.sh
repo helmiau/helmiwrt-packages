@@ -5,33 +5,32 @@
 # Author: P3TERX
 # Blog: https://p3terx.com
 #=================================================
-# Clone community packages to package/community
-mkdir package/community
-pushd package/community
+# Clone community packages to package
+[[ -d package ]] && mkdir package
+pushd package
 
 # Add Argon theme configuration
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 
 # Add official OpenClash dev branch source
 # git clone --depth=1 -b dev https://github.com/vernesong/OpenClash
-svn co https://github.com/vernesong/OpenClash/branches/dev/luci-app-openclash vernesong/OpenClash
-
-# Add luci-app-smstools3
-git clone --depth=1 https://github.com/koshev-msk/modemfeed koshev-msk/modemfeed
-rm -rf koshev-msk/modemfeed/luci/applications/luci-app-telegrambot
-rm -rf koshev-msk/modemfeed/packages/net/telegrambot
+svn co https://github.com/vernesong/OpenClash/branches/dev/luci-app-openclash luci-app-openclash
 
 # Add modeminfo
-# git clone --depth=1 https://github.com/koshev-msk/luci-app-modeminfo
+svn co https://github.com/koshev-msk/modemfeed/trunk/luci/applications/luci-app-modeminfo luci-app-modeminfo
+svn co https://github.com/koshev-msk/modemfeed/trunk/packages/net/modeminfo modeminfo
+# Remove modeminfo telegrambot plugin
+[[ -f modeminfo/Makefile ]] && sed -i -e '/Package\/\$(PKG_NAME)-telegram\/install/,+4d' -e '/Package\/\$(PKG_NAME)-telegram/,+6d' -e '/\$(eval \$(call BuildPackage,\$(PKG_NAME)-telegram))/,+0d' modeminfo/Makefile
+[[ -f modeminfo/root/usr/lib/telegrambot/plugins/modeminfo.sh ]] && rm -f modeminfo/root/usr/lib/telegrambot/plugins/modeminfo.sh
 
 # Add luci-app-smstools3
-# git clone --depth=1 https://github.com/koshev-msk/luci-app-smstools3
+svn co https://github.com/koshev-msk/modemfeed/trunk/luci/applications/luci-app-smstools3 luci-app-smstools3
 
 # Add luci-app-mmconfig : configure modem cellular bands via mmcli utility
-# git clone --depth=1 https://github.com/koshev-msk/luci-app-mmconfig
+svn co https://github.com/koshev-msk/modemfeed/trunk/luci/applications/luci-app-mmconfig luci-app-mmconfig
 
 # Add support for Fibocom L860-GL l850/l860 ncm
-# git clone --depth=1 https://github.com/koshev-msk/xmm-modem
+svn co https://github.com/koshev-msk/modemfeed/trunk/packages/net/xmm-modem xmm-modem
 
 if [[ $REPO_BRANCH == *"21."* ]] || [[ $REPO_BRANCH == *"22."* ]] || [[ $REPO_BRANCH == *"23."* ]]; then
 	echo "21.02 branch detected! Adding 21.02 repos..."
