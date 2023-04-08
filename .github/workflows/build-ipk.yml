@@ -107,7 +107,7 @@ jobs:
           echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
           export PLATFORM=$(echo "${{ github.event.inputs.platform }}")
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
-          export PLATFORM_SUB=$(echo '$PLATFORM' | sed 's|/|-|g')
+          export PLATFORM_SUB=$(echo "$PLATFORM" | sed 's|/|-|g')
           echo "PLATFORM_SUB=$PLATFORM_SUB" >> $GITHUB_ENV
           if [[ "$REPO_BRANCH" == "snapshot" ]];then
             export BRANCH_REL=$(echo "releases/$REPO_BRANCH")
